@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
-import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
@@ -70,9 +69,7 @@ public class GcmIntentService extends IntentService {
 		final String url = msg.getString("url");
 
 
-		if(TextUtils.isEmpty(text) ) {
-			return;
-		}
+
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		Intent intent = new Intent(Intent.ACTION_VIEW);

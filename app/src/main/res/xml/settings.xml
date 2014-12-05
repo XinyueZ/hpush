@@ -12,4 +12,23 @@
             android:layout="@layout/setting_item"
             android:defaultValue="false" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/setting_push_properties_cat"
+        android:layout="@layout/setting_entry">
+        <CheckBoxPreference
+            android:key="key.only.full.text"
+            android:title="@string/setting_only_full_text"
+            android:summaryOn="@string/lbl_yes"
+            android:summaryOff="@string/lbl_no"
+            android:layout="@layout/setting_item"
+            android:defaultValue="true" />
+        <EditTextPreference
+            android:defaultValue="@integer/default_msg_count"
+            android:key="key.msg.count"
+            android:title="@string/setting_count"
+            android:summary="@string/setting_messages_count"
+            android:inputType="number"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

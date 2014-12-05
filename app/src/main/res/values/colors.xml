@@ -2,9 +2,8 @@
 <resources>
 
 
-    <color name="indigo_300">#7986CB</color>
-    <color name="indigo_500">#3F51B5</color>
-    <color name="indigo_700">#303F9F</color>
+    <color name="hacker_orange">#f06424</color>
+    <color name="hacker_orange_deep">#d14006</color>
     <color name="blue_grey_50">#607D8B</color>
     <color name="blue_grey_600">#546E7A</color>
     <color name="blue_grey_600_70">#B3546E7A</color>
@@ -18,17 +17,17 @@
 
     <color name="common_black">#000000</color>
     <color name="common_white">#FFFFFF</color>
-    <color name="common_blue">@color/indigo_500</color>
+    <color name="common_orange">@color/hacker_orange</color>
     <color name="common_transparent">@android:color/transparent</color>
     <color name="common_red">@color/red</color>
     <color name="common_pink">@color/pink</color>
 
     <color name="text_common_black">@color/common_black</color>
     <color name="text_common_white">@color/common_white</color>
-    <color name="text_common_blue">@color/common_blue</color>
+    <color name="text_common_blue">@color/common_orange</color>
 
-    <color name="primary_color">@color/indigo_500</color>
-    <color name="primary_dark_color">@color/indigo_700</color>
+    <color name="primary_color">@color/hacker_orange</color>
+    <color name="primary_dark_color">@color/hacker_orange_deep</color>
     <color name="primary_accent">@color/teal_500</color>
 
 </resources>

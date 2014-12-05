@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v4.os.AsyncTaskCompat;
@@ -92,6 +93,8 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Crashlytics.start(this);
+		Prefs prefs = Prefs.getInstance(getApplication());
+
 		addPreferencesFromResource(R.xml.settings);
 		mPb = ProgressDialog.show(this, null, getString(R.string.msg_app_init));
 		mPb.setCancelable(true);
@@ -108,6 +111,15 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 		CheckBoxPreference push = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_SETTING);
 		push.setOnPreferenceChangeListener(this);
+
+		CheckBoxPreference fullText = (CheckBoxPreference) findPreference(Prefs.KEY_FULL_TEXT);
+		fullText.setOnPreferenceChangeListener(this);
+
+		EditTextPreference count = (EditTextPreference) findPreference(Prefs.KEY_MSG_COUNT);
+		count.setSummary(getString(R.string.setting_messages_count, prefs.getMsgCount()  ));
+		count.setOnPreferenceChangeListener(this);
+
+
 		((MarginLayoutParams) findViewById(android.R.id.list).getLayoutParams()).topMargin = getActionBarHeight(this);
 	}
 
@@ -182,6 +194,15 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 					}
 				});
 			}
+		}
+
+		if(preference.getKey().equals(Prefs.KEY_MSG_COUNT)) {
+			int count = Integer.valueOf(newValue.toString());
+			int max = getResources().getInteger(R.integer.default_msg_count);
+			if(count > max ) {
+				count =  max;
+			}
+			preference.setSummary(getString(R.string.setting_messages_count, count + "" ));
 		}
 		return true;
 	}

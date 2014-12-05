@@ -3,6 +3,7 @@ package com.hpush.utils;
 import android.content.Context;
 
 import com.chopping.application.BasicPrefs;
+import com.hpush.R;
 
 /**
  * Application's preferences.
@@ -18,6 +19,8 @@ public final class Prefs extends BasicPrefs {
 
 	public static final String KEY_PUSH_REG_ID = "key.push.regid";
 	public static final String KEY_PUSH_SETTING = "key.push.setting";
+	public static final String KEY_FULL_TEXT = "key.only.full.text";
+	public static final String KEY_MSG_COUNT = "key.msg.count";
 	/**
 	 * Storage. Whether the "End User License Agreement" has been shown and agreed at application's first start.
 	 * <p/>
@@ -110,5 +113,13 @@ public final class Prefs extends BasicPrefs {
 
 	public int getShownDetailsAdsTimes() {
 		return getInt(KEY_SHOWN_DETAILS_ADS_TIMES, 5);
+	}
+
+	public boolean isOnlyFullText() {
+		return getBoolean(KEY_FULL_TEXT, true);
+	}
+
+	public String getMsgCount() {
+		return getString(KEY_MSG_COUNT, "" + mContext.getResources().getInteger(R.integer.default_msg_count));
 	}
 }
