@@ -22,7 +22,7 @@ const (
           <html>
               <body>
                 </p>
-                <p>Project itbooks push-messages.</p></p>
+                <p>Project hpush push-messages.</p></p>
                 <form action="/response" method="post">
                     <div><textarea name="book_id" rows="1" cols="60" placeholder="ID">1539580363</textarea></div>
                     <div><textarea name="title" rows="1" cols="60" placeholder="ID">Developing Android Applications with Flex 4.5</textarea></div>
