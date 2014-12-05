@@ -78,9 +78,11 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
     }
   }()
 
+  pushNews(_w, _r)
+
   pushMessage := new(PushMessage)
   pushMessage.Push(_r)
-  fmt.Fprintf(_w, "%v==========>", len(otherClients))
+  fmt.Fprintf(_w, "Client push users:%v==========>", len(otherClients))
   if pushMessage.err != nil {
     responseTemplate.Execute(_w, fmt.Sprintf("Some error from server: %s -->", pushMessage.err.Error()))
   }
@@ -89,7 +91,6 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
     pushMessage.response.Write(_w)
   }
 
-  getTopStories(_w, _r)
 }
 
 func handleDeleteAllUsers(_w http.ResponseWriter, _r *http.Request) {
