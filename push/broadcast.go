@@ -41,8 +41,7 @@ func getTopStories(_w http.ResponseWriter, _r *http.Request) []int64{
     return nil
 }
 
-func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) ([]*ItemDetails, int) {
-  clientIds, count := getClientIds(_r)
+func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) ([]*ItemDetails) {
   detailsList := []*ItemDetails{}
   for _, itemId := range itemIds {
     api := fmt.Sprintf(API_GET_ITEM_DETAILS, itemId)
@@ -56,14 +55,6 @@ func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) (
             details := new(ItemDetails)
             json.Unmarshal(bytes, &details)
             detailsList = append(detailsList, details)
-            ////////////////////////////////////////////
-            //Send push to clients.
-            ////////////////////////////////////////////
-            //if len(details.Text) != 0 {
-              //msg := 
-              broadcast(_w, _r, clientIds, details)
-              //fmt.Fprintf(_w, "%s", msg)
-            //}
           } else {
             fmt.Fprintf(_w, "%s", "Error by json-Unmarshal(details).")
           }
@@ -74,9 +65,10 @@ func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) (
             fmt.Fprintf(_w, "%s", "Error by making new request(details).")
       }
   }
-  return detailsList, count
+  return detailsList
 }
 
+/*
 func showDetailsList(_w http.ResponseWriter, _r *http.Request) {
     itemIds :=  getTopStories(_w, _r)
     if itemIds != nil {
@@ -86,18 +78,27 @@ func showDetailsList(_w http.ResponseWriter, _r *http.Request) {
       }
     }
 }
+*/
 
-func getClientIds(_r *http.Request) (string, int) {
-  allClients:= loadClients(_r)
-  ids := ""
-  if allClients != nil {
-    for _, client := range allClients {
-      ids += fmt.Sprintf(`"%s",`, client.PushID)
+func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _itemDetailsList []*ItemDetails) {
+  if _clients != nil {
+    for _, client := range _clients {
+        var roundTotal int = 0
+        for _, itemDetail := range _itemDetailsList {
+          if roundTotal < client.MsgCount {
+            if itemDetail.Text == "" && !client.FullText {
+              msg := broadcast(_w, _r, client.PushID, itemDetail)
+              fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
+              roundTotal++
+            } else if itemDetail.Text != "" {
+              msg := broadcast(_w, _r, client.PushID, itemDetail)
+              fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
+              roundTotal++
+            }
+          }
+        }
     }
-    ids = ids[:len(ids)-1]
-    return ids, len(allClients)
   }
-  return ids, 0
 }
 
 
@@ -116,7 +117,7 @@ type ItemDetails struct {
 
 func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails ) (pushedMsg string) {
   pushedMsg = fmt.Sprintf(
-    `{"registration_ids" : [%s],"data" : {"by": "%s", "id": "%d", "score": "%d", "text": "%s", "time": "%d", "title": "%s", "url": "%s"}}`,
+    `{"registration_ids" : ["%s"],"data" : {"by": "%s", "id": %d, "score": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s"}}`,
     clientIds,
     details.By,
     details.Id,

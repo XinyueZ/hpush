@@ -18,4 +18,7 @@ const (
   PUSH_KEY = "key=" + API_KEY
   API_METHOD = "GET"
   API_RESTYPE = "application/json"
+
+  DEF_FULL_TEXT = true
+  DEF_MSG_COUNT = 3
 )
