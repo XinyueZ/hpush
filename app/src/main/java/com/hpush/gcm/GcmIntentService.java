@@ -7,13 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
+import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
-import com.hpush.app.activities.SettingActivity;
 
 /**
  * Handle notification.
@@ -60,24 +61,33 @@ public class GcmIntentService extends IntentService {
 	// This is just one simple example of what you might choose to do with
 	// a GCM message.
 	private void sendNotification(final Bundle msg) {
-		final long bookId = Long.valueOf(msg.getString("book_id"));
+		final String by = msg.getString("by");
+		final long id = Long.valueOf(msg.getString("id"));
+		final long score = Long.valueOf(msg.getString("score"));
+		final String text = msg.getString("text");
+		final long time = Long.valueOf(msg.getString("time"));
 		final String title = msg.getString("title");
-		final String desc = msg.getString("desc");
-		final String image = msg.getString("image");
+		final String url = msg.getString("url");
 
+
+		if(TextUtils.isEmpty(text) ) {
+			return;
+		}
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		Intent intent = new Intent(this, SettingActivity.class);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(Uri.parse(url));
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent,
 				PendingIntent.FLAG_ONE_SHOT);
 
 
 		mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis())
-				.setSmallIcon(R.drawable.ic_stat_yp).setTicker(title).setContentTitle(title).setContentText(desc)
-				.setStyle(new BigTextStyle().bigText(desc).setBigContentTitle(title)).setAutoCancel(true).setLargeIcon(mLargeIcon);
+				.setSmallIcon(R.drawable.ic_stat_yp).setTicker(title).setContentTitle(title).setContentText(text)
+				.setStyle(new BigTextStyle().bigText(text).setBigContentTitle(title).setSummaryText("#" + by)).setAutoCancel(true).setLargeIcon(
+						mLargeIcon);
 		mNotifyBuilder.setContentIntent(contentIntent);
-		mNotificationManager.notify((int) bookId, mNotifyBuilder.build());
+		mNotificationManager.notify((int) id, mNotifyBuilder.build());
 
 	}
 }
