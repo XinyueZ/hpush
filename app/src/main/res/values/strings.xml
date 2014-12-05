@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Hacker News Push</string>
-    <string name="application_name">Hacker News Push</string>
+    <string name="app_name">Hacker Push</string>
+    <string name="application_name">Hacker Push</string>
 
 
     <string name="lbl_turn_on_push_info">Do you want receiver push-messages to get Top-News from Hack-News?</string>
