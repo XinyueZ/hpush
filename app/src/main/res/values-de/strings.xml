@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_turn_on_push_info">Möchtest Du Push-Benachrichtigungen empfangen?</string>
+    <string name="setting_push_cat">Benachrichtigungen</string>
+    <string name="setting_push_off">Ein</string>
+    <string name="setting_push_on">Aus</string>
+    <string name="msg_push_registering">Anmeldung…</string>
+    <string name="msg_push_unregistering">Abmeldung…</string>
+
+</resources>

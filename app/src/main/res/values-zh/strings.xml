@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lbl_turn_on_push_info">是否启动推送功能？</string>
+    <string name="setting_push_cat">推送</string>
+    <string name="setting_push_off">打开</string>
+    <string name="setting_push_on">关闭</string>
+    <string name="msg_push_registering">注册推送…</string>
+    <string name="msg_push_unregistering">取消推送…</string>
+</resources>
