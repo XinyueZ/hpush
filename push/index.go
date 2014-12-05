@@ -34,7 +34,7 @@ const (
             <form action="/dela" method="post">
               <div><input type="submit" value="REMOVE ALL USERS"/></div>
             </form>
-         
+
             </body>
           </html>
         `
@@ -88,6 +88,8 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
   if debug {
     pushMessage.response.Write(_w)
   }
+
+  getTopStories(_w, _r)
 }
 
 func handleDeleteAllUsers(_w http.ResponseWriter, _r *http.Request) {
