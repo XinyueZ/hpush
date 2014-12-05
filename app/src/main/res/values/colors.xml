@@ -3,6 +3,7 @@
 
 
     <color name="hacker_orange">#f06424</color>
+    <color name="hacker_orange_mid_deep">#de4f16</color>
     <color name="hacker_orange_deep">#d14006</color>
     <color name="blue_grey_50">#607D8B</color>
     <color name="blue_grey_600">#546E7A</color>
@@ -11,7 +12,6 @@
     <color name="grey_500">#9E9E9E</color>
     <color name="a400">#3D5AFE</color>
     <color name="a400_50">#803D5AFE</color>
-    <color name="teal_500">#009688</color>
     <color name="red">#F44336</color>
     <color name="pink">#E91E63</color>
 
@@ -28,6 +28,6 @@
 
     <color name="primary_color">@color/hacker_orange</color>
     <color name="primary_dark_color">@color/hacker_orange_deep</color>
-    <color name="primary_accent">@color/teal_500</color>
+    <color name="primary_accent">@color/hacker_orange_mid_deep</color>
 
 </resources>

@@ -42,8 +42,8 @@
         <item name="android:windowBackground">@color/common_white</item>
         <item name="android:textColorPrimary">@color/blue_grey_50</item>
         <item name="android:textColorSecondary">@color/blue_grey_50</item>
-        <item name="android:colorAccent">@color/teal_500</item>
-        <item name="colorAccent">@color/teal_500</item>
+        <item name="android:colorAccent">@color/primary_accent</item>
+        <item name="colorAccent">@color/primary_accent</item>
     </style>
 
 

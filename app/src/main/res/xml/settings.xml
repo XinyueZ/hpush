@@ -28,6 +28,7 @@
             android:key="key.msg.count"
             android:title="@string/setting_count"
             android:summary="@string/setting_messages_count"
+            android:layout="@layout/setting_item"
             android:inputType="number"/>
     </PreferenceCategory>
 

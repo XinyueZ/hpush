@@ -33,7 +33,7 @@
             android:layout_alignLeft="@android:id/title"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:maxLines="4"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textColor="?android:attr/colorAccent" />
 
     </RelativeLayout>
 
