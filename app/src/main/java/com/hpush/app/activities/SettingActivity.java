@@ -198,7 +198,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 		if(preference.getKey().equals(Prefs.KEY_MSG_COUNT)) {
 			int count = Integer.valueOf(newValue.toString());
-			int max = getResources().getInteger(R.integer.default_msg_count);
+			int max = getResources().getInteger(R.integer.max_msg_count);
 			if(count > max ) {
 				count =  max;
 			}
