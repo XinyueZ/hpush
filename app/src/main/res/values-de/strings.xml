@@ -6,5 +6,6 @@
     <string name="setting_push_on">Aus</string>
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>
+    <string name="msg_app_init">Initialisierung…</string>
 
 </resources>

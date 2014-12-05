@@ -17,6 +17,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".app.App"
         android:label="@string/application_name"
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"
@@ -61,6 +62,7 @@
             </intent-filter>
         </receiver>
         <service android:name=".gcm.GcmIntentService" />
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="0bf5835ac1569fe382ff64839c0be3d3ed9396b9"/>
     </application>
 
 </manifest>

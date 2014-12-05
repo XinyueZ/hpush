@@ -1,8 +1,10 @@
 package com.hpush.app.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -18,10 +20,18 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 
+import com.chopping.application.LL;
+import com.chopping.bus.ApplicationConfigurationDownloadedEvent;
+import com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent;
+import com.chopping.exceptions.CanNotOpenOrFindAppPropertiesException;
+import com.chopping.exceptions.InvalidAppPropertiesException;
+import com.crashlytics.android.Crashlytics;
 import com.hpush.R;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
+
+import de.greenrobot.event.EventBus;
 
 
 /**
@@ -34,6 +44,36 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 */
 	private Toolbar mToolbar;
 
+	/**
+	 * Progress indicator.
+	 */
+	private ProgressDialog mPb;
+	//------------------------------------------------
+	//Subscribes, event-handlers
+	//------------------------------------------------
+
+	/**
+	 * Handler for {@link com.chopping.bus.ApplicationConfigurationDownloadedEvent}
+	 *
+	 * @param e
+	 * 		Event {@link  com.chopping.bus.ApplicationConfigurationDownloadedEvent}.
+	 */
+	public void onEvent(ApplicationConfigurationDownloadedEvent e) {
+		onAppConfigLoaded();
+	}
+
+	/**
+	 * Handler for {@link com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent}.
+	 */
+	public void onEvent(ApplicationConfigurationLoadingIgnoredEvent e) {
+		LL.i("Ignored a change to load application's configuration.");
+		onAppConfigIgnored();
+	}
+
+	//------------------------------------------------
 
 	/**
 	 * Show an instance of SettingsActivity.
@@ -51,7 +91,10 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Crashlytics.start(this);
 		addPreferencesFromResource(R.xml.settings);
+		mPb = ProgressDialog.show(this, null, getString(R.string.msg_app_init));
+		mPb.setCancelable(true);
 		mToolbar = (Toolbar) getLayoutInflater().inflate(R.layout.toolbar, null, false);
 		addContentView(mToolbar, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 		mToolbar.setTitle(R.string.application_name);
@@ -106,10 +149,12 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 			if (!Boolean.valueOf(newValue.toString())) {
 				AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication()) {
 					ProgressDialog dlg;
+
 					@Override
 					protected void onPreExecute() {
 						super.onPreExecute();
-						dlg = ProgressDialog.show(SettingActivity.this, null, getString(R.string.msg_push_unregistering));
+						dlg = ProgressDialog.show(SettingActivity.this, null, getString(
+								R.string.msg_push_unregistering));
 						dlg.setCancelable(false);
 					}
 
@@ -122,6 +167,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 			} else {
 				AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()) {
 					ProgressDialog dlg;
+
 					@Override
 					protected void onPreExecute() {
 						super.onPreExecute();
@@ -134,10 +180,57 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 						super.onPostExecute(regId);
 						dlg.dismiss();
 					}
-				} );
+				});
 			}
 		}
 		return true;
 	}
 
+
+	@Override
+	protected void onResume() {
+		EventBus.getDefault().register(this);
+		super.onResume();
+
+		String mightError = null;
+		try {
+			Prefs.getInstance(getApplication()).downloadApplicationConfiguration();
+		} catch (InvalidAppPropertiesException _e) {
+			mightError = _e.getMessage();
+		} catch (CanNotOpenOrFindAppPropertiesException _e) {
+			mightError = _e.getMessage();
+		}
+		if (mightError != null) {
+			new AlertDialog.Builder(this).setTitle(com.chopping.R.string.app_name).setMessage(mightError).setCancelable(
+					false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					finish();
+				}
+			}).create().show();
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		EventBus.getDefault().unregister(this);
+		super.onPause();
+	}
+
+	/**
+	 * Remove the progress indicator.
+	 */
+	private void dismissPb() {
+		if(mPb != null && mPb.isShowing()){
+			mPb.dismiss();
+		}
+	}
+
+	private void onAppConfigLoaded() {
+		dismissPb();
+	}
+
+	private void onAppConfigIgnored() {
+		dismissPb();
+	}
 }

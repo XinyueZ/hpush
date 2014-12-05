@@ -5,24 +5,25 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
-import android.text.TextUtils;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
-import com.android.volley.toolbox.ImageLoader.ImageListener;
-import com.chopping.net.TaskHelper;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
 import com.hpush.app.activities.SettingActivity;
 
+/**
+ * Handle notification.
+ *
+ * @author Xinyue Zhao
+ */
 public class GcmIntentService extends IntentService {
 	private NotificationManager mNotificationManager;
-	private	NotificationCompat.Builder mNotifyBuilder;
+	private NotificationCompat.Builder mNotifyBuilder;
+	private Bitmap mLargeIcon;
 
 	public GcmIntentService() {
 		super("GcmIntentService");
@@ -30,6 +31,7 @@ public class GcmIntentService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		mLargeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
 		Bundle extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
 		// The getMessageType() intent parameter must be the intent you received
@@ -38,7 +40,7 @@ public class GcmIntentService extends IntentService {
 
 		if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
 			/*
-             * Filter messages based on message type. Since it is likely that GCM will be
+			 * Filter messages based on message type. Since it is likely that GCM will be
              * extended in the future with new message types, just ignore any message types you're
              * not interested in, or that you don't recognize.
              */
@@ -67,37 +69,15 @@ public class GcmIntentService extends IntentService {
 
 		Intent intent = new Intent(this, SettingActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_ONE_SHOT);
+		final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent,
+				PendingIntent.FLAG_ONE_SHOT);
 
 
-		if (!TextUtils.isEmpty(image)) {
-			new Handler( Looper.getMainLooper()).post(new Runnable() {
-				@Override
-				public void run() {
-					TaskHelper.getImageLoader().get(image, new ImageListener() {
-						@Override
-						public void onResponse(ImageContainer response, boolean isImmediate) {
-							mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis()).setSmallIcon(
-									R.drawable.ic_launcher).setTicker(title).setContentTitle(title).setContentText(desc)
-									.setStyle(new BigTextStyle().bigText(desc).setBigContentTitle(
-													title)).setAutoCancel(true).setLargeIcon(response.getBitmap());
-							mNotifyBuilder.setContentIntent(contentIntent);
-							mNotificationManager.notify((int)bookId, mNotifyBuilder.build());
+		mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis())
+				.setSmallIcon(R.drawable.ic_stat_yp).setTicker(title).setContentTitle(title).setContentText(desc)
+				.setStyle(new BigTextStyle().bigText(desc).setBigContentTitle(title)).setAutoCancel(true).setLargeIcon(mLargeIcon);
+		mNotifyBuilder.setContentIntent(contentIntent);
+		mNotificationManager.notify((int) bookId, mNotifyBuilder.build());
 
-						}
-
-						@Override
-						public void onErrorResponse(VolleyError error) {
-						}
-					});
-				}
-			});
-		} else {
-			mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis()).setSmallIcon(
-					R.drawable.ic_launcher).setTicker(title).setContentTitle(title).setContentText(desc).setStyle(
-							new BigTextStyle().bigText(desc).setBigContentTitle(title)).setAutoCancel(true);
-			mNotifyBuilder.setContentIntent(contentIntent);
-			mNotificationManager.notify((int)bookId, mNotifyBuilder.build());
-		}
 	}
 }

@@ -6,4 +6,5 @@
     <string name="setting_push_on">关闭</string>
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>
+    <string name="msg_app_init">初始化…</string>
 </resources>
