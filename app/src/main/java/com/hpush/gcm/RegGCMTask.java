@@ -67,9 +67,9 @@ public   class RegGCMTask extends AsyncTask<Void, Void, String> {
 				public Map<String, String> getHeaders() throws AuthFailureError {
 					Map<String, String> headers = super.getHeaders();
 					if (headers == null || headers.equals(Collections.emptyMap())) {
-						headers = new HashMap<String, String>();
+						headers = new HashMap<>();
 					}
-					headers.put("Cookie","pushID=" + regId);
+					headers.put("Cookie","pushID=" + regId + ";isFullText=" + mPrefs.isOnlyFullText() + ";msgCount=" + mPrefs.getMsgCount());
 					return headers;
 				}
 			};
