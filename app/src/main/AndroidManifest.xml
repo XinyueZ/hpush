@@ -1,11 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.hpush"
-    android:installLocation="preferExternal"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:installLocation="preferExternal" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -13,25 +13,25 @@
     <permission
         android:name="com.hpush.gcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.hpush.gcm.permission.C2D_MESSAGE" />
 
     <application
-        android:allowBackup="true"
         android:name=".app.App"
-        android:label="@string/application_name"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+        android:label="@string/application_name"
         android:theme="@style/AppTheme"
-        tools:replace="android:label">
+        tools:replace="android:label" >
 
-        <!--This meta-data tag is required to use Google Play Services.-->
+        <!-- This meta-data tag is required to use Google Play Services. -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <activity
-            android:name=".app.activities.SettingActivity"
-            android:label="@string/application_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/SettingsTheme">
+            android:name=".app.activities.MainActivity"
+            android:label="@string/application_name" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,11 +39,17 @@
             </intent-filter>
         </activity>
 
-        <!--Event handler for changing system packages.-->
+        <activity
+            android:name=".app.activities.SettingActivity"
+            android:label="@string/application_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SettingsTheme" />
+
+        <!-- Event handler for changing system packages. -->
         <receiver
             android:name="com.chopping.application.InstalledAppReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -52,17 +58,38 @@
             </intent-filter>
         </receiver>
 
-        <!--GCM needs receiver and service.-->
+        <!-- GCM needs receiver and service. -->
         <receiver
             android:name=".gcm.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.hpush" />
             </intent-filter>
         </receiver>
+
         <service android:name=".gcm.GcmIntentService" />
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="0bf5835ac1569fe382ff64839c0be3d3ed9396b9"/>
+
+        <!--Event handler for changing system packages, for external links-->
+        <receiver
+            android:name="com.chopping.application.InstalledAppReceiver"
+            android:exported="false"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="0bf5835ac1569fe382ff64839c0be3d3ed9396b9" />
+
+
     </application>
 
 </manifest>

@@ -10,6 +10,7 @@ import (
   "io/ioutil"
   "encoding/json"
   "bytes"
+  "time"
 )
 
 type TopStoresRes struct {
@@ -95,6 +96,8 @@ func showDetailsList(_w http.ResponseWriter, _r *http.Request) {
 
 func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _itemDetailsList []*ItemDetails) {
   if _clients != nil {
+    t := time.Now()
+    pushedTime := t.Format("20060102150405")
     for _, client := range _clients {
         var roundTotal int = 0
         for _, itemDetail := range _itemDetailsList {
@@ -105,7 +108,7 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
                 if !client.AllowEmptyUrl && itemDetail.Url == "" {
                     continue
                 }
-                msg := broadcast(_w, _r, client.PushID, itemDetail)
+                msg := broadcast(_w, _r, client.PushID, itemDetail, pushedTime)
                 fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
                 roundTotal++
             }
@@ -116,9 +119,9 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
 
 
 
-func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails ) (pushedMsg string) {
+func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string ) (pushedMsg string) {
   pushedMsg = fmt.Sprintf(
-    `{"registration_ids" : ["%s"],"data" : {"by": "%s", "id": %d, "score": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s"}}`,
+    `{"registration_ids" : ["%s"],"data" : {"by": "%s", "id": %d, "score": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s", "pushed_time" : "%s"}}`,
     clientIds,
     details.By,
     details.Id,
@@ -126,7 +129,8 @@ func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, deta
     details.Text,
     details.Time,
     details.Title,
-    details.Url)
+    details.Url,
+    pushedTime)
   pushedMsgBytes := bytes.NewBufferString(pushedMsg)
 
   if req, err := http.NewRequest("POST", PUSH_SENDER, pushedMsgBytes); err == nil {

@@ -13,4 +13,43 @@
         <item name="android:background">@color/primary_color</item>
         <item name="background">@color/primary_color</item>
     </style>
+
+    <style name="List_Item_TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:gravity">center_vertical</item> 
+    </style>
+
+    <style name="Headline_Messages_List_Item_TextView" parent="@style/List_Item_TextView">
+        <item name="font">thin</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:text">Headline</item>
+    </style>
+
+    <style name="Content_Messages_List_Item_TextView" parent="@style/List_Item_TextView">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">4</item>
+        <item name="font">regular</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">@color/blue_grey_50</item>
+        <item name="android:text">Content</item>
+    </style>
+
+    <style name="ListItemCardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:foreground">@color/common_transparent</item>
+        <item name="android:background">@color/common_transparent</item>
+        <item name="contentPadding">10dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardMaxElevation">8dp</item>
+        <item name="cardCornerRadius">0dp</item>
+    </style>
+
+    <style name="CardView" parent="@style/ListItemCardView">
+    </style>
+
+
 </resources>

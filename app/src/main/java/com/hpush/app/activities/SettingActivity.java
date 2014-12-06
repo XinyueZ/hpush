@@ -37,7 +37,6 @@ import com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent;
 import com.chopping.exceptions.CanNotOpenOrFindAppPropertiesException;
 import com.chopping.exceptions.InvalidAppPropertiesException;
 import com.chopping.net.TaskHelper;
-import com.crashlytics.android.Crashlytics;
 import com.hpush.R;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
@@ -103,7 +102,6 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Crashlytics.start(this);
 		Prefs prefs = Prefs.getInstance(getApplication());
 
 		addPreferencesFromResource(R.xml.settings);
