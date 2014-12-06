@@ -106,7 +106,9 @@ func handleDeleteAllUsers(_w http.ResponseWriter, _r *http.Request) {
 
 func handleInsert(_w http.ResponseWriter, _r *http.Request) {
     cookies := _r.Cookies()
-    otherClient := &OtherClient{cookies[0].Value, DEF_FULL_TEXT, DEF_MSG_COUNT}
+    isFullText, _ := strconv.ParseBool(cookies[1].Value)
+    msgCount, _ := strconv.Atoi(cookies[2].Value)
+    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount}
     cxt := appengine.NewContext(_r)
     datastore.Put(cxt, datastore.NewIncompleteKey(cxt, "OtherClient", nil), otherClient)
     fmt.Fprintf(_w, otherClient.PushID )
