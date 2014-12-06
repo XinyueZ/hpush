@@ -17,6 +17,19 @@ type TopStoresRes struct {
 }
 
 
+type ItemDetails struct {
+  By string
+  Id int64
+  Kids []int64
+  Score int64
+  Text string
+  Time int64
+  Title string
+  Type string
+  Url string
+}
+
+
 func getTopStories(_w http.ResponseWriter, _r *http.Request) []int64{
     if req, err := http.NewRequest(API_METHOD, API_GET_TOP_STORIES, nil); err == nil {
         cxt := appengine.NewContext(_r)
@@ -85,34 +98,22 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
     for _, client := range _clients {
         var roundTotal int = 0
         for _, itemDetail := range _itemDetailsList {
-          if roundTotal < client.MsgCount {
-            if itemDetail.Text == "" && !client.FullText {
-              msg := broadcast(_w, _r, client.PushID, itemDetail)
-              fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
-              roundTotal++
-            } else if itemDetail.Text != "" {
-              msg := broadcast(_w, _r, client.PushID, itemDetail)
-              fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
-              roundTotal++
+            if roundTotal < client.MsgCount {
+                if client.FullText && itemDetail.Text == "" {
+                    continue
+                }
+                if !client.AllowEmptyUrl && itemDetail.Url == "" {
+                    continue
+                }
+                msg := broadcast(_w, _r, client.PushID, itemDetail)
+                fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
+                roundTotal++
             }
-          }
         }
     }
   }
 }
 
-
-type ItemDetails struct {
-  By string
-  Id int64
-  Kids []int64
-  Score int64
-  Text string
-  Time int64
-  Title string
-  Type string
-  Url string
-}
 
 
 func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails ) (pushedMsg string) {

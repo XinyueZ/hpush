@@ -40,6 +40,7 @@ type OtherClient struct {
   PushID string
   FullText bool
   MsgCount int
+  AllowEmptyUrl bool
 }
 
 
@@ -108,7 +109,8 @@ func handleInsert(_w http.ResponseWriter, _r *http.Request) {
     cookies := _r.Cookies()
     isFullText, _ := strconv.ParseBool(cookies[1].Value)
     msgCount, _ := strconv.Atoi(cookies[2].Value)
-    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount}
+    allowEmptyUrl, _ := strconv.ParseBool(cookies[3].Value)
+    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount, allowEmptyUrl}
     cxt := appengine.NewContext(_r)
     datastore.Put(cxt, datastore.NewIncompleteKey(cxt, "OtherClient", nil), otherClient)
     fmt.Fprintf(_w, otherClient.PushID )
@@ -133,6 +135,7 @@ func handleEdit(_w http.ResponseWriter, _r *http.Request) {
     keys, _:= q.GetAll(cxt, &clients)
     isFullText, _ := strconv.ParseBool(cookies[1].Value)
     msgCount, _ := strconv.Atoi(cookies[2].Value)
-    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount }
+    allowEmptyUrl, _ := strconv.ParseBool(cookies[3].Value)
+    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount, allowEmptyUrl}
     datastore.Put(cxt, keys[0], otherClient);
 }

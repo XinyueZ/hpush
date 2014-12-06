@@ -126,6 +126,9 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		CheckBoxPreference fullText = (CheckBoxPreference) findPreference(Prefs.KEY_FULL_TEXT);
 		fullText.setOnPreferenceChangeListener(this);
 
+		CheckBoxPreference allowEmptyUrl = (CheckBoxPreference) findPreference(Prefs.KEY_ALLOW_EMPTY_URL);
+		allowEmptyUrl.setOnPreferenceChangeListener(this);
+
 		EditTextPreference count = (EditTextPreference) findPreference(Prefs.KEY_MSG_COUNT);
 		count.setSummary(getString(R.string.setting_messages_count, prefs.getMsgCount()));
 		count.setOnPreferenceChangeListener(this);
@@ -267,6 +270,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		final String regId = prefs.getPushRegId();
 		final boolean isFullText = prefs.isOnlyFullText();
 		final String msgCount = prefs.getMsgCount();
+		final boolean allowEmptyUrl = prefs.allowEmptyUrl();
 		if (!TextUtils.isEmpty(regId)) {
 			StringRequest request = new StringRequest(Method.POST, prefs
 					.getPushBackendEditUrl(), new Response.Listener<String>() {
@@ -286,7 +290,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 					if (headers == null || headers.equals(Collections.emptyMap())) {
 						headers = new HashMap<>();
 					}
-					headers.put("Cookie","pushID=" + regId + ";isFullText=" + isFullText + ";msgCount=" + msgCount);
+					headers.put("Cookie","pushID=" + regId + ";isFullText=" + isFullText + ";msgCount=" + msgCount+ ";allowEmptyLink=" + allowEmptyUrl);
 					return headers;
 				}
 			};

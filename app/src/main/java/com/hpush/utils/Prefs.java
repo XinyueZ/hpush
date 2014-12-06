@@ -22,6 +22,7 @@ public final class Prefs extends BasicPrefs {
 	public static final String KEY_FULL_TEXT = "key.only.full.text";
 	public static final String KEY_MSG_COUNT = "key.msg.count";
 	public static final String KEY_SAVE_LATEST_ONLY = "key.save.latest.only";
+	public static final String KEY_ALLOW_EMPTY_URL = "key.allow.empty.url";
 
 	/**
 	 * Storage. Whether the "End User License Agreement" has been shown and agreed at application's first start.
@@ -123,7 +124,7 @@ public final class Prefs extends BasicPrefs {
 	}
 
 	public boolean isOnlyFullText() {
-		return getBoolean(KEY_FULL_TEXT, true);
+		return getBoolean(KEY_FULL_TEXT, mContext.getResources().getBoolean(R.bool.default_accept_full_text));
 	}
 
 	public String getMsgCount() {
@@ -132,5 +133,9 @@ public final class Prefs extends BasicPrefs {
 
 	public boolean isOnlySaveLatest() {
 		return getBoolean(KEY_SAVE_LATEST_ONLY, mContext.getResources().getBoolean(R.bool.default_only_save_latest));
+	}
+
+	public boolean allowEmptyUrl() {
+		return getBoolean(KEY_ALLOW_EMPTY_URL, mContext.getResources().getBoolean(R.bool.default_allow_empty_url));
 	}
 }

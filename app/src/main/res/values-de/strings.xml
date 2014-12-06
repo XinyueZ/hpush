@@ -18,4 +18,5 @@
     <string name="setting_count">Wie viele Top-Stories(Top 100) möchten Sie empfangen?</string>
     <string name="setting_messages_count">%1$s Push-Benachrichtigung</string>
     <string name="setting_only_save_latest">Nur die letzten empfangenen Benachrichtigung zu speichern?</string>
+    <string name="setting_allow_empty_url">Zulassen und enthalten Nachrichten, die ohne externen Link ankommen.</string>
 </resources>

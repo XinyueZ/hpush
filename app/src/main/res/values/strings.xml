@@ -22,4 +22,5 @@
     <string name="setting_count">How many top-stories(Top 100) would you like to accept?</string>
     <string name="setting_messages_count">%1$s push-messages</string>
     <string name="setting_only_save_latest">Only save the latest messages and remove old ones before saving?</string>
+    <string name="setting_allow_empty_url">Allow messages that don\'t have external links.</string>
 </resources>

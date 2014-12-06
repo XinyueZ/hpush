@@ -30,7 +30,14 @@
             android:summaryOn="@string/lbl_yes"
             android:summaryOff="@string/lbl_no"
             android:layout="@layout/setting_item"
-            android:defaultValue="true" />
+            android:defaultValue="@bool/default_accept_full_text" />
+        <CheckBoxPreference
+            android:key="key.allow.empty.url"
+            android:title="@string/setting_allow_empty_url"
+            android:summaryOn="@string/lbl_yes"
+            android:summaryOff="@string/lbl_no"
+            android:layout="@layout/setting_item"
+            android:defaultValue="@bool/default_allow_empty_url" />
         <EditTextPreference
             android:defaultValue="@integer/default_msg_count"
             android:key="key.msg.count"

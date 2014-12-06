@@ -18,4 +18,5 @@
     <string name="setting_count">有多少热门的消息（Top 100）你想接受吗？</string>
     <string name="setting_messages_count">%1$s 条推送消息</string>
     <string name="setting_only_save_latest">只保留最近推送的信息？</string>
+    <string name="setting_allow_empty_url">允许没有外部链接的推送消息。</string>
 </resources>
