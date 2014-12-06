@@ -10,6 +10,7 @@
     <string name="msg_push_registering">Signing in push…</string>
     <string name="msg_push_unregistering">Signing out push…</string>
     <string name="msg_app_init">Initialization…</string>
+    <string name="msg_save_data">Saving data…</string>
 
 
     <string name="setting_push_title">@string/lbl_turn_on_push_info</string>
@@ -20,4 +21,5 @@
     <string name="setting_only_full_text">Only accept full-text messages? That means these messages only with single title must be ignored.</string>
     <string name="setting_count">How many top-stories(Top 100) would you like to accept?</string>
     <string name="setting_messages_count">%1$s push-messages</string>
+    <string name="setting_only_save_latest">Only save the latest messages and remove old ones before saving?</string>
 </resources>

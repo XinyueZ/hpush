@@ -8,12 +8,14 @@
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>
     <string name="msg_app_init">Initialisierung…</string>
+    <string name="msg_save_data">Daten werden gespeichert…</string>
 
     <string name="setting_push_cat">Benachrichtigungen</string>
     <string name="setting_push_off">Ein</string>
     <string name="setting_push_on">Aus</string>
     <string name="setting_push_properties_cat">Eigenschaften </string>
-    <string name="setting_only_full_text">Nur Volltext-Nachrichten zu empfangen? Das bedeutet, dass diese Meldungen nur bei Einzeltitel ignoriert werden müssen.</string>
+    <string name="setting_only_full_text">Nur Push-Benachrichtigung als Volltext zu empfangen? Das bedeutet, dass solche Meldungen mit Einzeltitel ignoriert werden müssen.</string>
     <string name="setting_count">Wie viele Top-Stories(Top 100) möchten Sie empfangen?</string>
     <string name="setting_messages_count">%1$s Push-Benachrichtigung</string>
+    <string name="setting_only_save_latest">Nur die letzten empfangenen Benachrichtigung zu speichern?</string>
 </resources>

@@ -1,5 +1,9 @@
 package com.hpush.app.activities;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -15,17 +19,24 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.chopping.application.LL;
 import com.chopping.bus.ApplicationConfigurationDownloadedEvent;
 import com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent;
 import com.chopping.exceptions.CanNotOpenOrFindAppPropertiesException;
 import com.chopping.exceptions.InvalidAppPropertiesException;
+import com.chopping.net.TaskHelper;
 import com.crashlytics.android.Crashlytics;
 import com.hpush.R;
 import com.hpush.gcm.RegGCMTask;
@@ -116,7 +127,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		fullText.setOnPreferenceChangeListener(this);
 
 		EditTextPreference count = (EditTextPreference) findPreference(Prefs.KEY_MSG_COUNT);
-		count.setSummary(getString(R.string.setting_messages_count, prefs.getMsgCount()  ));
+		count.setSummary(getString(R.string.setting_messages_count, prefs.getMsgCount()));
 		count.setOnPreferenceChangeListener(this);
 
 
@@ -196,13 +207,13 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 			}
 		}
 
-		if(preference.getKey().equals(Prefs.KEY_MSG_COUNT)) {
+		if (preference.getKey().equals(Prefs.KEY_MSG_COUNT)) {
 			int count = Integer.valueOf(newValue.toString());
 			int max = getResources().getInteger(R.integer.max_msg_count);
-			if(count > max ) {
-				count =  max;
+			if (count > max) {
+				count = max;
 			}
-			preference.setSummary(getString(R.string.setting_messages_count, count + "" ));
+			preference.setSummary(getString(R.string.setting_messages_count, count + ""));
 		}
 		return true;
 	}
@@ -242,8 +253,44 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 * Remove the progress indicator.
 	 */
 	private void dismissPb() {
-		if(mPb != null && mPb.isShowing()){
+		if (mPb != null && mPb.isShowing()) {
 			mPb.dismiss();
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		dismissPb();
+		mPb = ProgressDialog.show(this, null, getString(R.string.msg_save_data));
+		mPb.setCancelable(true);
+		Prefs prefs = Prefs.getInstance(getApplication());
+		final String regId = prefs.getPushRegId();
+		final boolean isFullText = prefs.isOnlyFullText();
+		final String msgCount = prefs.getMsgCount();
+		if (!TextUtils.isEmpty(regId)) {
+			StringRequest request = new StringRequest(Method.POST, prefs
+					.getPushBackendEditUrl(), new Response.Listener<String>() {
+				@Override
+				public void onResponse(String response) {
+					backPressed();
+				}
+			}, new Response.ErrorListener() {
+				@Override
+				public void onErrorResponse(VolleyError error) {
+					backPressed();
+				}
+			}){
+				@Override
+				public Map<String, String> getHeaders() throws AuthFailureError {
+					Map<String, String> headers = super.getHeaders();
+					if (headers == null || headers.equals(Collections.emptyMap())) {
+						headers = new HashMap<>();
+					}
+					headers.put("Cookie","pushID=" + regId + ";isFullText=" + isFullText + ";msgCount=" + msgCount);
+					return headers;
+				}
+			};
+			TaskHelper.getRequestQueue().add(request);
 		}
 	}
 
@@ -253,5 +300,14 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	private void onAppConfigIgnored() {
 		dismissPb();
+	}
+
+	public void backPressed() {
+		dismissPb();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			finishAfterTransition();
+		} else {
+			finish();
+		}
 	}
 }

@@ -133,6 +133,6 @@ func handleEdit(_w http.ResponseWriter, _r *http.Request) {
     keys, _:= q.GetAll(cxt, &clients)
     isFullText, _ := strconv.ParseBool(cookies[1].Value)
     msgCount, _ := strconv.Atoi(cookies[2].Value)
-    otherClient := &OtherClient{FullText:isFullText, MsgCount:msgCount }
+    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount }
     datastore.Put(cxt, keys[0], otherClient);
 }

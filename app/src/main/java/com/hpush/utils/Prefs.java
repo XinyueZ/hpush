@@ -21,6 +21,8 @@ public final class Prefs extends BasicPrefs {
 	public static final String KEY_PUSH_SETTING = "key.push.setting";
 	public static final String KEY_FULL_TEXT = "key.only.full.text";
 	public static final String KEY_MSG_COUNT = "key.msg.count";
+	public static final String KEY_SAVE_LATEST_ONLY = "key.save.latest.only";
+
 	/**
 	 * Storage. Whether the "End User License Agreement" has been shown and agreed at application's first start.
 	 * <p/>
@@ -31,6 +33,7 @@ public final class Prefs extends BasicPrefs {
 	private static final String PUSH_SENDER_ID = "push_sender_id";
 	private static final String PUSH_URL_INFO_BACKEND_REG = "push_url_info_backend_reg";
 	private static final String PUSH_URL_INFO_BACKEND_UNREG = "push_url_info_backend_unreg";
+	private static final String PUSH_URL_INFO_BACKEND_EDIT = "push_url_info_backend_edit";
 	private static final String KEY_SHOWN_DETAILS_ADS_TIMES = "ads";
 
 	/**
@@ -106,6 +109,10 @@ public final class Prefs extends BasicPrefs {
 		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_UNREG, null);
 	}
 
+	public String getPushBackendEditUrl() {
+		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_EDIT, null);
+	}
+
 	public void turnOnPush() {
 		setBoolean(KEY_PUSH_SETTING, true);
 	}
@@ -121,5 +128,9 @@ public final class Prefs extends BasicPrefs {
 
 	public String getMsgCount() {
 		return getString(KEY_MSG_COUNT, "" + mContext.getResources().getInteger(R.integer.default_msg_count));
+	}
+
+	public boolean isOnlySaveLatest() {
+		return getBoolean(KEY_SAVE_LATEST_ONLY, mContext.getResources().getBoolean(R.bool.default_only_save_latest));
 	}
 }
