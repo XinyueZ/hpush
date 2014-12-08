@@ -12,6 +12,8 @@
     <string name="lbl_last_messages">最近的消息</string>
     <string name="lbl_bookmark">收藏夹</string>
     <string name="lbl_play_service">本应用需要谷歌服务，必须先安装然后使用。</string>
+    <string name="lbl_share_app_title">一个不错的应用: %s</string>
+    <string name="lbl_share_app_content">你好！\n\n\u00A0\u00A0\u00A0\u00A0获取Hacker News社区的推送很方便？\n\n下载:https://play.google.com/store/apps/details?id=com.hpush</string>
 
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>

@@ -13,6 +13,9 @@
     <string name="lbl_bookmark">Lesezeichen</string>
     <string name="lbl_play_service">Diese App braucht Google Play Service, Sie müssen erst herunterladen dann
         weiter.</string>
+    <string name="lbl_share_app_title">Eine gute App: %s</string>
+    <string name="lbl_share_app_content">Hallo!\n\nDie Push-Benachrichtigung aus Hacker-News zu empfangen?\n\nDownload:
+        https://play.google.com/store/apps/details?id=com.hpush</string>
 
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>

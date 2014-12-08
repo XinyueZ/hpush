@@ -15,6 +15,9 @@
     <string name="lbl_last_messages">Latest</string>
     <string name="lbl_bookmark">Bookmark</string>
     <string name="lbl_play_service">This application needs Google Play Service, you must install it first.</string>
+    <string name="lbl_share_app_title">A good App you should have: %s</string>
+    <string name="lbl_share_app_content">Hello!\n\n\u00A0\u00A0\u00A0\u00A0Subscribe push-news from Hacker-News?\n\nDownload:
+        https://play.google.com/store/apps/details?id=com.hpush</string>
 
     <string name="msg_push_registering">Signing in push…</string>
     <string name="msg_push_unregistering">Signing out push…</string>

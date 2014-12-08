@@ -11,6 +11,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.os.AsyncTaskCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
@@ -49,6 +50,7 @@ import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.SelectMessageEvent;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.utils.Prefs;
+import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
@@ -290,6 +292,17 @@ public final class MainActivity extends BaseActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
+
+		MenuItem menuShare = menu.findItem(R.id.action_share_app);
+		//Getting the actionprovider associated with the menu item whose id is share.
+		android.support.v7.widget.ShareActionProvider provider =
+				(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
+		//Setting a share intent.
+		String subject = getString(R.string.lbl_share_app_title, getString(R.string.application_name));
+		String text = getString(R.string.lbl_share_app_content );
+		provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
+
+
 		return true;
 	}
 
