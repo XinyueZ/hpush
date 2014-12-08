@@ -39,8 +39,16 @@
         <item name="dropDownListViewStyle">@style/OverflowDropDown</item>
     </style>
 
-    <style name="AppTheme" parent="AppTheme.Base"/>
+    <style name="AppTheme" parent="AppTheme.Base" />
 
+    <style name="AppThemeToolbar" parent="AppTheme.Base">
+        <item name="android:actionOverflowButtonStyle">@style/ThisActionButton_Overflow_Style</item>
+        <item name="actionOverflowButtonStyle">@style/ThisActionButton_Overflow_Style</item>
+    </style>
+
+    <style name="ThisActionButton_Overflow_Style" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_action_item_overflow</item>
+    </style>
 
     <style name="SettingsTheme" parent="AppTheme">
         <item name="android:windowBackground">@color/common_white</item>

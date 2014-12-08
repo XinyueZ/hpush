@@ -1,9 +1,14 @@
 package com.hpush.app.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -15,8 +20,8 @@ import com.hpush.bus.ClickMessageEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.bus.SelectMessageEvent;
 import com.hpush.data.MessageListItem;
+import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
-import com.hpush.views.OnViewAnimatedClickedListener;
 import com.hpush.views.OnViewAnimatedClickedListener2;
 
 import de.greenrobot.event.EventBus;
@@ -96,16 +101,47 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 				EventBus.getDefault().post(new ClickMessageEvent(msg.getMessage()));
 			}
 		});
-		viewHolder.mCommentsV.setOnClickListener(new OnViewAnimatedClickedListener() {
+//		viewHolder.mCommentsV.setOnClickListener(new OnViewAnimatedClickedListener() {
+//			@Override
+//			public void onClick() {
+//				EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.mCommentsV));
+//			}
+//		});
+//		viewHolder.mLinkV.setOnClickListener(new OnViewAnimatedClickedListener() {
+//			@Override
+//			public void onClick() {
+//				EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.mLinkV));
+//			}
+//		});
+		viewHolder.mToolbar.inflateMenu(R.menu.item);
+		viewHolder.mToolbar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
-			public void onClick() {
-				EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.mCommentsV));
-			}
-		});
-		viewHolder.mLinkV.setOnClickListener(new OnViewAnimatedClickedListener() {
-			@Override
-			public void onClick() {
-				EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.mLinkV));
+			public boolean onMenuItemClick(MenuItem menuItem) {
+				switch (menuItem.getItemId()) {
+				case R.id.action_item_comment:
+					EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.itemView));
+					break;
+				case R.id.action_item_link:
+					EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.itemView));
+					break;
+				case R.id.action_item_share:
+					Context cxt = viewHolder.itemView.getContext();
+					String url = msg.getUrl();
+					if(TextUtils.isEmpty(url)) {
+						url = Prefs.getInstance(cxt.getApplicationContext()).getHackerNewsCommentsUrl() + msg.getId();
+					}
+					Intent sendIntent = new Intent();
+					sendIntent.setAction(Intent.ACTION_SEND);
+					sendIntent.putExtra(Intent.EXTRA_SUBJECT, cxt.getString(R.string.lbl_share_item_title));
+					sendIntent.putExtra(Intent.EXTRA_TEXT, cxt.getString(R.string.lbl_share_item_content, msg.getTitle(), url));
+					sendIntent.setType("text/plain");
+					sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					cxt.startActivity(sendIntent);
+					break;
+				case R.id.action_item_bookmark:
+					break;
+				}
+				return true;
 			}
 		});
 
@@ -132,8 +168,9 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 		TextView mScoresTv;
 		TextView mEditorTv;
 		TextView mTimeTv;
-		View mCommentsV;
-		View mLinkV;
+//		View mCommentsV;
+//		View mLinkV;
+		Toolbar mToolbar;
 
 		private ViewHolder(View convertView) {
 			super(convertView);
@@ -143,8 +180,9 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 			mScoresTv = (TextView) convertView.findViewById(R.id.scores_tv);
 			mEditorTv = (TextView) convertView.findViewById(R.id.editor_tv);
 			mTimeTv = (TextView) convertView.findViewById(R.id.time_tv);
-			mCommentsV = convertView.findViewById(R.id.comments_btn);
-			mLinkV = convertView.findViewById(R.id.link_btn);
+			mToolbar = (Toolbar) convertView.findViewById(R.id.toolbar);
+//			mCommentsV = convertView.findViewById(R.id.comments_btn);
+//			mLinkV = convertView.findViewById(R.id.link_btn);
 		}
 	}
 }
