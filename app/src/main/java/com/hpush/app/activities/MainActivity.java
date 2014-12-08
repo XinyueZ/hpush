@@ -18,6 +18,8 @@ import com.crashlytics.android.Crashlytics;
 import com.hpush.R;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AppListImpFragment;
+import com.hpush.bus.ClickMessageCommentsEvent;
+import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.utils.Prefs;
 
 /**
@@ -60,7 +62,31 @@ public final class MainActivity extends BaseActivity {
 		mDrawerLayout.closeDrawers();
 	}
 
+	/**
+	 * Handler for {@link ClickMessageLinkEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link ClickMessageLinkEvent}.
+	 */
+	public void onEvent(ClickMessageLinkEvent e) {
+		WebViewActivity.showInstance(this, e.getMessage().getUrl(), e.getSenderV());
+	}
+
+	/**
+	 * Handler for {@link ClickMessageCommentsEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link ClickMessageCommentsEvent}.
+	 */
+	public void onEvent(ClickMessageCommentsEvent e) {
+		long cId = e.getMessage().getId();
+		String url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl();
+		String target = url + cId;
+		WebViewActivity.showInstance(this, target, e.getSenderV());
+	}
+
 	//------------------------------------------------
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

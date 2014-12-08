@@ -62,6 +62,8 @@ public class GcmIntentService extends IntentService {
 	/**
 	 * Put the message into a notification and post it. This is just one simple example of what you might choose to do
 	 * with a GCM message.
+	 *
+	 * @param msg  Data of messages.
 	 */
 	private void sendNotification(final Bundle msg) {
 		final String by = msg.getString("by");

@@ -1,17 +1,21 @@
 package com.hpush.app.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -41,7 +45,10 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	 * The menu to this view.
 	 */
 	private static final int MENU = R.menu.webview;
-
+	/**
+	 * Store link that the {@link android.webkit.WebView} opens.
+	 */
+	private static final String EXTRAS_URL = "com.hpush.app.activities.EXTRAS.Url";
 	/**
 	 * {@link android.webkit.WebView} shows homepage.
 	 */
@@ -58,16 +65,28 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	 * The height of actionbar.
 	 */
 	private int mActionBarHeight;
+
 	/**
 	 * Show single instance of {@link WebViewActivity}.
 	 *
 	 * @param cxt
 	 * 		{@link android.content.Context}.
+	 * @param url
+	 * 		Target to open.
+	 * @param openWevViewV
+	 * 		The view that open the {@link com.hpush.app.activities.WebViewActivity}.
 	 */
-	public static void showInstance(Context cxt) {
+	public static void showInstance(Activity cxt, String url, View openWevViewV) {
 		Intent intent = new Intent(cxt, WebViewActivity.class);
+		intent.putExtra(EXTRAS_URL, url);
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		cxt.startActivity(intent);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(cxt,
+					Pair.create(openWevViewV, "openWevViewV"));
+			cxt.startActivity(intent, transitionActivityOptions.toBundle());
+		} else {
+			cxt.startActivity(intent);
+		}
 	}
 
 	@Override
@@ -83,7 +102,9 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 		calcActionBarHeight();
 		//Progress-indicator.
 		mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.content_srl);
-		mRefreshLayout.setColorSchemeResources(R.color.hacker_orange, R.color.hacker_orange_mid_deep, R.color.hacker_orange_deep, R.color.hacker_orange);
+		mRefreshLayout.setColorSchemeResources(R.color.hacker_orange, R.color.hacker_orange_mid_deep,
+				R.color.hacker_orange_deep, R.color.hacker_orange);
+
 		mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
@@ -91,7 +112,6 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 				mWebView.reload();
 			}
 		});
-
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -99,7 +119,7 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 		mWebView.setOnWebViewExScrolledListener(new OnWebViewExScrolledListener() {
 			@Override
 			public void onScrollChanged(boolean isUp) {
-				if(isUp) {
+				if (isUp) {
 					animToolActionBar(0);
 				} else {
 					animToolActionBar(-mActionBarHeight * 4);
@@ -138,7 +158,29 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 				return true;
 			}
 		});
-		mWebView.loadUrl("http://g.cn");
+		handleIntent();
+		animToolActionBar(-mActionBarHeight * 4);
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+		handleIntent();
+	}
+
+	/**
+	 * Handle the {@link android.content.Intent} of the {@link com.hpush.app.activities.WebViewActivity}.
+	 */
+	private void handleIntent() {
+		Intent intent = getIntent();
+		String url = intent.getStringExtra(EXTRAS_URL);
+		if (!TextUtils.isEmpty(url)) {
+			mWebView.loadUrl(url);
+		} else {
+			mWebView.loadUrl(Prefs.getInstance(getApplication()).getHackerNewsHomeUrl());
+		}
+
 	}
 
 	@Override
@@ -150,11 +192,22 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				finishAfterTransition();
+			} else {
+				finish();
+			}
+			break;
 		case R.id.action_forward:
-			if(mWebView.canGoForward()) mWebView.goForward();
+			if (mWebView.canGoForward()) {
+				mWebView.goForward();
+			}
 			break;
 		case R.id.action_backward:
-			if(mWebView.canGoBack()) mWebView.goBack();
+			if (mWebView.canGoBack()) {
+				mWebView.goBack();
+			}
 			break;
 		}
 		return super.onOptionsItemSelected(item);

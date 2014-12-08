@@ -23,7 +23,7 @@
 
     <style name="Headline_Messages_List_Item_TextView" parent="@style/List_Item_TextView">
         <item name="font">light</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:text">Headline</item>
     </style>
@@ -32,10 +32,27 @@
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">4</item>
         <item name="font">regular</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:textColor">@color/blue_grey_50</item>
         <item name="android:text">Content</item>
     </style>
+
+    <style name="Data_Messages_List_Item_TextView" parent="@style/List_Item_TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="font">thin</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:textColor">@color/primary_dark_color</item>
+        <item name="android:text">\?</item>
+    </style>
+
+    <style name="Data_Icon_Messages_List_Item_ImageView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical|left</item>
+        <item name="android:background">@color/common_transparent</item>
+    </style>
+
 
     <style name="ListItemCardView">
         <item name="android:layout_width">match_parent</item>
@@ -48,8 +65,12 @@
         <item name="cardCornerRadius">0dp</item>
     </style>
 
+
+
     <style name="CardView" parent="@style/ListItemCardView">
     </style>
+
+
 
 
 </resources>
