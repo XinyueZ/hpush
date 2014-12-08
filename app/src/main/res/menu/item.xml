@@ -3,7 +3,7 @@
     <item
         android:id="@+id/action_item_comment"
         android:icon="@drawable/ic_comments"
-        android:title="@string/application_name"
+        android:title="@string/lbl_comments"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_item_link"

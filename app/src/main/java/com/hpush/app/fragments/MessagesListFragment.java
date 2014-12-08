@@ -102,6 +102,7 @@ public class MessagesListFragment extends BaseFragment {
 		}
 		final MessageListItem itemToBookmark = e.getMessageListItem();
 		bookmarkOneItem(itemToBookmark);
+		EventBus.getDefault().removeAllStickyEvents();
 	}
 
 

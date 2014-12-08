@@ -2,13 +2,12 @@ package com.hpush.app.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.Toolbar;
@@ -23,11 +22,17 @@ import android.webkit.WebViewClient;
 
 import com.chopping.activities.BaseActivity;
 import com.chopping.application.BasicPrefs;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.hpush.R;
+import com.hpush.bus.BookmarkMessageEvent;
+import com.hpush.data.Message;
+import com.hpush.data.MessageListItem;
 import com.hpush.utils.Prefs;
 import com.hpush.views.WebViewEx;
 import com.hpush.views.WebViewEx.OnWebViewExScrolledListener;
 import com.nineoldandroids.view.ViewPropertyAnimator;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * A WebView to the homepage of SchautUp.
@@ -50,6 +55,10 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	 */
 	private static final String EXTRAS_URL = "com.hpush.app.activities.EXTRAS.Url";
 	/**
+	 * The message that contains the information that the {@link #mWebView} uses. It might be null.
+	 */
+	private static final String EXTRAS_MSG = "com.hpush.app.activities.EXTRAS.Msg";
+	/**
 	 * {@link android.webkit.WebView} shows homepage.
 	 */
 	private WebViewEx mWebView;
@@ -65,7 +74,14 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	 * The height of actionbar.
 	 */
 	private int mActionBarHeight;
-
+	/**
+	 * The message that contains the information that the {@link #mWebView} uses. It might be null.
+	 */
+	private Message msg;
+	/**
+	 * Information after adding item to bookmark.
+	 */
+	private SnackBar mSnackBar;
 	/**
 	 * Show single instance of {@link WebViewActivity}.
 	 *
@@ -75,18 +91,20 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	 * 		Target to open.
 	 * @param openWevViewV
 	 * 		The view that open the {@link com.hpush.app.activities.WebViewActivity}.
+	 * 	@param msg The message that contains the information that the {@link #mWebView} uses. It might be null.
 	 */
-	public static void showInstance(Activity cxt, String url, View openWevViewV) {
+	public static void showInstance(Activity cxt, String url, View openWevViewV, Message msg) {
 		Intent intent = new Intent(cxt, WebViewActivity.class);
 		intent.putExtra(EXTRAS_URL, url);
+		intent.putExtra(EXTRAS_MSG, msg);
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(cxt,
-					Pair.create(openWevViewV, "openWevViewV"));
-			cxt.startActivity(intent, transitionActivityOptions.toBundle());
-		} else {
+//		if (openWevViewV != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(cxt,
+//					Pair.create(openWevViewV, "openWevViewV"));
+//			cxt.startActivity(intent, transitionActivityOptions.toBundle());
+//		} else {
 			cxt.startActivity(intent);
-		}
+//		}
 	}
 
 	@Override
@@ -160,6 +178,7 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 		});
 		handleIntent();
 		animToolActionBar(-mActionBarHeight * 4);
+		mSnackBar = new SnackBar(this);
 	}
 
 	@Override
@@ -175,6 +194,7 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	private void handleIntent() {
 		Intent intent = getIntent();
 		String url = intent.getStringExtra(EXTRAS_URL);
+		msg = (Message) intent.getSerializableExtra(EXTRAS_MSG);
 		if (!TextUtils.isEmpty(url)) {
 			mWebView.loadUrl(url);
 		} else {
@@ -186,6 +206,11 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(MENU, menu);
+		if(msg == null) {
+			menu.findItem(R.id.action_item_comment).setVisible(false);
+			menu.findItem(R.id.action_item_share).setVisible(false);
+			menu.findItem(R.id.action_item_bookmark).setVisible(false);
+		}
 		return true;
 	}
 
@@ -208,6 +233,28 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 			if (mWebView.canGoBack()) {
 				mWebView.goBack();
 			}
+			break;
+		case R.id.action_item_comment:
+			showInstance(this, Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId(), null, msg);
+			break;
+		case R.id.action_item_share:
+			Context cxt = getApplication();
+			String url = msg.getUrl();
+			if(TextUtils.isEmpty(url)) {
+				url = Prefs.getInstance(cxt.getApplicationContext()).getHackerNewsCommentsUrl() + msg.getId();
+			}
+			Intent sendIntent = new Intent();
+			sendIntent.setAction(Intent.ACTION_SEND);
+			sendIntent.putExtra(Intent.EXTRA_SUBJECT, cxt.getString(R.string.lbl_share_item_title));
+			sendIntent.putExtra(Intent.EXTRA_TEXT, cxt.getString(R.string.lbl_share_item_content, msg.getTitle(), url));
+			sendIntent.setType("text/plain");
+			sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			cxt.startActivity(sendIntent);
+			break;
+		case R.id.action_item_bookmark:
+			EventBus.getDefault().postSticky(new BookmarkMessageEvent(new MessageListItem(msg)));
+			mSnackBar.show(getString(R.string.lbl_has_been_bookmarked));
+			item.setVisible(false);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -248,4 +295,16 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 		mActionBarHeight = a.getDimensionPixelSize(0, -1);
 	}
 
+	@Override
+	public void onBackPressed() {
+		backPressed();
+	}
+
+	private void backPressed() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			finishAfterTransition();
+		} else {
+			finish();
+		}
+	}
 }

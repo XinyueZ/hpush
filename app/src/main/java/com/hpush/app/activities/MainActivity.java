@@ -160,7 +160,7 @@ public final class MainActivity extends BaseActivity {
 	 * 		Event {@link ClickMessageLinkEvent}.
 	 */
 	public void onEvent(ClickMessageLinkEvent e) {
-		WebViewActivity.showInstance(this, e.getMessage().getUrl(), e.getSenderV());
+		WebViewActivity.showInstance(this, e.getMessage().getUrl(), e.getSenderV(), e.getMessage());
 	}
 
 	/**
@@ -173,7 +173,7 @@ public final class MainActivity extends BaseActivity {
 		long cId = e.getMessage().getId();
 		String url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl();
 		String target = url + cId;
-		WebViewActivity.showInstance(this, target, e.getSenderV());
+		WebViewActivity.showInstance(this, target, e.getSenderV(), e.getMessage());
 	}
 
 
@@ -372,7 +372,7 @@ public final class MainActivity extends BaseActivity {
 			findViewById(R.id.open_hack_news_home_ll).setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					WebViewActivity.showInstance(MainActivity.this, null, v);
+					WebViewActivity.showInstance(MainActivity.this, null, v, null);
 					mDrawerLayout.closeDrawer(Gravity.LEFT);
 				}
 			});

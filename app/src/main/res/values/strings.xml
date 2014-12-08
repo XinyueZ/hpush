@@ -18,6 +18,8 @@
     <string name="lbl_item_bookmark">Bookmark</string>
     <string name="lbl_item_open_link">Open</string>
     <string name="lbl_item_share">Share</string>
+    <string name="lbl_comments">Comments</string>
+    <string name="lbl_has_been_bookmarked">This article has been bookmarked.</string>
     <string name="lbl_play_service">This application needs Google Play Service, you must install it first.</string>
     <string name="lbl_share_app_title">A good App you should have: %s</string>
     <string name="lbl_share_app_content">Hello!\n\n\u00A0\u00A0\u00A0\u00A0Subscribe push-news from Hacker-News?\n\nDownload:

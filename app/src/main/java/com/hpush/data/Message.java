@@ -1,7 +1,9 @@
 package com.hpush.data;
 
 
-public final class Message {
+import java.io.Serializable;
+
+public final class Message implements Serializable{
 	private long mDbId;
 	private String mBy;
 	private long mId;

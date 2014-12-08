@@ -98,13 +98,13 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	public static void showInstance(Activity context, View openSettingV) {
 		Intent intent = new Intent(context, SettingActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		if (openSettingV != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) ){
-			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
-					Pair.create(openSettingV, "openSettingV"));
-			context.startActivity(intent, transitionActivityOptions.toBundle());
-		} else {
+//		if (openSettingV != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) ){
+//			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
+//					Pair.create(openSettingV, "openSettingV"));
+//			context.startActivity(intent, transitionActivityOptions.toBundle());
+//		} else {
 			context.startActivity(intent);
-		}
+//		}
 	}
 
 
@@ -315,7 +315,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		dismissPb();
 	}
 
-	public void backPressed() {
+	private void backPressed() {
 		dismissPb();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			finishAfterTransition();

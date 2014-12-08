@@ -13,4 +13,18 @@
         android:icon="@drawable/ic_action_forward"
         app:showAsAction="always" />
 
+
+    <item
+        android:id="@+id/action_item_comment"
+        android:title="@string/lbl_comments"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_item_share"
+        android:title="@string/lbl_share"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_item_bookmark"
+        android:title="@string/lbl_bookmark"
+        app:showAsAction="never" />
+
 </menu>
