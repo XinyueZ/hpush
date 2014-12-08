@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -244,9 +245,9 @@ public final class MainActivity extends BaseActivity {
 	/**
 	 * Listener for opening all float buttons.
 	 */
-	private OnViewAnimatedClickedListener mOpenListener = new OnViewAnimatedClickedListener() {
+	private OnClickListener mOpenListener = new OnClickListener() {
 		@Override
-		public void onClick() {
+		public void onClick(View v) {
 			mBookmarkAllBtn.setVisibility(View.VISIBLE);
 			AnimatorSet animatorSet = new AnimatorSet();
 			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(100);
@@ -273,9 +274,9 @@ public final class MainActivity extends BaseActivity {
 	/**
 	 * Listener for closing all float buttons.
 	 */
-	private OnViewAnimatedClickedListener mCloseListener = new OnViewAnimatedClickedListener() {
+	private OnClickListener mCloseListener = new OnClickListener() {
 		@Override
-		public void onClick() {
+		public void onClick(View v) {
 			AnimatorSet animatorSet = new AnimatorSet();
 			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 0, 150f).setDuration(100);
 			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
