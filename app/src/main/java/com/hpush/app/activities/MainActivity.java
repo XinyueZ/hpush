@@ -1,5 +1,8 @@
 package com.hpush.app.activities;
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -45,6 +48,10 @@ public final class MainActivity extends BaseActivity {
 	 * Main layout for this component.
 	 */
 	private static final int LAYOUT = R.layout.activity_main;
+	/**
+	 * Flag that this {@link com.hpush.app.activities.MainActivity} is opened by clicking on notification-center.
+	 */
+	public static final String EXTRAS_OPEN_FROM_NOTIFICATION = "com.hpush.app.activities.EXTRAS.open_from_notification";
 	/**
 	 * The pagers
 	 */
@@ -172,6 +179,25 @@ public final class MainActivity extends BaseActivity {
 		});
 		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
 		mOpenBtn.setOnClickListener(mOpenListener);
+		handleIntent();
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		setIntent(intent);
+		handleIntent();
+	}
+
+	/**
+	 * Handle the {@link android.app.Activity}'s {@link android.content.Intent}.
+	 */
+	private void handleIntent() {
+		Intent intent = getIntent();
+		if(intent.getBooleanExtra(EXTRAS_OPEN_FROM_NOTIFICATION, false)) {
+			NotificationManager nc = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+			nc.cancelAll();
+		}
 	}
 
 	/**

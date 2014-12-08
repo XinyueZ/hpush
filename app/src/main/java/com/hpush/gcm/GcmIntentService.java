@@ -75,29 +75,27 @@ public class GcmIntentService extends IntentService {
 		final String title = msg.getString("title");
 		final String url = msg.getString("url");
 		final String pushedTime =  msg.getString("pushed_time") ;
-		Prefs.getInstance(getApplication()).setLastPushedTime(Long.valueOf(pushedTime));
-
-		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent,
-				PendingIntent.FLAG_ONE_SHOT);
-
-
-		mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis())
-				.setSmallIcon(R.drawable.ic_stat_yp).setTicker(title).setContentTitle(title).setContentText(text)
-				.setStyle(new BigTextStyle().bigText(text).setBigContentTitle(title).setSummaryText("#" + by))
-				.setAutoCancel(true).setLargeIcon(mLargeIcon).setGroup(pushedTime).setGroupSummary(true);
-		mNotifyBuilder.setContentIntent(contentIntent);
-		mNotificationManager.notify((int) id, mNotifyBuilder.build());
+		final long pushedtime = Long.valueOf(pushedTime);
+		Prefs.getInstance(getApplication()).setLastPushedTime(pushedtime);
 
 		DB db = DB.getInstance(getApplication());
-		Message message = new Message(by, id, score, text, time, title, url, Long.valueOf(pushedTime));
-		if(!db.findMessage(message) && !db.findBookmark(message)) {
+		Message message = new Message(by, id, score, text, time, title, url, pushedtime);
+		if(!db.findMessage(message) && !db.findBookmark(message)) {//To test whether in our local database or not.
+			//Notify
+			mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+			Intent intent = new Intent(this, MainActivity.class);
+			intent.putExtra(MainActivity.EXTRAS_OPEN_FROM_NOTIFICATION, true);
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent,
+					PendingIntent.FLAG_ONE_SHOT);
+			mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis())
+					.setSmallIcon(R.drawable.ic_stat_yp).setTicker(title).setContentTitle(title).setContentText(text)
+					.setStyle(new BigTextStyle().bigText(text).setBigContentTitle(title).setSummaryText("#" + by))
+					.setAutoCancel(true).setLargeIcon(mLargeIcon);
+			mNotifyBuilder.setContentIntent(contentIntent);
+			mNotificationManager.notify( (int) System.currentTimeMillis(), mNotifyBuilder.build());
+			//Save in database.
 			db.addMessage(message);
 		}
 	}
-
-
 }
