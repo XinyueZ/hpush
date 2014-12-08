@@ -41,9 +41,14 @@
 
         <activity
             android:name=".app.activities.SettingActivity"
-            android:label="@string/application_name"
+            android:label="@string/lbl_setting"
             android:screenOrientation="portrait"
             android:theme="@style/SettingsTheme" />
+
+        <activity
+            android:name=".app.activities.WebViewActivity"
+            android:label="@string/application_name"
+            android:screenOrientation="portrait" />
 
         <!-- Event handler for changing system packages. -->
         <receiver

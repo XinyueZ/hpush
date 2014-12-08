@@ -6,6 +6,12 @@
     <string name="lbl_no">Nein</string>
     <string name="lbl_share">Teilen</string>
     <string name="lbl_about">About</string>
+    <string name="lbl_forward">Weiter</string>
+    <string name="lbl_backward">Zurück</string>
+    <string name="lbl_setting">Einstellung</string>
+    <string name="lbl_last_messages">Letzte Meldungen</string>
+    <string name="lbl_bookmark">Lesezeichen</string>
+
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>
     <string name="msg_app_init">Initialisierung…</string>
@@ -20,5 +26,5 @@
     <string name="setting_messages_count">%1$s Push-Benachrichtigung</string>
     <string name="setting_only_save_latest">Nur die letzten empfangenen Benachrichtigung zu speichern?</string>
     <string name="setting_allow_empty_url">Zulassen und enthalten Nachrichten, die ohne externen Link ankommen.</string>
-    <string name="lbl_setting">Einstellung</string>
+
 </resources>

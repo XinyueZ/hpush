@@ -5,14 +5,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.hpush.R;
 import com.hpush.app.fragments.BookmarksListFragment;
 import com.hpush.app.fragments.MessagesListFragment;
 
 /**
  * Adapter for main viewpager.
  */
-public final class MainViewPagerAdapter extends FragmentPagerAdapter {
+public final class MainViewPagerAdapter extends FragmentPagerAdapter  {
 	private Context mContext;
+	private final int[] TITLES = { R.string.lbl_last_messages, R.string.lbl_bookmark };
 
 	public MainViewPagerAdapter(Context cxt, FragmentManager fm) {
 		super(fm);
@@ -37,5 +39,11 @@ public final class MainViewPagerAdapter extends FragmentPagerAdapter {
 	@Override
 	public int getCount() {
 		return 2;
+	}
+
+
+	@Override
+	public CharSequence getPageTitle(int position) {
+		return mContext.getString(TITLES[position]);
 	}
 }

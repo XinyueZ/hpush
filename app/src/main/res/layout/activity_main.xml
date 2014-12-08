@@ -19,6 +19,14 @@
                 android:id="@+id/toolbar"
                 style="@style/ActionBar_ToolBar" />
 
+            <com.astuetz.PagerSlidingTabStrip
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/primary_color"
+                android:textColor="@color/common_white"
+                />
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp"
                 android:layout_width="match_parent"

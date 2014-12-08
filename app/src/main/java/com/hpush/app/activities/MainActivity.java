@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.chopping.activities.BaseActivity;
 import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
@@ -70,6 +71,9 @@ public final class MainActivity extends BaseActivity {
 		initDrawer();
 		ViewPager viewPager = (ViewPager) findViewById(R.id.vp);
 		viewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
+		// Bind the tabs to the ViewPager
+		PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+		tabs.setViewPager(viewPager);
 	}
 
 	@Override
