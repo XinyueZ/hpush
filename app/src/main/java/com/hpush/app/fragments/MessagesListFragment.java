@@ -16,6 +16,7 @@ import com.chopping.fragments.BaseFragment;
 import com.hpush.R;
 import com.hpush.app.adapters.MessagesListAdapter;
 import com.hpush.bus.BookmarkAllEvent;
+import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.data.MessageListItem;
@@ -35,6 +36,11 @@ public class MessagesListFragment extends BaseFragment {
 	 * Main layout for this component.
 	 */
 	private static final int LAYOUT = R.layout.fragment_messages_list;
+
+	/**
+	 *  Menu on toolbar.
+	 */
+	public static final int TOOLBAR_MENU = R.menu.item;
 	/**
 	 * A list to show all messages.
 	 */
@@ -84,6 +90,22 @@ public class MessagesListFragment extends BaseFragment {
 		bookmarkSelectedItems();
 	}
 
+	/**
+	 * Handler for {@link BookmarkMessageEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link BookmarkMessageEvent}.
+	 */
+	public void onEvent(BookmarkMessageEvent e) {
+		if (mAdp == null || mAdp.getMessages() == null || mAdp.getMessages().size() == 0) {
+			return;
+		}
+		final MessageListItem itemToBookmark = e.getMessageListItem();
+		bookmarkOneItem(itemToBookmark);
+	}
+
+
+
 	//------------------------------------------------
 	public static MessagesListFragment newInstance(Context context) {
 		return (MessagesListFragment) MessagesListFragment.instantiate(context, MessagesListFragment.class.getName());
@@ -123,7 +145,7 @@ public class MessagesListFragment extends BaseFragment {
 					protected void onPostExecute(LongSparseArray<MessageListItem> data) {
 						super.onPostExecute(data);
 						if (mAdp == null) {
-							mAdp = new MessagesListAdapter(data);
+							mAdp = new MessagesListAdapter(data, getToolbarMenuId());
 							mRv.setAdapter(mAdp);
 						} else {
 							mAdp.setMessages(data);
@@ -217,6 +239,52 @@ public class MessagesListFragment extends BaseFragment {
 	}
 
 	/**
+	 * Bookmark one item.
+	 * @param itemToBookmark The item to bookmark.
+	 */
+	private void bookmarkOneItem(final MessageListItem itemToBookmark) {
+		AsyncTask<LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem> , LongSparseArray<MessageListItem> >
+				task =
+				new AsyncTask<LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem> , LongSparseArray<MessageListItem> >() {
+					@Override
+					protected LongSparseArray<MessageListItem>  doInBackground(LongSparseArray<MessageListItem>... params) {
+						LongSparseArray<MessageListItem> data = params[0];
+						LongSparseArray<MessageListItem> rmvData = new LongSparseArray<>();
+						long key;
+						for (int i = 0; i < data.size(); i++) {
+							key = data.keyAt(i);
+							MessageListItem obj = data.get(key);
+							if (obj.getId() == itemToBookmark.getId()) {
+								deleteDataOnDB(obj);
+								rmvData.put(key, obj);
+							}
+						}
+						for (int i = 0; i < rmvData.size(); i++) {
+							key = rmvData.keyAt(i);
+							data.remove(key);
+						}
+						return rmvData;
+					}
+
+					@Override
+					protected void onPostExecute(LongSparseArray<MessageListItem>  rmvData) {
+						super.onPostExecute(rmvData);
+						mAdp.notifyDataSetChanged();
+
+						long key;
+						for (int i = 0; i < rmvData.size(); i++) {
+							key = rmvData.keyAt(i);
+							MessageListItem obj = rmvData.get(key);
+							mDB.addBookmark(obj.getMessage());
+						}
+
+						EventBus.getDefault().post(new BookmarkedEvent());
+					}
+				};
+		AsyncTaskCompat.executeParallel(task, mAdp.getMessages());
+	}
+
+	/**
 	 *
 	 * @return Application's database.
 	 */
@@ -246,6 +314,14 @@ public class MessagesListFragment extends BaseFragment {
 	 */
 	protected int getLayoutID() {
 		return LAYOUT;
+	}
+
+	/**
+	 *
+	 * @return Menu on toolbar.
+	 */
+	protected int getToolbarMenuId() {
+		return TOOLBAR_MENU;
 	}
 
 }

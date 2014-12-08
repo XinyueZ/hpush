@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.util.LongSparseArray;
 
 import com.hpush.R;
+import com.hpush.bus.BookmarkAllEvent;
+import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
 import com.hpush.data.MessageListItem;
 import com.hpush.db.DB.Sort;
@@ -19,6 +21,11 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 */
 	private static final int LAYOUT = R.layout.fragment_bookmarks_list;
 
+	/**
+	 *  Menu on toolbar.
+	 */
+	public static final int TOOLBAR_MENU = R.menu.item2;
+
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
@@ -31,6 +38,28 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 */
 	public void onEvent(BookmarkedEvent e) {
 		loadMessages();
+	}
+
+
+	/**
+	 * Handler for {@link com.hpush.bus.BookmarkAllEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.hpush.bus.BookmarkAllEvent}.
+	 */
+	public void onEvent(BookmarkAllEvent e) {
+		//We don't bookmark anything in "bookmark-list".
+	}
+
+
+	/**
+	 * Handler for {@link com.hpush.bus.BookmarkMessageEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.hpush.bus.BookmarkMessageEvent}.
+	 */
+	public void onEvent(BookmarkMessageEvent e) {
+		//We don't bookmark anything in "bookmark-list".
 	}
 
 	//------------------------------------------------
@@ -61,5 +90,11 @@ public final class BookmarksListFragment extends MessagesListFragment{
 		return LAYOUT;
 	}
 
-
+	/**
+	 *
+	 * @return Menu on toolbar.
+	 */
+	protected int getToolbarMenuId() {
+		return TOOLBAR_MENU;
+	}
 }

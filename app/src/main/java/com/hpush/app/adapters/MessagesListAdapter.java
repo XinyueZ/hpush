@@ -2,6 +2,7 @@ package com.hpush.app.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.MenuRes;
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hpush.R;
+import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
@@ -40,13 +42,19 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	 * Data collection.
 	 */
 	private LongSparseArray<MessageListItem> mMessages;
+	/**
+	 * The overflow for toolbar on items.
+	 */
+	private int menuResId;
 
 	/**
-	 * Construcor of {@link MessagesListAdapter}.
+	 * Constructor of {@link MessagesListAdapter}.
 	 * @param messages Data source for the list.
+	 *                 @param menuResId   The overflow for toolbar on items.
 	 */
-	public MessagesListAdapter(LongSparseArray<MessageListItem> messages) {
+	public MessagesListAdapter(LongSparseArray<MessageListItem> messages, @MenuRes int menuResId) {
 		mMessages = messages;
+		this.menuResId = menuResId;
 	}
 
 	/**
@@ -67,7 +75,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	@Override
 	public MessagesListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 		View convertView = LayoutInflater.from(viewGroup.getContext()).inflate(ITEM_LAYOUT, viewGroup, false);
-		MessagesListAdapter.ViewHolder viewHolder = new MessagesListAdapter.ViewHolder(convertView);
+		MessagesListAdapter.ViewHolder viewHolder = new MessagesListAdapter.ViewHolder(convertView, menuResId);
 		return viewHolder;
 	}
 
@@ -101,19 +109,8 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 				EventBus.getDefault().post(new ClickMessageEvent(msg.getMessage()));
 			}
 		});
-//		viewHolder.mCommentsV.setOnClickListener(new OnViewAnimatedClickedListener() {
-//			@Override
-//			public void onClick() {
-//				EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.mCommentsV));
-//			}
-//		});
-//		viewHolder.mLinkV.setOnClickListener(new OnViewAnimatedClickedListener() {
-//			@Override
-//			public void onClick() {
-//				EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.mLinkV));
-//			}
-//		});
-		viewHolder.mToolbar.inflateMenu(R.menu.item);
+
+
 		viewHolder.mToolbar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem menuItem) {
@@ -139,6 +136,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 					cxt.startActivity(sendIntent);
 					break;
 				case R.id.action_item_bookmark:
+					EventBus.getDefault().post(new BookmarkMessageEvent(msg));
 					break;
 				}
 				return true;
@@ -172,7 +170,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 //		View mLinkV;
 		Toolbar mToolbar;
 
-		private ViewHolder(View convertView) {
+		private ViewHolder(View convertView, int menuResId) {
 			super(convertView);
 			mFloatTv = (TextView) convertView.findViewById(R.id.float_tv);
 			mHeadLineTv = (TextView) convertView.findViewById(R.id.headline_tv);
@@ -183,6 +181,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 			mToolbar = (Toolbar) convertView.findViewById(R.id.toolbar);
 //			mCommentsV = convertView.findViewById(R.id.comments_btn);
 //			mLinkV = convertView.findViewById(R.id.link_btn);
+			mToolbar.inflateMenu(menuResId);
 		}
 	}
 }

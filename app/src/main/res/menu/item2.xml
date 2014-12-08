@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <item
+        android:id="@+id/action_item_comment"
+        android:icon="@drawable/ic_comments"
+        android:title="@string/application_name"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_item_link"
+        android:icon="@drawable/ic_link"
+        android:title="@string/lbl_item_open_link"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_item_share"
+        android:title="@string/lbl_share"
+        app:showAsAction="never" />
+
+</menu>
