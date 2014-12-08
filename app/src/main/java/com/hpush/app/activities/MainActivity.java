@@ -1,15 +1,24 @@
 package com.hpush.app.activities;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,14 +30,24 @@ import com.chopping.activities.BaseActivity;
 import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hpush.R;
 import com.hpush.app.adapters.MainViewPagerAdapter;
+import com.hpush.app.fragments.AboutDialogFragment;
+import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;
 import com.hpush.app.fragments.AppListImpFragment;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
+import com.hpush.bus.EULAConfirmedEvent;
+import com.hpush.bus.EULARejectEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.SelectMessageEvent;
+import com.hpush.gcm.RegGCMTask;
 import com.hpush.utils.Prefs;
 import com.hpush.views.OnViewAnimatedClickedListener;
 import com.nineoldandroids.animation.Animator;
@@ -80,11 +99,47 @@ public final class MainActivity extends BaseActivity {
 	 * Open/Close main float buttons.
 	 */
 	private ImageButton mOpenBtn;
+	/**
+	 * The interstitial ad.
+	 */
+	private InterstitialAd mInterstitialAd;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
 
+	/**
+	 * Handler for {@link  EULARejectEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link  EULARejectEvent}.
+	 */
+	public void onEvent(EULARejectEvent e) {
+		finish();
+	}
+
+	/**
+	 * Handler for {@link EULAConfirmedEvent}
+	 *
+	 * @param e
+	 * 		Event {@link  EULAConfirmedEvent}.
+	 */
+	public void onEvent(EULAConfirmedEvent e) {
+
+		new AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
+				.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()));
+				makeAds();
+		}
+		}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				makeAds();
+			}
+		}).create().show();
+	}
 
 	/**
 	 * Handler for {@link }.
@@ -194,7 +249,7 @@ public final class MainActivity extends BaseActivity {
 	 */
 	private void handleIntent() {
 		Intent intent = getIntent();
-		if(intent.getBooleanExtra(EXTRAS_OPEN_FROM_NOTIFICATION, false)) {
+		if (intent.getBooleanExtra(EXTRAS_OPEN_FROM_NOTIFICATION, false)) {
 			NotificationManager nc = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 			nc.cancelAll();
 		}
@@ -205,7 +260,7 @@ public final class MainActivity extends BaseActivity {
 	 */
 	private void closeFloatButtons() {
 		int vi = mRemoveAllBtn.getVisibility();
-		if(vi == View.VISIBLE) {
+		if (vi == View.VISIBLE) {
 			mOpenBtn.performClick();
 		}
 	}
@@ -216,11 +271,10 @@ public final class MainActivity extends BaseActivity {
 	 */
 	private void openFloatButtons() {
 		int vi = mRemoveAllBtn.getVisibility();
-		if(vi != View.VISIBLE) {
+		if (vi != View.VISIBLE) {
 			mOpenBtn.performClick();
 		}
 	}
-
 
 
 	@Override
@@ -229,10 +283,8 @@ public final class MainActivity extends BaseActivity {
 		if (mDrawerToggle != null) {
 			mDrawerToggle.syncState();
 		}
-//		checkPlayService();
+		checkPlayService();
 	}
-
-
 
 
 	@Override
@@ -251,7 +303,7 @@ public final class MainActivity extends BaseActivity {
 		int id = item.getItemId();
 		switch (id) {
 		case R.id.action_about:
-//			showDialogFragment(AboutDialogFragment.newInstance(this), null);
+			showDialogFragment(AboutDialogFragment.newInstance(this), null);
 			break;
 		case R.id.action_setting:
 			SettingActivity.showInstance(this);
@@ -304,6 +356,13 @@ public final class MainActivity extends BaseActivity {
 				}
 			};
 			mDrawerLayout.setDrawerListener(mDrawerToggle);
+			findViewById(R.id.open_setting_ll).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					SettingActivity.showInstance(MainActivity.this);
+					mDrawerLayout.closeDrawer(Gravity.LEFT);
+				}
+			});
 		}
 	}
 
@@ -313,11 +372,12 @@ public final class MainActivity extends BaseActivity {
 	private OnClickListener mOpenListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			if(mViewPager.getCurrentItem() == 0) {
+			if (mViewPager.getCurrentItem() == 0) {
 				mBookmarkAllBtn.setVisibility(View.VISIBLE);
 			}
 			AnimatorSet animatorSet = new AnimatorSet();
-			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(100);
+			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(
+					100);
 			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -345,7 +405,8 @@ public final class MainActivity extends BaseActivity {
 		@Override
 		public void onClick(View v) {
 			AnimatorSet animatorSet = new AnimatorSet();
-			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 0, 150f).setDuration(100);
+			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 0, 150f).setDuration(
+					100);
 			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -368,5 +429,91 @@ public final class MainActivity extends BaseActivity {
 		}
 	};
 
+	/**
+	 * Make an Admob.
+	 */
+	private void makeAds() {
+		// Create an ad.
+		mInterstitialAd = new InterstitialAd(this);
+		mInterstitialAd.setAdUnitId(getString(R.string.ad_inters_unit_id));
+		// Create ad request.
+		AdRequest adRequest = new AdRequest.Builder().build();
+		// Begin loading your interstitial.
+		mInterstitialAd.setAdListener(new AdListener() {
+			@Override
+			public void onAdLoaded() {
+				super.onAdLoaded();
+				displayInterstitial();
+			}
+		});
+		mInterstitialAd.loadAd(adRequest);
+	}
 
+
+	/**
+	 * Invoke displayInterstitial() when you are ready to display an interstitial.
+	 */
+	public void displayInterstitial() {
+		if (mInterstitialAd.isLoaded()) {
+			mInterstitialAd.show();
+		}
+	}
+
+	/**
+	 * To confirm whether the validation of the Play-service of Google Inc.
+	 */
+	private void checkPlayService() {
+		final int isFound = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		if (isFound == ConnectionResult.SUCCESS ||
+				isFound == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {//Ignore update.
+			//The "End User License Agreement" must be confirmed before you use this application.
+			if (!Prefs.getInstance(getApplication()).isEULAOnceConfirmed()) {
+				showDialogFragment(new EulaConfirmationDialog(), null);
+			}
+		} else {
+			new AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_play_service)
+					.setCancelable(false).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					dialog.dismiss();
+					Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setData(Uri.parse(getString(R.string.play_service_url)));
+					startActivity(intent);
+					finish();
+				}
+			}).create().show();
+		}
+	}
+
+
+	/**
+	 * Show  {@link android.support.v4.app.DialogFragment}.
+	 *
+	 * @param _dlgFrg
+	 * 		An instance of {@link android.support.v4.app.DialogFragment}.
+	 * @param _tagName
+	 * 		Tag name for dialog, default is "dlg". To grantee that only one instance of {@link
+	 * 		android.support.v4.app.DialogFragment} can been seen.
+	 */
+	protected void showDialogFragment(DialogFragment _dlgFrg, String _tagName) {
+		try {
+			if (_dlgFrg != null) {
+				DialogFragment dialogFragment = _dlgFrg;
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				// Ensure that there's only one dialog to the user.
+				Fragment prev = getSupportFragmentManager().findFragmentByTag("dlg");
+				if (prev != null) {
+					ft.remove(prev);
+				}
+				try {
+					if (TextUtils.isEmpty(_tagName)) {
+						dialogFragment.show(ft, "dlg");
+					} else {
+						dialogFragment.show(ft, _tagName);
+					}
+				} catch (Exception _e) {
+				}
+			}
+		} catch (Exception _e) {
+		}
+	}
 }

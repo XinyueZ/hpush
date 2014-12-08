@@ -11,4 +11,5 @@
     <dimen name="float_small_button_size">50dp</dimen>
     <dimen name="padding_float_button">16dp</dimen>
     <dimen name="padding_to_float_small_button_size">60dp</dimen>
+    <dimen name="padding_eula">16dp</dimen>
 </resources>

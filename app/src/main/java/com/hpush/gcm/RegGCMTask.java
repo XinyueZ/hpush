@@ -41,6 +41,7 @@ public   class RegGCMTask extends AsyncTask<Void, Void, String> {
 			} else {
 				regId = mPrefs.getPushRegId();
 			}
+			mPrefs.turnOnPush();
 		} catch (IOException ex) {
 			regId = null;
 		}

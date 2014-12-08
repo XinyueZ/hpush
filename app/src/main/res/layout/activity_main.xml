@@ -81,10 +81,32 @@
             android:orientation="vertical"
             android:layout_height="wrap_content">
 
-            <View
-                android:id="@+id/drawer_header_v"
+            <LinearLayout
+                android:id="@+id/open_setting_ll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/selector_drawer_item_btn">
+
+                <ImageView
+                    android:layout_width="@dimen/float_small_button_size"
+                    android:layout_height="@dimen/float_small_button_size"
+                    android:background="@color/common_transparent"
+                    android:src="@drawable/ic_setting" />
+
+
+                <com.hpush.views.FontTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    font="thin"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center_vertical"
+                    android:textColor="@color/text_common_black"
+                    android:text="@string/lbl_setting"
+                    android:background="@drawable/selector_drawer_item_btn" />
+            </LinearLayout>
+
 
 
             <FrameLayout

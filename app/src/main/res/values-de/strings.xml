@@ -11,6 +11,8 @@
     <string name="lbl_setting">Einstellung</string>
     <string name="lbl_last_messages">Letzte Meldungen</string>
     <string name="lbl_bookmark">Lesezeichen</string>
+    <string name="lbl_play_service">Diese App braucht Google Play Service, Sie müssen erst herunterladen dann
+        weiter.</string>
 
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>
@@ -27,4 +29,10 @@
     <string name="setting_only_save_latest">Nur die letzten empfangenen Benachrichtigung zu speichern?</string>
     <string name="setting_allow_empty_url">Zulassen und enthalten Nachrichten, die ohne externen Link ankommen.</string>
 
+    <string name="btn_confirm">Sicher</string>
+    <string name="btn_cancel">Abbrechen</string>
+    <string name="btn_close">Schließen</string>
+    <string name="btn_ok">Ok</string>
+    <string name="btn_not_agree">Stimmt nicht zu.</string>
+    <string name="btn_agree">Stimmt zu</string>
 </resources>
