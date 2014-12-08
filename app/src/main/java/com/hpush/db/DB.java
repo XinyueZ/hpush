@@ -140,7 +140,7 @@ public final class DB {
 		try {
 			long rowId;
 			String whereClause = MessagesTbl.ID + "=?";
-			String[] whereArgs = new String[] { String.valueOf(item.getDbId()), String.valueOf(item.getId()) };
+			String[] whereArgs = new String[] {  String.valueOf(item.getId()) };
 			rowId = mDB.delete(MessagesTbl.TABLE_NAME, whereClause, whereArgs);
 			success = rowId > 0;
 			if (success) {
@@ -165,7 +165,7 @@ public final class DB {
 		try {
 			long rowId;
 			String whereClause =  MessagesTbl.ID + "=?";
-			String[] whereArgs = new String[] { String.valueOf(item.getDbId()), String.valueOf(item.getId()) };
+			String[] whereArgs = new String[] {  String.valueOf(item.getId()) };
 			rowId = mDB.delete(BookmarksTbl.TABLE_NAME, whereClause, whereArgs);
 			success = rowId > 0;
 			if (success) {
@@ -205,7 +205,7 @@ public final class DB {
 		}
 		Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
 				MessagesTbl.TIME + " " + sort.toString());
-		Message item = null;
+		Message item    ;
 		LongSparseArray<MessageListItem>  list = new LongSparseArray<>();
 		try {
 			while (c.moveToNext()) {
@@ -232,14 +232,14 @@ public final class DB {
 	}
 
 
-	public synchronized LongSparseArray<Message> getBookmarks(Sort sort) {
+	public synchronized LongSparseArray<MessageListItem> getBookmarks(Sort sort) {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
 		Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, null, null, null, null, null,
 				MessagesTbl.TIME + " " + sort.toString());
-		Message item = null;
-		LongSparseArray<Message>  list = new LongSparseArray<>();
+		Message item   ;
+		LongSparseArray<MessageListItem>  list = new LongSparseArray<>();
 		try {
 			while (c.moveToNext()) {
 				item = new Message(
@@ -253,7 +253,7 @@ public final class DB {
 						c.getString(c.getColumnIndex(MessagesTbl.URL)),
 						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
 				);
-				list.put(c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)), item);
+				list.put(c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),  new MessageListItem(item));
 			}
 		} finally {
 			if (c != null) {

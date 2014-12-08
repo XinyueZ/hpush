@@ -11,9 +11,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.hpush.views.FontTextView
-                android:id="@+id/headline_tv"
-                style="@style/Headline_Messages_List_Item_TextView" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.hpush.views.FontTextView
+                    android:id="@+id/float_tv"
+                    style="@style/FloatTextView"
+                    android:visibility="visible"
+                    android:background="@drawable/circle_orange" />
+
+                <com.hpush.views.FontTextView
+                    android:id="@+id/headline_tv"
+                    style="@style/Headline_Messages_List_Item_TextView"
+                    android:layout_gravity="top"
+                    android:gravity="top"
+                    android:layout_marginLeft="@dimen/padding_to_float_small_button_size"
+                    />
+            </FrameLayout>
 
             <com.hpush.views.FontTextView
                 android:id="@+id/content_tv"
@@ -29,14 +44,16 @@
                     android:layout_width="wrap_content"
                     android:layout_gravity="left"
                     android:layout_height="match_parent">
-                <ImageView
-                    android:src="@drawable/ic_time"
-                    style="@style/Data_Icon_Messages_List_Item_ImageView" />
 
-                <com.hpush.views.FontTextView
-                    android:id="@+id/time_tv"
-                    style="@style/Data_Messages_List_Item_TextView" />
+                    <ImageView
+                        android:src="@drawable/ic_time"
+                        style="@style/Data_Icon_Messages_List_Item_ImageView" />
+
+                    <com.hpush.views.FontTextView
+                        android:id="@+id/time_tv"
+                        style="@style/Data_Messages_List_Item_TextView" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_gravity="right"

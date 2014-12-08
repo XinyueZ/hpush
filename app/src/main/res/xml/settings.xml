@@ -12,13 +12,13 @@
             android:layout="@layout/setting_item"
             android:defaultValue="false" />
 
-        <CheckBoxPreference
-            android:key="key.save.latest.only"
-            android:title="@string/setting_only_save_latest"
-            android:summaryOn="@string/lbl_yes"
-            android:summaryOff="@string/lbl_no"
-            android:layout="@layout/setting_item"
-            android:defaultValue="@bool/default_only_save_latest" />
+        <!--<CheckBoxPreference-->
+            <!--android:key="key.save.latest.only"-->
+            <!--android:title="@string/setting_only_save_latest"-->
+            <!--android:summaryOn="@string/lbl_yes"-->
+            <!--android:summaryOff="@string/lbl_no"-->
+            <!--android:layout="@layout/setting_item"-->
+            <!--android:defaultValue="@bool/default_only_save_latest" />-->
     </PreferenceCategory>
 
     <PreferenceCategory

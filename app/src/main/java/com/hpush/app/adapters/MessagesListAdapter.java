@@ -13,9 +13,11 @@ import com.hpush.R;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
+import com.hpush.bus.SelectMessageEvent;
 import com.hpush.data.MessageListItem;
 import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
+import com.hpush.views.OnViewAnimatedClickedListener2;
 
 import de.greenrobot.event.EventBus;
 
@@ -34,12 +36,27 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	 */
 	private LongSparseArray<MessageListItem> mMessages;
 
+	/**
+	 * Construcor of {@link MessagesListAdapter}.
+	 * @param messages Data source for the list.
+	 */
 	public MessagesListAdapter(LongSparseArray<MessageListItem> messages) {
 		mMessages = messages;
 	}
 
+	/**
+	 * Set data-source.
+	 * @param messages Data source for the list.
+	 */
 	public void setMessages(LongSparseArray<MessageListItem> messages) {
 		mMessages = messages;
+	}
+	/**
+	 * Get data-source.
+	 * @return  Data source for the list.
+	 */
+	public LongSparseArray<MessageListItem> getMessages() {
+		return mMessages;
 	}
 
 	@Override
@@ -53,7 +70,15 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	public void onBindViewHolder(final MessagesListAdapter.ViewHolder viewHolder, int i) {
 		long id = mMessages.keyAt(i);
 		final MessageListItem msg = mMessages.get(id);
-		viewHolder.mHeadLineTv.setText(msg.getTitle());
+		if (!TextUtils.isEmpty(msg.getTitle())) {
+			viewHolder.mFloatTv.setText(msg.getTitle().charAt(0) + "");
+			viewHolder.mHeadLineTv.setVisibility(View.VISIBLE);
+			viewHolder.mHeadLineTv.setText(msg.getTitle());
+		} else {
+			viewHolder.mFloatTv.setVisibility(View.GONE);
+			viewHolder.mHeadLineTv.setVisibility(View.GONE);
+			viewHolder.mHeadLineTv.setText("Headline");
+		}
 		if (!TextUtils.isEmpty(msg.getText())) {
 			viewHolder.mContentTv.setVisibility(View.VISIBLE);
 			viewHolder.mContentTv.setText(msg.getText());
@@ -83,6 +108,16 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 				EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.mLinkV));
 			}
 		});
+
+		viewHolder.mFloatTv.setBackgroundResource(msg.isChecked() ? R.drawable.circle_grey : R.drawable.circle_orange);
+		viewHolder.mFloatTv.setOnClickListener(new OnViewAnimatedClickedListener2() {
+			@Override
+			public void onClick() {
+				msg.setChecked(!msg.isChecked());
+				viewHolder.mFloatTv.setBackgroundResource(msg.isChecked() ? R.drawable.circle_grey : R.drawable.circle_orange);
+				EventBus.getDefault().post(new SelectMessageEvent());
+			}
+		});
 	}
 
 	@Override
@@ -91,6 +126,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	}
 
 	static class ViewHolder extends RecyclerView.ViewHolder {
+		TextView mFloatTv;
 		TextView mHeadLineTv;
 		TextView mContentTv;
 		TextView mScoresTv;
@@ -101,6 +137,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 
 		private ViewHolder(View convertView) {
 			super(convertView);
+			mFloatTv = (TextView) convertView.findViewById(R.id.float_tv);
 			mHeadLineTv = (TextView) convertView.findViewById(R.id.headline_tv);
 			mContentTv = (TextView) convertView.findViewById(R.id.content_tv);
 			mScoresTv = (TextView) convertView.findViewById(R.id.scores_tv);

@@ -71,6 +71,10 @@ public final class MessageListItem {
 		return mChecked;
 	}
 
+	public void setChecked(boolean checked) {
+		mChecked = checked;
+	}
+
 	public Message getMessage() {
 		return message;
 	}

@@ -21,14 +21,19 @@ import com.crashlytics.android.Crashlytics;
 import com.hpush.R;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AppListImpFragment;
+import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
+import com.hpush.bus.RemoveAllEvent;
+import com.hpush.bus.SelectMessageEvent;
 import com.hpush.utils.Prefs;
 import com.hpush.views.OnViewAnimatedClickedListener;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Main activity of the app.
@@ -40,12 +45,14 @@ public final class MainActivity extends BaseActivity {
 	 * Main layout for this component.
 	 */
 	private static final int LAYOUT = R.layout.activity_main;
-
+	/**
+	 * The pagers
+	 */
+	private ViewPager mViewPager;
 	/**
 	 * Navigation drawer.
 	 */
 	private DrawerLayout mDrawerLayout;
-
 	/**
 	 * Use navigation-drawer for this fork.
 	 */
@@ -105,6 +112,17 @@ public final class MainActivity extends BaseActivity {
 		WebViewActivity.showInstance(this, target, e.getSenderV());
 	}
 
+
+	/**
+	 * Handler for {@link SelectMessageEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link SelectMessageEvent}.
+	 */
+	public void onEvent(SelectMessageEvent e) {
+		openFloatButtons();
+	}
+
 	//------------------------------------------------
 
 	@Override
@@ -115,19 +133,16 @@ public final class MainActivity extends BaseActivity {
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
 		initDrawer();
-		final ViewPager viewPager = (ViewPager) findViewById(R.id.vp);
-		viewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
+		mViewPager = (ViewPager) findViewById(R.id.vp);
+		mViewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
 		// Bind the tabs to the ViewPager
 		PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		tabs.setViewPager(viewPager);
+		tabs.setViewPager(mViewPager);
 		tabs.setIndicatorColorResource(R.color.common_white);
 		tabs.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-		 		int vi = mRemoveAllBtn.getVisibility();
-				if(vi == View.VISIBLE) {
-					mOpenBtn.performClick();
-				}
+				closeFloatButtons();
 			}
 
 			@Override
@@ -145,19 +160,42 @@ public final class MainActivity extends BaseActivity {
 		mRemoveAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
-
+				EventBus.getDefault().post(new RemoveAllEvent());
 			}
 		});
 		mBookmarkAllBtn = (ImageButton) findViewById(R.id.bookmark_all_btn);
 		mBookmarkAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
-
+				EventBus.getDefault().post(new BookmarkAllEvent());
 			}
 		});
 		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
 		mOpenBtn.setOnClickListener(mOpenListener);
 	}
+
+	/**
+	 * Dismiss all float-buttons.
+	 */
+	private void closeFloatButtons() {
+		int vi = mRemoveAllBtn.getVisibility();
+		if(vi == View.VISIBLE) {
+			mOpenBtn.performClick();
+		}
+	}
+
+
+	/**
+	 * Open all float-buttons.
+	 */
+	private void openFloatButtons() {
+		int vi = mRemoveAllBtn.getVisibility();
+		if(vi != View.VISIBLE) {
+			mOpenBtn.performClick();
+		}
+	}
+
+
 
 	@Override
 	public void onResume() {
@@ -180,6 +218,7 @@ public final class MainActivity extends BaseActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		closeFloatButtons();
 		if (mDrawerToggle != null && mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
@@ -248,7 +287,9 @@ public final class MainActivity extends BaseActivity {
 	private OnClickListener mOpenListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			mBookmarkAllBtn.setVisibility(View.VISIBLE);
+			if(mViewPager.getCurrentItem() == 0) {
+				mBookmarkAllBtn.setVisibility(View.VISIBLE);
+			}
 			AnimatorSet animatorSet = new AnimatorSet();
 			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(100);
 			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
@@ -300,5 +341,6 @@ public final class MainActivity extends BaseActivity {
 			animatorSet.start();
 		}
 	};
+
 
 }

@@ -7,15 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.BigTextStyle;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
+import com.hpush.app.activities.MainActivity;
 import com.hpush.data.Message;
 import com.hpush.db.DB;
+import com.hpush.utils.Prefs;
 
 /**
  * Handle notification.
@@ -74,11 +75,11 @@ public class GcmIntentService extends IntentService {
 		final String title = msg.getString("title");
 		final String url = msg.getString("url");
 		final String pushedTime =  msg.getString("pushed_time") ;
+		Prefs.getInstance(getApplication()).setLastPushedTime(Long.valueOf(pushedTime));
 
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setData(Uri.parse(url));
+		Intent intent = new Intent(this, MainActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent,
 				PendingIntent.FLAG_ONE_SHOT);
@@ -93,7 +94,7 @@ public class GcmIntentService extends IntentService {
 
 		DB db = DB.getInstance(getApplication());
 		Message message = new Message(by, id, score, text, time, title, url, Long.valueOf(pushedTime));
-		if(!db.findMessage(message)) {
+		if(!db.findMessage(message) && !db.findBookmark(message)) {
 			db.addMessage(message);
 		}
 	}
