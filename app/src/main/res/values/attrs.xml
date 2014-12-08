@@ -3,7 +3,8 @@
     <declare-styleable name="FontTextView">
         <attr name="font">
             <enum name="thin" value="1" />
-            <enum name="regular" value="2" />
+            <enum name="light" value="2" />
+            <enum name="regular" value="3" />
         </attr>
     </declare-styleable>
 </resources>

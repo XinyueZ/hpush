@@ -11,6 +11,7 @@ import (
   "encoding/json"
   "bytes"
   "time"
+  "strings"
 )
 
 type TopStoresRes struct {
@@ -19,15 +20,15 @@ type TopStoresRes struct {
 
 
 type ItemDetails struct {
-  By string
-  Id int64
-  Kids []int64
-  Score int64
-  Text string
-  Time int64
-  Title string
-  Type string
-  Url string
+  By string `by`
+  Id int64 `id`
+  Kids []int64 `kids`
+  Score int64 `score`
+  Text string `text`
+  Time int64 `time`
+  Title string `title`
+  Type string `type`
+  Url string `url`
 }
 
 
@@ -102,15 +103,15 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
         var roundTotal int = 0
         for _, itemDetail := range _itemDetailsList {
             if roundTotal < client.MsgCount {
-                if client.FullText && itemDetail.Text == "" {
-                    continue
+                if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
+                  fmt.Fprintf(_w, "<font color=blue>------|%s|</font><p>", itemDetail.Text)
+                } else  if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0   {
+                  fmt.Fprintf(_w, "<font color=blue>++++++|%s|</font><p>", itemDetail.Url)
+                } else {
+                  msg := broadcast(_w, _r, client.PushID, itemDetail, pushedTime)
+                  fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
+                  roundTotal++
                 }
-                if !client.AllowEmptyUrl && itemDetail.Url == "" {
-                    continue
-                }
-                msg := broadcast(_w, _r, client.PushID, itemDetail, pushedTime)
-                fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
-                roundTotal++
             }
         }
     }
@@ -121,7 +122,7 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
 
 func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string ) (pushedMsg string) {
   pushedMsg = fmt.Sprintf(
-    `{"registration_ids" : ["%s"],"data" : {"by": "%s", "id": %d, "score": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s", "pushed_time" : "%s"}}`,
+    `{"registration_ids" : ["%s"],"data" : {"by": "%s", "c_id": %d, "score": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s", "pushed_time" : "%s"}}`,
     clientIds,
     details.By,
     details.Id,

@@ -14,6 +14,8 @@ import android.support.v4.app.NotificationCompat.BigTextStyle;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
+import com.hpush.data.Message;
+import com.hpush.db.DB;
 
 /**
  * Handle notification.
@@ -56,19 +58,20 @@ public class GcmIntentService extends IntentService {
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
 	}
 
-	// Put the message into a notification and post it.
-	// This is just one simple example of what you might choose to do with
-	// a GCM message.
+
+	/**
+	 * Put the message into a notification and post it. This is just one simple example of what you might choose to do
+	 * with a GCM message.
+	 */
 	private void sendNotification(final Bundle msg) {
 		final String by = msg.getString("by");
-		final long id = Long.valueOf(msg.getString("id"));
+		final long id = Long.valueOf(msg.getString("c_id"));
 		final long score = Long.valueOf(msg.getString("score"));
 		final String text = msg.getString("text");
 		final long time = Long.valueOf(msg.getString("time"));
 		final String title = msg.getString("title");
 		final String url = msg.getString("url");
-
-
+		final String pushedTime =  msg.getString("pushed_time") ;
 
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -81,10 +84,17 @@ public class GcmIntentService extends IntentService {
 
 		mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis())
 				.setSmallIcon(R.drawable.ic_stat_yp).setTicker(title).setContentTitle(title).setContentText(text)
-				.setStyle(new BigTextStyle().bigText(text).setBigContentTitle(title).setSummaryText("#" + by)).setAutoCancel(true).setLargeIcon(
-						mLargeIcon);
+				.setStyle(new BigTextStyle().bigText(text).setBigContentTitle(title).setSummaryText("#" + by))
+				.setAutoCancel(true).setLargeIcon(mLargeIcon).setGroup(pushedTime).setGroupSummary(true);
 		mNotifyBuilder.setContentIntent(contentIntent);
 		mNotificationManager.notify((int) id, mNotifyBuilder.build());
 
+		DB db = DB.getInstance(getApplication());
+		Message message = new Message(by, id, score, text, time, title, url, Long.valueOf(pushedTime));
+		if(!db.findMessage(message)) {
+			db.addMessage(message);
+		}
 	}
+
+
 }

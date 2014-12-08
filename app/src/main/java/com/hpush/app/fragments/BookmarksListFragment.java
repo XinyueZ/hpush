@@ -14,6 +14,7 @@ import com.chopping.fragments.BaseFragment;
 import com.hpush.R;
 import com.hpush.app.adapters.MessagesListAdapter;
 import com.hpush.data.Message;
+import com.hpush.db.DB;
 import com.hpush.utils.Prefs;
 
 /**
@@ -26,10 +27,19 @@ public final class BookmarksListFragment extends BaseFragment{
 	 * Main layout for this component.
 	 */
 	private static final int LAYOUT = R.layout.fragment_bookmarks_list;
-
+	/**
+	 * A list to show all messages.
+	 */
 	private RecyclerView mRv;
 
+	/**
+	 * {@link android.support.v7.widget.RecyclerView.Adapter} for the {@link #mRv}.
+	 */
 	private MessagesListAdapter mAdp;
+	/**
+	 * Application's database.
+	 */
+	private DB mDB;
 
 	public static BookmarksListFragment newInstance(Context context) {
 		return (BookmarksListFragment) BookmarksListFragment.instantiate(context, BookmarksListFragment.class.getName());

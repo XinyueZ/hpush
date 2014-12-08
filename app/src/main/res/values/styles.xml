@@ -22,7 +22,7 @@
     </style>
 
     <style name="Headline_Messages_List_Item_TextView" parent="@style/List_Item_TextView">
-        <item name="font">thin</item>
+        <item name="font">light</item>
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
         <item name="android:textColor">?attr/colorPrimary</item>
         <item name="android:text">Headline</item>

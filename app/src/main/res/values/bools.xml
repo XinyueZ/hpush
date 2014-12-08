@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="default_only_save_latest">false</bool>
-    <bool name="default_accept_full_text">true</bool>
+    <bool name="default_accept_full_text">false</bool>
     <bool name="default_allow_empty_url">false</bool>
 </resources>
