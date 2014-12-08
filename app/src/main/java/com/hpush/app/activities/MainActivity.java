@@ -74,6 +74,7 @@ public final class MainActivity extends BaseActivity {
 		// Bind the tabs to the ViewPager
 		PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		tabs.setViewPager(viewPager);
+		tabs.setIndicatorColorResource(R.color.common_white);
 	}
 
 	@Override

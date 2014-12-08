@@ -293,6 +293,8 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 				}
 			};
 			TaskHelper.getRequestQueue().add(request);
+		} else {
+			backPressed();
 		}
 	}
 
