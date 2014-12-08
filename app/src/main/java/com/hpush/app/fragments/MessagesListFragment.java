@@ -15,7 +15,7 @@ import com.chopping.application.BasicPrefs;
 import com.chopping.fragments.BaseFragment;
 import com.hpush.R;
 import com.hpush.app.adapters.MessagesListAdapter;
-import com.hpush.data.Message;
+import com.hpush.data.MessageListItem;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
 import com.hpush.utils.Prefs;
@@ -70,15 +70,15 @@ public final class MessagesListFragment extends BaseFragment {
 	 * Load all messages.
 	 */
 	private void loadMessages() {
-		AsyncTask<Void, LongSparseArray<Message>, LongSparseArray<Message>> task =
-				new AsyncTask<Void, LongSparseArray<Message>, LongSparseArray<Message>>() {
+		AsyncTask<Void, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>> task =
+				new AsyncTask<Void, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>>() {
 					@Override
-					protected LongSparseArray<Message> doInBackground(Void... params) {
+					protected LongSparseArray<MessageListItem> doInBackground(Void... params) {
 						return mDB.getMessages(Sort.DESC);
 					}
 
 					@Override
-					protected void onPostExecute(LongSparseArray<Message> data) {
+					protected void onPostExecute(LongSparseArray<MessageListItem> data) {
 						super.onPostExecute(data);
 						if (mAdp == null) {
 							mAdp = new MessagesListAdapter(data);

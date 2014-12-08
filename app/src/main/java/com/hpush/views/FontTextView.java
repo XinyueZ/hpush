@@ -47,6 +47,9 @@ public class FontTextView extends TextView {
 			font = Fonts.FONT_LIGHT;
 			break;
 		case 3:
+			font = Fonts.FONT_BOLD;
+			break;
+		case 4:
 			font =  Fonts.FONT_REGULAR;
 			break;
 		default:
@@ -79,6 +82,7 @@ public class FontTextView extends TextView {
 
 		public static final String FONT_THIN = "Roboto-Thin.ttf";
 		public static final String FONT_LIGHT = "Roboto-Light.ttf";
+		public static final String FONT_BOLD = "Roboto-Bold.ttf";
 		public static final String FONT_REGULAR = "Roboto-Regular.ttf";
 
 		public static Typeface getFont(Context context, String assetPath) {

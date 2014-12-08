@@ -2,6 +2,7 @@ package com.hpush.app.activities;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.chopping.activities.BaseActivity;
@@ -21,6 +23,11 @@ import com.hpush.app.fragments.AppListImpFragment;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.utils.Prefs;
+import com.hpush.views.OnViewAnimatedClickedListener;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorListenerAdapter;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 /**
  * Main activity of the app.
@@ -46,6 +53,18 @@ public final class MainActivity extends BaseActivity {
 	 * The new actionbar.
 	 */
 	private Toolbar mToolbar;
+	/**
+	 * Click to remove all selected items.
+	 */
+	private ImageButton mRemoveAllBtn;
+	/**
+	 * Click to bookmark all selected items.
+	 */
+	private ImageButton mBookmarkAllBtn;
+	/**
+	 * Open/Close main float buttons.
+	 */
+	private ImageButton mOpenBtn;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
@@ -95,12 +114,48 @@ public final class MainActivity extends BaseActivity {
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
 		initDrawer();
-		ViewPager viewPager = (ViewPager) findViewById(R.id.vp);
+		final ViewPager viewPager = (ViewPager) findViewById(R.id.vp);
 		viewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
 		// Bind the tabs to the ViewPager
 		PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		tabs.setViewPager(viewPager);
 		tabs.setIndicatorColorResource(R.color.common_white);
+		tabs.setOnPageChangeListener(new OnPageChangeListener() {
+			@Override
+			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+		 		int vi = mRemoveAllBtn.getVisibility();
+				if(vi == View.VISIBLE) {
+					mOpenBtn.performClick();
+				}
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int state) {
+
+			}
+		});
+
+		mRemoveAllBtn = (ImageButton) findViewById(R.id.remove_all_btn);
+		mRemoveAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
+			@Override
+			public void onClick() {
+
+			}
+		});
+		mBookmarkAllBtn = (ImageButton) findViewById(R.id.bookmark_all_btn);
+		mBookmarkAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
+			@Override
+			public void onClick() {
+
+			}
+		});
+		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
+		mOpenBtn.setOnClickListener(mOpenListener);
 	}
 
 	@Override
@@ -185,5 +240,64 @@ public final class MainActivity extends BaseActivity {
 			mDrawerLayout.setDrawerListener(mDrawerToggle);
 		}
 	}
+
+	/**
+	 * Listener for opening all float buttons.
+	 */
+	private OnViewAnimatedClickedListener mOpenListener = new OnViewAnimatedClickedListener() {
+		@Override
+		public void onClick() {
+			mBookmarkAllBtn.setVisibility(View.VISIBLE);
+			AnimatorSet animatorSet = new AnimatorSet();
+			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(100);
+			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					super.onAnimationEnd(animation);
+					mRemoveAllBtn.setVisibility(View.VISIBLE);
+				}
+			});
+			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", 200f, 0).setDuration(200);
+			iBtnAnim.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					super.onAnimationEnd(animation);
+					mOpenBtn.setOnClickListener(mCloseListener);
+				}
+			});
+			animatorSet.playSequentially(iiBtnAnim, iBtnAnim);
+			animatorSet.start();
+		}
+	};
+
+	/**
+	 * Listener for closing all float buttons.
+	 */
+	private OnViewAnimatedClickedListener mCloseListener = new OnViewAnimatedClickedListener() {
+		@Override
+		public void onClick() {
+			AnimatorSet animatorSet = new AnimatorSet();
+			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 0, 150f).setDuration(100);
+			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					super.onAnimationEnd(animation);
+					mBookmarkAllBtn.setVisibility(View.GONE);
+				}
+			});
+			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", 0, 200f).setDuration(200);
+			iBtnAnim.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					super.onAnimationEnd(animation);
+					mRemoveAllBtn.setVisibility(View.GONE);
+					mOpenBtn.setOnClickListener(mOpenListener);
+
+				}
+			});
+			animatorSet.playSequentially(iiBtnAnim, iBtnAnim);
+			animatorSet.start();
+		}
+	};
 
 }

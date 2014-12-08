@@ -13,7 +13,7 @@ import com.hpush.R;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
-import com.hpush.data.Message;
+import com.hpush.data.MessageListItem;
 import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
 
@@ -32,13 +32,13 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	/**
 	 * Data collection.
 	 */
-	private LongSparseArray<Message> mMessages;
+	private LongSparseArray<MessageListItem> mMessages;
 
-	public MessagesListAdapter(LongSparseArray<Message> messages) {
+	public MessagesListAdapter(LongSparseArray<MessageListItem> messages) {
 		mMessages = messages;
 	}
 
-	public void setMessages(LongSparseArray<Message> messages) {
+	public void setMessages(LongSparseArray<MessageListItem> messages) {
 		mMessages = messages;
 	}
 
@@ -52,7 +52,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	@Override
 	public void onBindViewHolder(final MessagesListAdapter.ViewHolder viewHolder, int i) {
 		long id = mMessages.keyAt(i);
-		final Message msg = mMessages.get(id);
+		final MessageListItem msg = mMessages.get(id);
 		viewHolder.mHeadLineTv.setText(msg.getTitle());
 		if (!TextUtils.isEmpty(msg.getText())) {
 			viewHolder.mContentTv.setVisibility(View.VISIBLE);
@@ -68,19 +68,19 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 		viewHolder.itemView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				EventBus.getDefault().post(new ClickMessageEvent(msg));
+				EventBus.getDefault().post(new ClickMessageEvent(msg.getMessage()));
 			}
 		});
 		viewHolder.mCommentsV.setOnClickListener(new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
-				EventBus.getDefault().post(new ClickMessageCommentsEvent(msg, viewHolder.mCommentsV));
+				EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.mCommentsV));
 			}
 		});
 		viewHolder.mLinkV.setOnClickListener(new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
-				EventBus.getDefault().post(new ClickMessageLinkEvent(msg, viewHolder.mLinkV));
+				EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.mLinkV));
 			}
 		});
 	}

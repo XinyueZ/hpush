@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.util.LongSparseArray;
 
 import com.hpush.data.Message;
+import com.hpush.data.MessageListItem;
 
 
 /**
@@ -198,14 +199,14 @@ public final class DB {
 	}
 
 
-	public synchronized LongSparseArray<Message> getMessages(Sort sort) {
+	public synchronized LongSparseArray<MessageListItem> getMessages(Sort sort) {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
 		Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
 				MessagesTbl.TIME + " " + sort.toString());
 		Message item = null;
-		LongSparseArray<Message>  list = new LongSparseArray<>();
+		LongSparseArray<MessageListItem>  list = new LongSparseArray<>();
 		try {
 			while (c.moveToNext()) {
 				item = new Message(
@@ -219,7 +220,7 @@ public final class DB {
 						c.getString(c.getColumnIndex(MessagesTbl.URL)),
 						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
 				);
-				list.put(c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)), item);
+				list.put(c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)), new MessageListItem(item));
 			}
 		} finally {
 			if (c != null) {
