@@ -7,7 +7,6 @@ import java.util.Map;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -17,7 +16,9 @@ import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.os.AsyncTaskCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -91,11 +92,19 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 *
 	 * @param context
 	 * 		A context object.
+	 *  @param openSettingV
+	 * 		The view that open the {@link com.hpush.app.activities.WebViewActivity}.
 	 */
-	public static void showInstance(Context context) {
+	public static void showInstance(Activity context, View openSettingV) {
 		Intent intent = new Intent(context, SettingActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		context.startActivity(intent);
+		if (openSettingV != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) ){
+			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
+					Pair.create(openSettingV, "openSettingV"));
+			context.startActivity(intent, transitionActivityOptions.toBundle());
+		} else {
+			context.startActivity(intent);
+		}
 	}
 
 

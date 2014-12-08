@@ -4,6 +4,7 @@
 
     <string name="lbl_yes">Ja</string>
     <string name="lbl_no">Nein</string>
+    <string name="lbl_home">Home</string>
     <string name="lbl_share">Teilen</string>
     <string name="lbl_about">About</string>
     <string name="lbl_forward">Weiter</string>

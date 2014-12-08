@@ -319,7 +319,7 @@ public final class MainActivity extends BaseActivity {
 			showDialogFragment(AboutDialogFragment.newInstance(this), null);
 			break;
 		case R.id.action_setting:
-			SettingActivity.showInstance(this);
+			SettingActivity.showInstance(this, null);
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -369,10 +369,17 @@ public final class MainActivity extends BaseActivity {
 				}
 			};
 			mDrawerLayout.setDrawerListener(mDrawerToggle);
+			findViewById(R.id.open_hack_news_home_ll).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					WebViewActivity.showInstance(MainActivity.this, null, v);
+					mDrawerLayout.closeDrawer(Gravity.LEFT);
+				}
+			});
 			findViewById(R.id.open_setting_ll).setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					SettingActivity.showInstance(MainActivity.this);
+					SettingActivity.showInstance(MainActivity.this, v);
 					mDrawerLayout.closeDrawer(Gravity.LEFT);
 				}
 			});
