@@ -130,6 +130,10 @@ public final class Prefs extends BasicPrefs {
 		setBoolean(KEY_PUSH_SETTING, true);
 	}
 
+	public void turnOffPush() {
+		setBoolean(KEY_PUSH_SETTING, false);
+	}
+
 
 	public int getShownDetailsAdsTimes() {
 		return getInt(KEY_SHOWN_DETAILS_ADS_TIMES, 5);

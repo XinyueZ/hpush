@@ -9,13 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_btn"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:id="@id/error_content"
@@ -42,6 +35,13 @@
 
         </LinearLayout>
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_btn"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="wrap_content"

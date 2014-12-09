@@ -41,7 +41,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.plus.PlusClient;
 import com.hpush.R;
@@ -59,6 +58,7 @@ import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.SelectMessageEvent;
 import com.hpush.gcm.RegGCMTask;
+import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
@@ -256,12 +256,12 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		handleIntent();
 
 		mSnackBar = new SnackBar(this);
-		mPlusClient = new PlusClient.Builder(this, this, this).setScopes(Scopes.PLUS_LOGIN).build();
+		mPlusClient = new PlusClient.Builder(this, this, this).build();
 		mGPlusBtn = (SignInButton) findViewById(R.id.sign_in_btn);
 		mGPlusBtn.setSize(SignInButton.SIZE_WIDE);
 		mGPlusBtn.setOnClickListener(new OnViewAnimatedClickedListener3() {
 			@Override
-			public void onClick( ) {
+			public void onClick() {
 				loginGPlus();
 			}
 		});
@@ -332,8 +332,10 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		String text = getString(R.string.lbl_share_app_content);
 		provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
 
-		 menu.findItem(R.id.action_setting).setVisible(mPlusClient != null && mPlusClient.isConnected());
-
+		menu.findItem(R.id.action_setting).setVisible(mPlusClient != null && mPlusClient.isConnected());
+		if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
+			menu.findItem(R.id.action_setting).setVisible(true);
+		}
 		return true;
 	}
 
@@ -429,14 +431,13 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 */
 	private void showGPlusButton() {
 		mGPlusBtn.setVisibility(View.VISIBLE);
-		mGPlusBtn.invalidate();
 	}
 
 	/**
 	 * Dismiss button for gplus.
 	 */
 	private void hideGPlusButton() {
-		mGPlusBtn.setVisibility(View.GONE); mGPlusBtn.invalidate();
+		mGPlusBtn.setVisibility(View.GONE);
 	}
 
 	private void handleGPlusLinkedUI() {
@@ -448,12 +449,21 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			findViewById(R.id.open_hack_news_home_ll).setVisibility(View.VISIBLE);
 			findViewById(R.id.open_setting_ll).setVisibility(View.VISIBLE);
 		} else {
-			hideTabs();
-			hideViewPager();
-			hideOpenFloatButton();
-			showGPlusButton();
-			findViewById(R.id.open_hack_news_home_ll).setVisibility(View.GONE);
-			findViewById(R.id.open_setting_ll).setVisibility(View.GONE);
+			if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
+				showTabs();
+				showViewPager();
+				showOpenFloatButton();
+				hideGPlusButton();
+				findViewById(R.id.open_hack_news_home_ll).setVisibility(View.VISIBLE);
+				findViewById(R.id.open_setting_ll).setVisibility(View.VISIBLE);
+			} else {
+				hideTabs();
+				hideViewPager();
+				hideOpenFloatButton();
+				showGPlusButton();
+				findViewById(R.id.open_hack_news_home_ll).setVisibility(View.GONE);
+				findViewById(R.id.open_setting_ll).setVisibility(View.GONE);
+			}
 		}
 		supportInvalidateOptionsMenu();
 	}
@@ -650,7 +660,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			mProgressDialog.dismiss();
 			mGPlusBtn.setVisibility(View.GONE);
 		}
-		if(TextUtils.isEmpty(Prefs.getInstance(getApplication()).getPushRegId())) {
+		if (TextUtils.isEmpty(Prefs.getInstance(getApplication()).getPushRegId())) {
 			new AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
 					.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
 				@Override
@@ -666,8 +676,8 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			}).create().show();
 		}
 		EventBus.getDefault().postSticky(new LoginedGPlusEvent(mPlusClient));
-		handleGPlusLinkedUI();
 		Prefs.getInstance(getApplication()).setGoogleAccount(mPlusClient.getAccountName());
+		handleGPlusLinkedUI();
 	}
 
 	@Override
@@ -675,7 +685,6 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		if (mProgressDialog != null && mProgressDialog.isShowing()) {
 			mProgressDialog.dismiss();
 		}
-		Prefs.getInstance(getApplication()).setGoogleAccount(null);
 	}
 
 	@Override
@@ -723,11 +732,14 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			mGPlusBtn.setVisibility(View.VISIBLE);
 			mPlusClient.clearDefaultAccount();
 			mPlusClient.disconnect();
+		}
+		Prefs prefs = Prefs.getInstance(getApplication());
+		if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
+			AsyncTaskCompat.executeParallel( new UnregGCMTask(getApplication(), prefs.getGoogleAccount()));
+			prefs.setGoogleAccount(null);
 			handleGPlusLinkedUI();
 		}
 	}
-
-
 
 
 	@Override

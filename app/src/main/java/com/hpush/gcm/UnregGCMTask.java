@@ -7,7 +7,6 @@ import java.util.Map;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,11 +25,12 @@ import com.hpush.utils.Prefs;
 public   class UnregGCMTask extends AsyncTask<Void, Void, String> {
 	private GoogleCloudMessaging mGCM;
 	private Prefs mPrefs;
+	private String mAccount;
 
-
-	public UnregGCMTask(Context context) {
+	public UnregGCMTask(Context context, String account) {
 		mGCM = GoogleCloudMessaging.getInstance(context);
 		mPrefs = Prefs.getInstance(context.getApplicationContext());
+		mAccount = account;
 	}
 
 	@Override
@@ -39,6 +39,7 @@ public   class UnregGCMTask extends AsyncTask<Void, Void, String> {
 		try {
 			mGCM.unregister();
 			regId = mPrefs.getPushRegId();
+			mPrefs.turnOffPush();
 		} catch (IOException ex) {
 			regId = null;
 		}
@@ -47,7 +48,7 @@ public   class UnregGCMTask extends AsyncTask<Void, Void, String> {
 
 	@Override
 	protected void onPostExecute(final String regId) {
-		if (!TextUtils.isEmpty(regId)) {
+//		if (!TextUtils.isEmpty(regId)) {
 			StringRequest req = new StringRequest(Request.Method.POST, mPrefs.getPushBackendUnregUrl(),
 				new Response.Listener<String>() {
 					@Override
@@ -65,14 +66,14 @@ public   class UnregGCMTask extends AsyncTask<Void, Void, String> {
 				public Map<String, String> getHeaders() throws AuthFailureError {
 					Map<String, String> headers = super.getHeaders();
 					if (headers == null || headers.equals(Collections.emptyMap())) {
-						headers = new HashMap<String, String>();
+						headers = new HashMap<>();
 					}
-					headers.put("Cookie", "Account=" + mPrefs.getGoogleAccount());
+					headers.put("Cookie", "Account=" + mAccount);
 					return headers;
 				}
 			};
 			TaskHelper.getRequestQueue().add(req);
-		}
+//		}
 	}
 }
 

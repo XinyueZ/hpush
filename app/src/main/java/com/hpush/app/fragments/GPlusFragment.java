@@ -3,7 +3,6 @@ package com.hpush.app.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.os.AsyncTaskCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import com.google.android.gms.plus.model.people.Person;
 import com.hpush.R;
 import com.hpush.bus.LoginedGPlusEvent;
 import com.hpush.bus.LogoutGPlusEvent;
-import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
 import com.hpush.views.OnViewAnimatedClickedListener2;
 
@@ -100,7 +98,6 @@ public final class GPlusFragment extends BaseFragment {
 				mPhotoIv.setVisibility(View.INVISIBLE);
 				mNameTv.setVisibility(View.INVISIBLE);
 				mLogoutV.setVisibility(View.INVISIBLE);
-				AsyncTaskCompat.executeParallel(new UnregGCMTask(getActivity()));
 				EventBus.getDefault().post(new LogoutGPlusEvent());
 				EventBus.getDefault().post(new CloseDrawerEvent());
 			}

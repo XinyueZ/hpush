@@ -172,7 +172,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if (preference.getKey().equals(Prefs.KEY_PUSH_SETTING)) {
 			if (!Boolean.valueOf(newValue.toString())) {
-				AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication()) {
+				AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication(), Prefs.getInstance(getApplication()).getGoogleAccount()) {
 					ProgressDialog dlg;
 
 					@Override
