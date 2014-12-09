@@ -70,7 +70,7 @@ public   class RegGCMTask extends AsyncTask<Void, Void, String> {
 					if (headers == null || headers.equals(Collections.emptyMap())) {
 						headers = new HashMap<>();
 					}
-					headers.put("Cookie","pushID=" + regId + ";isFullText=" + mPrefs.isOnlyFullText() + ";msgCount=" + mPrefs.getMsgCount() + ";allowEmptyLink=" + mPrefs.allowEmptyUrl());
+					headers.put("Cookie", "Account=" + mPrefs.getGoogleAccount()+";pushID=" + regId + ";isFullText=" + mPrefs.isOnlyFullText() + ";msgCount=" + mPrefs.getMsgCount() + ";allowEmptyLink=" + mPrefs.allowEmptyUrl());
 					return headers;
 				}
 			};

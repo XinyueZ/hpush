@@ -2,9 +2,11 @@ package com.hpush.app.activities;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -31,11 +33,17 @@ import com.chopping.activities.BaseActivity;
 import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
 import com.crashlytics.android.Crashlytics;
+import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.plus.PlusClient;
 import com.hpush.R;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
@@ -46,12 +54,15 @@ import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
+import com.hpush.bus.LoginedGPlusEvent;
+import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.SelectMessageEvent;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
+import com.hpush.views.OnViewAnimatedClickedListener3;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
@@ -64,7 +75,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class MainActivity extends BaseActivity {
+public final class MainActivity extends BaseActivity implements ConnectionCallbacks, OnConnectionFailedListener {
 	/**
 	 * Main layout for this component.
 	 */
@@ -90,6 +101,10 @@ public final class MainActivity extends BaseActivity {
 	 */
 	private Toolbar mToolbar;
 	/**
+	 * Tabs.
+	 */
+	private PagerSlidingTabStrip mTabs;
+	/**
 	 * Click to remove all selected items.
 	 */
 	private ImageButton mRemoveAllBtn;
@@ -106,6 +121,12 @@ public final class MainActivity extends BaseActivity {
 	 */
 	private InterstitialAd mInterstitialAd;
 
+	private SnackBar mSnackBar;
+	private SignInButton mGPlusBtn;
+	private PlusClient mPlusClient;
+	private ConnectionResult mConnectionResult;
+	private ProgressDialog mProgressDialog;
+	private static int REQUEST_CODE_RESOLVE_ERR = 0x98;
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
@@ -128,19 +149,6 @@ public final class MainActivity extends BaseActivity {
 	 */
 	public void onEvent(EULAConfirmedEvent e) {
 
-		new AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
-				.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()));
-				makeAds();
-		}
-		}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				makeAds();
-			}
-		}).create().show();
 	}
 
 	/**
@@ -187,6 +195,15 @@ public final class MainActivity extends BaseActivity {
 		openFloatButtons();
 	}
 
+	/**
+	 * Handler for {@link com.hpush.bus.LogoutGPlusEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.hpush.bus.LogoutGPlusEvent}.
+	 */
+	public void onEvent(LogoutGPlusEvent e) {
+		logoutGPlus();
+	}
 	//------------------------------------------------
 
 	@Override
@@ -200,10 +217,10 @@ public final class MainActivity extends BaseActivity {
 		mViewPager = (ViewPager) findViewById(R.id.vp);
 		mViewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
 		// Bind the tabs to the ViewPager
-		PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		tabs.setViewPager(mViewPager);
-		tabs.setIndicatorColorResource(R.color.common_white);
-		tabs.setOnPageChangeListener(new OnPageChangeListener() {
+		mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+		mTabs.setViewPager(mViewPager);
+		mTabs.setIndicatorColorResource(R.color.common_white);
+		mTabs.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 				closeFloatButtons();
@@ -237,7 +254,19 @@ public final class MainActivity extends BaseActivity {
 		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
 		mOpenBtn.setOnClickListener(mOpenListener);
 		handleIntent();
+
+		mSnackBar = new SnackBar(this);
+		mPlusClient = new PlusClient.Builder(this, this, this).setScopes(Scopes.PLUS_LOGIN).build();
+		mGPlusBtn = (SignInButton) findViewById(R.id.sign_in_btn);
+		mGPlusBtn.setSize(SignInButton.SIZE_WIDE);
+		mGPlusBtn.setOnClickListener(new OnViewAnimatedClickedListener3() {
+			@Override
+			public void onClick( ) {
+				loginGPlus();
+			}
+		});
 	}
+
 
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -286,6 +315,7 @@ public final class MainActivity extends BaseActivity {
 			mDrawerToggle.syncState();
 		}
 		checkPlayService();
+		handleGPlusLinkedUI();
 	}
 
 
@@ -299,9 +329,10 @@ public final class MainActivity extends BaseActivity {
 				(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
 		//Setting a share intent.
 		String subject = getString(R.string.lbl_share_app_title, getString(R.string.application_name));
-		String text = getString(R.string.lbl_share_app_content );
+		String text = getString(R.string.lbl_share_app_content);
 		provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
 
+		 menu.findItem(R.id.action_setting).setVisible(mPlusClient != null && mPlusClient.isConnected());
 
 		return true;
 	}
@@ -349,6 +380,82 @@ public final class MainActivity extends BaseActivity {
 	@Override
 	protected BasicPrefs getPrefs() {
 		return Prefs.getInstance(getApplication());
+	}
+
+	/**
+	 * Show main float button.
+	 */
+	private void showOpenFloatButton() {
+		mOpenBtn.setVisibility(View.VISIBLE);
+	}
+
+	/**
+	 * Dismiss main float button.
+	 */
+	private void hideOpenFloatButton() {
+		mOpenBtn.setVisibility(View.INVISIBLE);
+	}
+
+	/**
+	 * Show pagers.
+	 */
+	private void showViewPager() {
+		mViewPager.setVisibility(View.VISIBLE);
+	}
+
+	/**
+	 * Dismiss pagers.
+	 */
+	private void hideViewPager() {
+		mViewPager.setVisibility(View.INVISIBLE);
+	}
+
+	/**
+	 * Show tabs.
+	 */
+	private void showTabs() {
+		mTabs.setVisibility(View.VISIBLE);
+	}
+
+	/**
+	 * Dismiss tabs.
+	 */
+	private void hideTabs() {
+		mTabs.setVisibility(View.INVISIBLE);
+	}
+
+	/**
+	 * Show button for gplus.
+	 */
+	private void showGPlusButton() {
+		mGPlusBtn.setVisibility(View.VISIBLE);
+		mGPlusBtn.invalidate();
+	}
+
+	/**
+	 * Dismiss button for gplus.
+	 */
+	private void hideGPlusButton() {
+		mGPlusBtn.setVisibility(View.GONE); mGPlusBtn.invalidate();
+	}
+
+	private void handleGPlusLinkedUI() {
+		if (mPlusClient != null && mPlusClient.isConnected()) {
+			showTabs();
+			showViewPager();
+			showOpenFloatButton();
+			hideGPlusButton();
+			findViewById(R.id.open_hack_news_home_ll).setVisibility(View.VISIBLE);
+			findViewById(R.id.open_setting_ll).setVisibility(View.VISIBLE);
+		} else {
+			hideTabs();
+			hideViewPager();
+			hideOpenFloatButton();
+			showGPlusButton();
+			findViewById(R.id.open_hack_news_home_ll).setVisibility(View.GONE);
+			findViewById(R.id.open_setting_ll).setVisibility(View.GONE);
+		}
+		supportInvalidateOptionsMenu();
 	}
 
 	/**
@@ -534,6 +641,100 @@ public final class MainActivity extends BaseActivity {
 				}
 			}
 		} catch (Exception _e) {
+		}
+	}
+
+	@Override
+	public void onConnected(Bundle bundle) {
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			mProgressDialog.dismiss();
+			mGPlusBtn.setVisibility(View.GONE);
+		}
+		if(TextUtils.isEmpty(Prefs.getInstance(getApplication()).getPushRegId())) {
+			new AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
+					.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()));
+					makeAds();
+				}
+			}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					makeAds();
+				}
+			}).create().show();
+		}
+		EventBus.getDefault().postSticky(new LoginedGPlusEvent(mPlusClient));
+		handleGPlusLinkedUI();
+		Prefs.getInstance(getApplication()).setGoogleAccount(mPlusClient.getAccountName());
+	}
+
+	@Override
+	public void onDisconnected() {
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			mProgressDialog.dismiss();
+		}
+		Prefs.getInstance(getApplication()).setGoogleAccount(null);
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult connectionResult) {
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			mProgressDialog.dismiss();
+		}
+		mGPlusBtn.setVisibility(View.VISIBLE);
+
+		if (connectionResult.hasResolution()) {
+			try {
+				connectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+			} catch (SendIntentException e) {
+				mPlusClient.connect();
+			}
+		} else {
+			mSnackBar.show(getString(R.string.lbl_login_fail));
+		}
+	}
+
+	/**
+	 * Login Google+
+	 */
+	private void loginGPlus() {
+		if (mConnectionResult == null) {
+			mProgressDialog = ProgressDialog.show(this, null, getString(R.string.lbl_login_gplus));
+			mProgressDialog.setCancelable(true);
+			mPlusClient.connect();
+		} else {
+			try {
+				mConnectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+			} catch (SendIntentException e) {
+				mConnectionResult = null;
+				mPlusClient.connect();
+			}
+		}
+	}
+
+
+	/**
+	 * Logout Google+
+	 */
+	private void logoutGPlus() {
+		if (mPlusClient.isConnected()) {
+			mGPlusBtn.setVisibility(View.VISIBLE);
+			mPlusClient.clearDefaultAccount();
+			mPlusClient.disconnect();
+			handleGPlusLinkedUI();
+		}
+	}
+
+
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+		if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
+			mConnectionResult = null;
+			mPlusClient.connect();
 		}
 	}
 }

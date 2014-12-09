@@ -1,9 +1,5 @@
 package com.hpush.app.activities;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -16,9 +12,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.os.AsyncTaskCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -27,18 +21,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.chopping.application.LL;
 import com.chopping.bus.ApplicationConfigurationDownloadedEvent;
 import com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent;
 import com.chopping.exceptions.CanNotOpenOrFindAppPropertiesException;
 import com.chopping.exceptions.InvalidAppPropertiesException;
-import com.chopping.net.TaskHelper;
 import com.hpush.R;
+import com.hpush.gcm.EditTask;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
@@ -275,11 +267,8 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		mPb.setCancelable(true);
 		Prefs prefs = Prefs.getInstance(getApplication());
 		final String regId = prefs.getPushRegId();
-		final boolean isFullText = prefs.isOnlyFullText();
-		final String msgCount = prefs.getMsgCount();
-		final boolean allowEmptyUrl = prefs.allowEmptyUrl();
 		if (!TextUtils.isEmpty(regId)) {
-			StringRequest request = new StringRequest(Method.POST, prefs
+			 new EditTask(getApplication(), Method.POST, prefs
 					.getPushBackendEditUrl(), new Response.Listener<String>() {
 				@Override
 				public void onResponse(String response) {
@@ -290,18 +279,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 				public void onErrorResponse(VolleyError error) {
 					backPressed();
 				}
-			}){
-				@Override
-				public Map<String, String> getHeaders() throws AuthFailureError {
-					Map<String, String> headers = super.getHeaders();
-					if (headers == null || headers.equals(Collections.emptyMap())) {
-						headers = new HashMap<>();
-					}
-					headers.put("Cookie","pushID=" + regId + ";isFullText=" + isFullText + ";msgCount=" + msgCount+ ";allowEmptyLink=" + allowEmptyUrl);
-					return headers;
-				}
-			};
-			TaskHelper.getRequestQueue().add(request);
+			} ).execute();
 		} else {
 			backPressed();
 		}

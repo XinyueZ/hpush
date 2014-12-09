@@ -24,6 +24,7 @@ public final class Prefs extends BasicPrefs {
 	public static final String KEY_SAVE_LATEST_ONLY = "key.save.latest.only";
 	public static final String KEY_ALLOW_EMPTY_URL = "key.allow.empty.url";
 	private static final String KEY_LAST_PUSHED_TIME = "key.last.pushed.time";
+	private static final String KEY_G_ACCOUNT = "key.g.account";
 
 	/**
 	 * Storage. Whether the "End User License Agreement" has been shown and agreed at application's first start.
@@ -156,5 +157,21 @@ public final class Prefs extends BasicPrefs {
 
 	public long getLastPushedTime() {
 		return getLong(KEY_LAST_PUSHED_TIME, -1);
+	}
+
+	/**
+	 * Set logined account.
+	 * @param account  logined account.
+	 */
+	public void setGoogleAccount(String account) {
+		setString(KEY_G_ACCOUNT, account);
+	}
+
+	/**
+	 *
+	 * @return Get logined account.
+	 */
+	public String getGoogleAccount() {
+		return getString(KEY_G_ACCOUNT, null);
 	}
 }

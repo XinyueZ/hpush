@@ -37,6 +37,7 @@ const (
 //}
 
 type OtherClient struct {
+  Account string
   PushID string
   FullText bool
   MsgCount int
@@ -107,10 +108,10 @@ func handleDeleteAllUsers(_w http.ResponseWriter, _r *http.Request) {
 
 func handleInsert(_w http.ResponseWriter, _r *http.Request) {
     cookies := _r.Cookies()
-    isFullText, _ := strconv.ParseBool(cookies[1].Value)
-    msgCount, _ := strconv.Atoi(cookies[2].Value)
-    allowEmptyUrl, _ := strconv.ParseBool(cookies[3].Value)
-    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount, allowEmptyUrl}
+    isFullText, _ := strconv.ParseBool(cookies[2].Value)
+    msgCount, _ := strconv.Atoi(cookies[3].Value)
+    allowEmptyUrl, _ := strconv.ParseBool(cookies[4].Value)
+    otherClient := &OtherClient{cookies[0].Value, cookies[1].Value, isFullText, msgCount, allowEmptyUrl}
     cxt := appengine.NewContext(_r)
     datastore.Put(cxt, datastore.NewIncompleteKey(cxt, "OtherClient", nil), otherClient)
     fmt.Fprintf(_w, otherClient.PushID )
@@ -121,7 +122,7 @@ func handleInsert(_w http.ResponseWriter, _r *http.Request) {
 func handleDelete(_w http.ResponseWriter, _r *http.Request) {
     cxt := appengine.NewContext(_r)
     cookies := _r.Cookies()
-    q := datastore.NewQuery("OtherClient").Filter("PushID =", cookies[0].Value)
+    q := datastore.NewQuery("OtherClient").Filter("Account =", cookies[0].Value)
     clients := make([]OtherClient, 0)
     keys, _:= q.GetAll(cxt, &clients)
     datastore.DeleteMulti(cxt, keys);
@@ -130,12 +131,12 @@ func handleDelete(_w http.ResponseWriter, _r *http.Request) {
 func handleEdit(_w http.ResponseWriter, _r *http.Request) {
     cxt := appengine.NewContext(_r)
     cookies := _r.Cookies()
-    q := datastore.NewQuery("OtherClient").Filter("PushID =", cookies[0].Value)
+    q := datastore.NewQuery("OtherClient").Filter("Account =", cookies[0].Value)
     clients := make([]OtherClient, 0)
     keys, _:= q.GetAll(cxt, &clients)
-    isFullText, _ := strconv.ParseBool(cookies[1].Value)
-    msgCount, _ := strconv.Atoi(cookies[2].Value)
-    allowEmptyUrl, _ := strconv.ParseBool(cookies[3].Value)
-    otherClient := &OtherClient{cookies[0].Value, isFullText, msgCount, allowEmptyUrl}
+    isFullText, _ := strconv.ParseBool(cookies[2].Value)
+    msgCount, _ := strconv.Atoi(cookies[3].Value)
+    allowEmptyUrl, _ := strconv.ParseBool(cookies[4].Value)
+    otherClient := &OtherClient{cookies[0].Value, cookies[1].Value, isFullText, msgCount, allowEmptyUrl}
     datastore.Put(cxt, keys[0], otherClient);
 }

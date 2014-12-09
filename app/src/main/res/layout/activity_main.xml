@@ -9,6 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_btn"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:id="@id/error_content"
             android:layout_width="match_parent"
@@ -24,8 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/primary_color"
-                android:textColor="@color/common_white"
-                />
+                android:textColor="@color/common_white" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vp"
@@ -34,6 +41,7 @@
 
 
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -47,7 +55,7 @@
                 android:id="@+id/remove_all_btn"
                 android:background="@drawable/circle_pink"
                 android:src="@drawable/ic_remove_all"
-                style="@style/FloatButton"  />
+                style="@style/FloatButton" />
 
             <ImageButton
                 android:id="@+id/bookmark_all_btn"
@@ -59,7 +67,7 @@
             <ImageButton
                 android:id="@+id/float_main_btn"
                 style="@style/FloatButton"
-                android:visibility="visible"
+                android:visibility="invisible"
                 android:background="@drawable/circle_orange"
                 android:src="@drawable/ic_float_button_main" />
         </LinearLayout>
@@ -80,6 +88,11 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_height="wrap_content">
+
+            <fragment
+                android:name="com.hpush.app.fragments.GPlusFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/open_hack_news_home_ll"
@@ -132,7 +145,6 @@
                     android:text="@string/lbl_setting"
                     android:background="@drawable/selector_drawer_item_btn" />
             </LinearLayout>
-
 
 
             <FrameLayout

@@ -17,6 +17,9 @@
     <string name="lbl_item_open_link">打开</string>
     <string name="lbl_item_share">分享</string>
     <string name="lbl_comments">评论</string>
+    <string name="lbl_login_gplus">登录Google+ …</string>
+    <string name="lbl_login_fail">不能登录Google+ …</string>
+    <string name="lbl_logout_gplus">退出</string>
     <string name="lbl_has_been_bookmarked">已经编入收藏夹。</string>
     <string name="lbl_share_app_title">一个不错的应用: %s</string>
     <string name="lbl_share_app_content">你好！\n\n\u00A0\u00A0\u00A0\u00A0获取Hacker News社区的推送很方便？\n\n下载:https://play.google.com/store/apps/details?id=com.hpush</string>

@@ -42,9 +42,11 @@ import com.chopping.net.TaskHelper;
  * @author Xinyue Zhao
  */
 public final class App extends Application {
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		TaskHelper.init(getApplicationContext());
 	}
+
 }

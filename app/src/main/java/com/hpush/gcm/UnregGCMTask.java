@@ -67,7 +67,7 @@ public   class UnregGCMTask extends AsyncTask<Void, Void, String> {
 					if (headers == null || headers.equals(Collections.emptyMap())) {
 						headers = new HashMap<String, String>();
 					}
-					headers.put("Cookie","pushID=" + regId);
+					headers.put("Cookie", "Account=" + mPrefs.getGoogleAccount());
 					return headers;
 				}
 			};

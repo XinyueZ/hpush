@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg_gplus"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/people_photo_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|left" />
+
+
+        <Button
+            android:id="@+id/logout_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"  android:textColor="@color/common_white"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:layout_gravity="center_vertical|right"
+            android:background="#dd4b39"
+            android:text="@string/lbl_logout_gplus" />
+    </FrameLayout>
+
+    <com.hpush.views.FontTextView
+        android:textColor="@color/common_black"
+        app:font="light"
+        android:visibility="invisible"
+        android:id="@+id/people_name_tv"
+        font="bold"
+        android:gravity="center_vertical|right"
+        android:layout_gravity="center_vertical|right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>
