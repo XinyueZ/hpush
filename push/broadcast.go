@@ -101,6 +101,7 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
     pushedTime := t.Format("20060102150405")
     for _, client := range _clients {
         var roundTotal int = 0
+        pushedDetailList := []*ItemDetails{}
         for _, itemDetail := range _itemDetailsList {
             if roundTotal < client.MsgCount {
                 if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
@@ -111,13 +112,52 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
                   msg := broadcast(_w, _r, client.PushID, itemDetail, pushedTime)
                   fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
                   roundTotal++
+                  pushedDetailList = append(pushedDetailList, itemDetail)
                 }
             }
         }
+        msg := summary(_w, _r, client.PushID, pushedDetailList, pushedTime)
+        fmt.Fprintf(_w, "<font color=green>Summary:</font>%s<p>", msg)
     }
   }
 }
 
+
+func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedDetailList []*ItemDetails, pushedTime string ) (pushedMsg string) {
+  pushedCount := len(pushedDetailList)
+  // loopCount := 0
+  // if pushedCount >= 5 {
+  //   loopCount = 5
+  // } else {
+  //   loopCount = pushedCount
+  // }
+  summary := "";
+  for _, itemDetail := range pushedDetailList {
+    summary += ( itemDetail.Title + "<tr>" )
+  }
+  pushedMsg = fmt.Sprintf(
+    `{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "count": %d, "pushed_time" : "%s"}}`,
+    clientIds,
+    summary,
+    pushedCount,
+    pushedTime)
+    pushedMsgBytes := bytes.NewBufferString(pushedMsg)
+
+    if req, err := http.NewRequest("POST", PUSH_SENDER, pushedMsgBytes); err == nil {
+      req.Header.Add("Authorization", PUSH_KEY)
+      req.Header.Add("Content-Type", API_RESTYPE)
+      c := appengine.NewContext(_r)
+      client := urlfetch.Client(c)
+      res, err := client.Do(req)
+      defer res.Body.Close()
+      if  err != nil {
+        fmt.Fprintf(_w, "%s", "Error by doing client(broadcast).")
+      }
+      } else {
+        fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
+      }
+      return
+}
 
 
 func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string ) (pushedMsg string) {
@@ -148,4 +188,104 @@ func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, deta
       fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
   }
   return
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//For scheduled tasks.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+func pushX(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _itemDetailsList []*ItemDetails) {
+  if _clients != nil {
+    t := time.Now()
+    pushedTime := t.Format("20060102150405")
+    for _, client := range _clients {
+      var roundTotal int = 0
+      pushedDetailList := []*ItemDetails{}
+        for _, itemDetail := range _itemDetailsList {
+          if roundTotal < client.MsgCount {
+            if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
+              fmt.Fprintf(_w, "<font color=blue>------|%s|</font><p>", itemDetail.Text)
+              } else  if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0   {
+                fmt.Fprintf(_w, "<font color=blue>++++++|%s|</font><p>", itemDetail.Url)
+                } else {
+                  msg := broadcastX(_w, _r, client.PushID, itemDetail, pushedTime)
+                  fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
+                  roundTotal++
+                  pushedDetailList = append(pushedDetailList, itemDetail)
+                }
+              }
+            }
+            msg := summaryX(_w, _r, client.PushID, pushedDetailList, pushedTime)
+            fmt.Fprintf(_w, "<font color=green>Summary:</font>%s<p>", msg)
+          }
+        }
+}
+
+func  summaryX(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedDetailList []*ItemDetails, pushedTime string ) (pushedMsg string) {
+  pushedCount := len(pushedDetailList)
+  // loopCount := 0
+  // if pushedCount >= 5 {
+  //   loopCount = 5
+  // } else {
+  //   loopCount = pushedCount
+  // }
+  summary := "";
+  for _, itemDetail := range pushedDetailList {
+    summary += ( itemDetail.Title + "<tr>" )
+  }
+  pushedMsg = fmt.Sprintf(
+    `{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "count": %d, "pushed_time" : "%s"}}`,
+    clientIds,
+    summary,
+    pushedCount,
+    pushedTime)
+    pushedMsgBytes := bytes.NewBufferString(pushedMsg)
+
+    if req, err := http.NewRequest("POST", PUSH_SENDER, pushedMsgBytes); err == nil {
+      req.Header.Add("Authorization", PUSH_KEY)
+      req.Header.Add("Content-Type", API_RESTYPE)
+      req.Header.Add("X-AppEngine-Cron", "true")
+      c := appengine.NewContext(_r)
+      client := urlfetch.Client(c)
+      res, err := client.Do(req)
+      defer res.Body.Close()
+      if  err != nil {
+        fmt.Fprintf(_w, "%s", "Error by doing client(broadcast).")
+      }
+      } else {
+        fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
+      }
+      return
+    }
+
+
+func  broadcastX(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string ) (pushedMsg string) {
+      pushedMsg = fmt.Sprintf(
+        `{"registration_ids" : ["%s"],"data" : {"by": "%s", "c_id": %d, "score": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s", "pushed_time" : "%s"}}`,
+        clientIds,
+        details.By,
+        details.Id,
+        details.Score,
+        details.Text,
+        details.Time,
+        details.Title,
+        details.Url,
+        pushedTime)
+        pushedMsgBytes := bytes.NewBufferString(pushedMsg)
+
+        if req, err := http.NewRequest("POST", PUSH_SENDER, pushedMsgBytes); err == nil {
+          req.Header.Add("Authorization", PUSH_KEY)
+          req.Header.Add("Content-Type", API_RESTYPE)
+          req.Header.Add("X-AppEngine-Cron", "true")
+          c := appengine.NewContext(_r)
+          client := urlfetch.Client(c)
+          res, err := client.Do(req)
+          defer res.Body.Close()
+          if  err != nil {
+            fmt.Fprintf(_w, "%s", "Error by doing client(broadcast).")
+          }
+          } else {
+            fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
+          }
+          return
 }

@@ -50,6 +50,7 @@ func init() {
   http.HandleFunc("/insert", handleInsert)
   http.HandleFunc("/del", handleDelete)
   http.HandleFunc("/response", handleResponse)
+  http.HandleFunc("/responseX", handleResponseX)//For scheduled tasks.
   http.HandleFunc("/dela",handleDeleteAllUsers)
   http.HandleFunc("/edit",handleEdit)
 }
@@ -92,6 +93,22 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
     push(_w, _r, clients, detailsList)
     responseTemplate.Execute(_w, fmt.Sprintf("Finished client push users:%d",  len(clients)))
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//For scheduled tasks.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+func handleResponseX(_w http.ResponseWriter, _r *http.Request) {
+  defer func() {
+    if err := recover(); err != nil {
+      fmt.Fprintf(_w, "Some error happened might: Nobody to be pushed")
+    }
+    }()
+    detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
+    clients := loadClients(_r)
+    pushX(_w, _r, clients, detailsList)
+    responseTemplate.Execute(_w, fmt.Sprintf("Finished client push users:%d",  len(clients)))
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 func handleDeleteAllUsers(_w http.ResponseWriter, _r *http.Request) {
     cxt := appengine.NewContext(_r)
