@@ -265,6 +265,9 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 				loginGPlus();
 			}
 		});
+		if(!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
+			mPlusClient.connect();
+		}
 	}
 
 
