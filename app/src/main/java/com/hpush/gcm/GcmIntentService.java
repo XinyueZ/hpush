@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.BigTextStyle;
+import android.support.v4.app.NotificationCompat.InboxStyle;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
@@ -67,35 +67,56 @@ public class GcmIntentService extends IntentService {
 	 * @param msg  Data of messages.
 	 */
 	private void sendNotification(final Bundle msg) {
-		final String by = msg.getString("by");
-		final long id = Long.valueOf(msg.getString("c_id"));
-		final long score = Long.valueOf(msg.getString("score"));
-		final String text = msg.getString("text");
-		final long time = Long.valueOf(msg.getString("time"));
-		final String title = msg.getString("title");
-		final String url = msg.getString("url");
-		final String pushedTime =  msg.getString("pushed_time") ;
-		final long pushedtime = Long.valueOf(pushedTime);
-		Prefs.getInstance(getApplication()).setLastPushedTime(pushedtime);
+		final boolean isSummary = Boolean.parseBoolean(msg.getString("isSummary"));
 
-		DB db = DB.getInstance(getApplication());
-		Message message = new Message(by, id, score, text, time, title, url, pushedtime);
-		if(!db.findMessage(message) && !db.findBookmark(message)) {//To test whether in our local database or not.
-			//Notify
-			mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-			Intent intent = new Intent(this, MainActivity.class);
-			intent.putExtra(MainActivity.EXTRAS_OPEN_FROM_NOTIFICATION, true);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent,
-					PendingIntent.FLAG_ONE_SHOT);
-			mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis())
-					.setSmallIcon(R.drawable.ic_stat_yp).setTicker(title).setContentTitle(title).setContentText(text)
-					.setStyle(new BigTextStyle().bigText(text).setBigContentTitle(title).setSummaryText("#" + by))
-					.setAutoCancel(true).setLargeIcon(mLargeIcon);
-			mNotifyBuilder.setContentIntent(contentIntent);
-			mNotificationManager.notify( (int) System.currentTimeMillis(), mNotifyBuilder.build());
-			//Save in database.
-			db.addMessage(message);
+		//Notify only for the "summary"s.
+		if(isSummary) {
+			final String summary =  msg.getString("summary");
+			final int count = Integer.valueOf(msg.getString("count"));
+			if(count > 0) {
+				String [] lines = summary.split("<tr>");
+				InboxStyle style = new InboxStyle();
+				for(String line : lines) {
+					style.addLine(line);
+				}
+				final String summaryTitle = getString(R.string.lbl_update_from_hacker_news, count);
+				mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+				Intent intent = new Intent(this, MainActivity.class);
+				intent.putExtra(MainActivity.EXTRAS_OPEN_FROM_NOTIFICATION, true);
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
+						intent, PendingIntent.FLAG_ONE_SHOT);
+				mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_stat_yp).setTicker(summaryTitle)
+						.setContentTitle(summaryTitle).setContentText(summary).setStyle(style.setBigContentTitle(summaryTitle).setSummaryText("+" + count + "..." )).setAutoCancel(true).setLargeIcon(mLargeIcon);
+				mNotifyBuilder.setContentIntent(contentIntent);
+				mNotificationManager.notify(0x98, mNotifyBuilder.build());
+			}
+		} else {
+			final String by = msg.getString("by");
+			final long id = Long.valueOf(msg.getString("c_id"));
+			final long score = Long.valueOf(msg.getString("score"));
+			final String text = msg.getString("text");
+			final long time = Long.valueOf(msg.getString("time"));
+			final String title = msg.getString("title");
+			final String url = msg.getString("url");
+			final String pushedTime =  msg.getString("pushed_time") ;
+			final long pushedtime = Long.valueOf(pushedTime);
+			Prefs.getInstance(getApplication()).setLastPushedTime(pushedtime);
+
+			DB db = DB.getInstance(getApplication());
+			Message message = new Message(by, id, score, text, time, title, url, pushedtime);
+			boolean foundMsg = db.findMessage(message);
+			boolean foundBookmark = db.findBookmark(message);
+			if(!foundMsg && !foundBookmark) {//To test whether in our local database or not.
+				//Save in database.
+				db.addMessage(message);
+			} else {
+				if(foundMsg) {
+					db.updateMessage(message);
+				} else if(foundBookmark) {
+					db.updateBookmark(message);
+				}
+			}
 		}
 	}
 }

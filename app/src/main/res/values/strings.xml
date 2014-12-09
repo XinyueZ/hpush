@@ -22,6 +22,7 @@
     <string name="lbl_login_gplus">Google+ login…</string>
     <string name="lbl_login_fail">I can not login Google+ …</string>
     <string name="lbl_logout_gplus">Logout</string>
+    <string name="lbl_update_from_hacker_news">%1$s updates from Hacker News.</string>
     <string name="lbl_has_been_bookmarked">This article has been bookmarked.</string>
     <string name="lbl_play_service">This application needs Google Play Service, you must install it first.</string>
     <string name="lbl_share_app_title">A good App you should have: %s</string>

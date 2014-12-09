@@ -19,6 +19,7 @@
     <string name="lbl_comments">评论</string>
     <string name="lbl_login_gplus">登录Google+ …</string>
     <string name="lbl_login_fail">不能登录Google+ …</string>
+    <string name="lbl_update_from_hacker_news">Hacker News有%1$s更新。</string>
     <string name="lbl_logout_gplus">退出</string>
     <string name="lbl_has_been_bookmarked">已经编入收藏夹。</string>
     <string name="lbl_share_app_title">一个不错的应用: %s</string>

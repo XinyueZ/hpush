@@ -129,6 +129,54 @@ public final class DB {
 		return success;
 	}
 
+	public synchronized boolean updateMessage(Message item) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		boolean success = false;
+		try {
+			long rowId;
+			ContentValues v = new ContentValues();
+			v.put(MessagesTbl.BY, item.getBy());
+			v.put(MessagesTbl.SCORE, item.getScore());
+			v.put(MessagesTbl.TEXT, item.getText());
+			v.put(MessagesTbl.TIME, item.getTime());
+			v.put(MessagesTbl.TITLE, item.getTitle());
+			v.put(MessagesTbl.URL, item.getUrl());
+			String[] args = new String[] { item.getId() + "" };
+			rowId = mDB.update(MessagesTbl.TABLE_NAME, v, MessagesTbl.ID + " = ?", args);
+			success = rowId != -1;
+		} finally {
+			close();
+		}
+		return success;
+	}
+
+
+	public synchronized boolean updateBookmark(Message item) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		boolean success = false;
+		try {
+			long rowId;
+			ContentValues v = new ContentValues();
+			v.put(MessagesTbl.BY, item.getBy());
+			v.put(MessagesTbl.SCORE, item.getScore());
+			v.put(MessagesTbl.TEXT, item.getText());
+			v.put(MessagesTbl.TIME, item.getTime());
+			v.put(MessagesTbl.TITLE, item.getTitle());
+			v.put(MessagesTbl.URL, item.getUrl());
+			String[] args = new String[] { item.getId() + "" };
+			rowId = mDB.update(BookmarksTbl.TABLE_NAME, v, BookmarksTbl.ID + " = ?", args);
+			success = rowId != -1;
+		} finally {
+			close();
+		}
+		return success;
+	}
+
+
 
 
 	public synchronized int removeMessage(Message item) {

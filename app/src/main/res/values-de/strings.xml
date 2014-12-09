@@ -18,6 +18,7 @@
     <string name="lbl_comments">Kommentar</string>
     <string name="lbl_login_gplus">Google+ anmelden…</string>
     <string name="lbl_login_fail">Ich kann nicht auf Google+ anmelden…</string>
+    <string name="lbl_update_from_hacker_news">%1$s Updates aus Hacker News.</string>
     <string name="lbl_logout_gplus">Abmelden</string>
     <string name="lbl_has_been_bookmarked">Dieser Artikel ist in das Lesezeichen gespeichert worden.</string>
     <string name="lbl_play_service">Diese App braucht Google Play Service, Sie müssen erst herunterladen dann
