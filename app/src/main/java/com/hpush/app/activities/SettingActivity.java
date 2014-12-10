@@ -120,6 +120,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		});
 
 		CheckBoxPreference push = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_SETTING);
+		push.setSummary( getString(prefs.isPushTurnedOn() ? R.string.setting_push_on :R.string.setting_push_off ));
 		push.setOnPreferenceChangeListener(this);
 
 		CheckBoxPreference fullText = (CheckBoxPreference) findPreference(Prefs.KEY_FULL_TEXT);

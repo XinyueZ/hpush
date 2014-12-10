@@ -25,6 +25,7 @@ import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
 import com.hpush.bus.RemoveAllEvent;
+import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.MessageListItem;
 import com.hpush.db.DB;
@@ -53,14 +54,10 @@ public class MessagesListFragment extends BaseFragment {
 	 * A list to show all messages.
 	 */
 	private ObservableRecyclerView mRv;
-
-
 	/**
 	 * {@link android.support.v7.widget.RecyclerView.Adapter} for the {@link #mRv}.
 	 */
 	private MessagesListAdapter mAdp;
-
-
 	/**
 	 * Application's database.
 	 */
@@ -78,6 +75,9 @@ public class MessagesListFragment extends BaseFragment {
 	 */
 	public void onEvent(RemoveAllEvent e) {
 		if (mAdp == null || mAdp.getMessages() == null || mAdp.getMessages().size() == 0) {
+			return;
+		}
+		if(getWhichPage() != e.getWhichPage()) {
 			return;
 		}
 		LongSparseArray<MessageListItem> items = mAdp.getMessages();
@@ -404,6 +404,14 @@ public class MessagesListFragment extends BaseFragment {
 	 */
 	protected int getToolbarMenuId() {
 		return TOOLBAR_MENU;
+	}
+
+	/**
+	 *
+	 * @return Define the command whom to do remove.
+	 */
+	protected WhichPage getWhichPage() {
+		return WhichPage.Messages;
 	}
 
 }

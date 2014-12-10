@@ -31,7 +31,7 @@
     <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload App:\n
         https://play.google.com/store/apps/details?id=com.hpush</string>
     <string name="lbl_total_messages_head">Du hast jetzt</string>
-    <string name="lbl_total_messages_tail">Push-Benachrichtigung(en).</string>
+    <string name="lbl_total_messages_tail">Pushs.</string>
 
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>
@@ -41,8 +41,8 @@
     <string name="msg_remall_all">Möchtest Du alle Meldungen entfernen?</string>
 
     <string name="setting_push_cat">Benachrichtigungen</string>
-    <string name="setting_push_off">Ein</string>
-    <string name="setting_push_on">Aus</string>
+    <string name="setting_push_off">Aus</string>
+    <string name="setting_push_on">Ein</string>
     <string name="setting_push_properties_cat">Eigenschaften </string>
     <string name="setting_only_full_text">Nur Push-Benachrichtigung als Volltext zu empfangen? Das bedeutet, dass solche Meldungen mit Einzeltitel ignoriert werden müssen.</string>
     <string name="setting_count">Wie viele Top-Stories(Top 100) möchten Sie empfangen?</string>

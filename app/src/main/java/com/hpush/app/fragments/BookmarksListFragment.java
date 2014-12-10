@@ -7,6 +7,7 @@ import com.hpush.R;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
+import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.data.MessageListItem;
 import com.hpush.db.DB.Sort;
 
@@ -77,10 +78,19 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 * @param obj The item to delete.
 	 */
 	protected void deleteDataOnDB(MessageListItem obj) {
-		getDB().removeBookmark(obj == null ? null : obj.getMessage());
+		if(getWhichPage() == WhichPage.Bookmarks) {
+			getDB().removeBookmark(obj == null ? null : obj.getMessage());
+		}
 	}
 
 
+	/**
+	 *
+	 * @return Define the command whom to do remove.
+	 */
+	protected WhichPage getWhichPage() {
+		return WhichPage.Bookmarks;
+	}
 
 	/**
 	 *

@@ -39,8 +39,8 @@
     <string name="msg_remall_all">是否要删除这里所有的消息？</string>
 
     <string name="setting_push_cat">推送</string>
-    <string name="setting_push_off">打开</string>
-    <string name="setting_push_on">关闭</string>
+    <string name="setting_push_off">关闭</string>
+    <string name="setting_push_on">打开</string>
     <string name="setting_push_properties_cat">属性</string>
     <string name="setting_only_full_text">只接受全文短信？这意味着那些仅单一标题的消息必须被忽略。</string>
     <string name="setting_count">有多少热门的消息（Top 100）你想接受吗？</string>

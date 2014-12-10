@@ -28,6 +28,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:font="light"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/lbl_total_messages_head"
                 android:textColor="@color/common_black" />
@@ -46,6 +49,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:font="light"
+                android:lines="1"
+                android:maxLines="1"
+                android:minLines="1"
+                android:ellipsize="end"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/lbl_total_messages_tail"
                 android:textColor="@color/common_black" />

@@ -62,6 +62,7 @@ import com.hpush.bus.EULARejectEvent;
 import com.hpush.bus.LoginedGPlusEvent;
 import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
+import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SelectMessageEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.db.DB;
@@ -277,7 +278,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		mRemoveAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
-				EventBus.getDefault().post(new RemoveAllEvent());
+				EventBus.getDefault().post(new RemoveAllEvent(mViewPager.getCurrentItem() == 0? WhichPage.Messages : WhichPage.Bookmarks));
 			}
 		});
 		mBookmarkAllBtn = (ImageButton) findViewById(R.id.bookmark_all_btn);
