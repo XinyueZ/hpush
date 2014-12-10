@@ -21,6 +21,7 @@
     <string name="lbl_comments">Comments</string>
     <string name="lbl_login_gplus">Google+ login…</string>
     <string name="lbl_login_fail">I can not login Google+ …</string>
+    <string name="lbl_logout_gplus_cause">Logout Google+ would case unsubscribing PUSH from Hack News …</string>
     <string name="lbl_logout_gplus">Logout</string>
     <string name="lbl_update_from_hacker_news">%1$s updates from Hacker News.</string>
     <string name="lbl_has_been_bookmarked">This article has been bookmarked.</string>

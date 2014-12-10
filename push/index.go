@@ -90,7 +90,7 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
     }()
     detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
     clients := loadClients(_r)
-    push(_w, _r, clients, detailsList)
+    push(_w, _r, clients, detailsList, false)
     responseTemplate.Execute(_w, fmt.Sprintf("Finished client push users:%d",  len(clients)))
 }
 
@@ -105,7 +105,7 @@ func handleResponseX(_w http.ResponseWriter, _r *http.Request) {
     }()
     detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
     clients := loadClients(_r)
-    pushX(_w, _r, clients, detailsList)
+    push(_w, _r, clients, detailsList, true)
     responseTemplate.Execute(_w, fmt.Sprintf("Finished client push users:%d",  len(clients)))
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +132,11 @@ func handleInsert(_w http.ResponseWriter, _r *http.Request) {
     cxt := appengine.NewContext(_r)
     datastore.Put(cxt, datastore.NewIncompleteKey(cxt, "OtherClient", nil), otherClient)
     fmt.Fprintf(_w, otherClient.PushID )
+
+    //Init push
+    detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
+    clients := []OtherClient{*otherClient}
+    push(_w, _r, clients, detailsList, false)
 }
 
 

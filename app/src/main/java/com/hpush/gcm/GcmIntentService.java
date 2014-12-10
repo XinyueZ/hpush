@@ -82,7 +82,6 @@ public class GcmIntentService extends IntentService {
 				final String summaryTitle = getString(R.string.lbl_update_from_hacker_news, count);
 				mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 				Intent intent = new Intent(this, MainActivity.class);
-				intent.putExtra(MainActivity.EXTRAS_OPEN_FROM_NOTIFICATION, true);
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
 						intent, PendingIntent.FLAG_ONE_SHOT);

@@ -168,7 +168,7 @@ public final class DB {
 			v.put(MessagesTbl.TITLE, item.getTitle());
 			v.put(MessagesTbl.URL, item.getUrl());
 			String[] args = new String[] { item.getId() + "" };
-			rowId = mDB.update(BookmarksTbl.TABLE_NAME, v, BookmarksTbl.ID + " = ?", args);
+			rowId = mDB.update(BookmarksTbl.TABLE_NAME, v, MessagesTbl.ID + " = ?", args);
 			success = rowId != -1;
 		} finally {
 			close();
@@ -252,7 +252,7 @@ public final class DB {
 			open();
 		}
 		Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
-				MessagesTbl.TIME + " " + sort.toString());
+				MessagesTbl.PUSHED_TIME + " " + sort.toString());
 		Message item    ;
 		LongSparseArray<MessageListItem>  list = new LongSparseArray<>();
 		try {
@@ -285,7 +285,7 @@ public final class DB {
 			open();
 		}
 		Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, null, null, null, null, null,
-				MessagesTbl.TIME + " " + sort.toString());
+				MessagesTbl.PUSHED_TIME + " " + sort.toString());
 		Message item   ;
 		LongSparseArray<MessageListItem>  list = new LongSparseArray<>();
 		try {

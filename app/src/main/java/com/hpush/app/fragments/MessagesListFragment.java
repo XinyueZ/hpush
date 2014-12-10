@@ -123,6 +123,11 @@ public class MessagesListFragment extends BaseFragment {
 		mDB = DB.getInstance(getActivity().getApplication());
 		mRv = (RecyclerView) view.findViewById(R.id.msg_rv);
 		mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
 		loadMessages();
 	}
 
