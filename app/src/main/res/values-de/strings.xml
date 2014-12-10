@@ -31,7 +31,8 @@
     <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload App:\n
         https://play.google.com/store/apps/details?id=com.hpush</string>
     <string name="lbl_total_messages_head">Du hast jetzt</string>
-    <string name="lbl_total_messages_tail">Pushs.</string>
+    <string name="lbl_total_messages_tail">Meldung(en).</string>
+    <string name="lbl_no_data">Es gibt noch keine Benachrichtigungen, bitte warten die Pushs aus Push-News.</string>
 
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>

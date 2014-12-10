@@ -29,7 +29,8 @@
     <string name="lbl_share_item_content">%1$s\n%2$s\n\n下载:\n
         https://play.google.com/store/apps/details?id=com.hpush</string>
     <string name="lbl_total_messages_head">你当前拥有</string>
-    <string name="lbl_total_messages_tail">推送消息。</string>
+    <string name="lbl_total_messages_tail">消息。</string>
+    <string name="lbl_no_data">目前没有消息，请等待来自社区的推送。</string>
 
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>

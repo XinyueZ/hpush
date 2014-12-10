@@ -95,48 +95,65 @@ func showDetailsList(_w http.ResponseWriter, _r *http.Request) {
 }
 */
 
+func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int, pushedDetailList *[]*ItemDetails, client OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) {
+    if *roundTotal < client.MsgCount {
+        if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
+          ch <- 0
+        } else  if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0   {
+          ch <- 0
+        } else {
+          (*roundTotal)++
+          *pushedDetailList = append(*pushedDetailList, itemDetail)
+          broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
+          ch <- 0
+        }
+    } else {
+      ch <- 0
+    }
+}
+
 func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _itemDetailsList []*ItemDetails, scheduledTask bool) {
   if _clients != nil {
     t := time.Now()
     pushedTime := t.Format("20060102150405")
+    end := make(chan int)
     for _, client := range _clients {
-        var roundTotal int = 0
         pushedDetailList := []*ItemDetails{}
+        ch := make(chan int)
+        var roundTotal int = 0
         for _, itemDetail := range _itemDetailsList {
-            if roundTotal < client.MsgCount {
-                if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
-                  fmt.Fprintf(_w, "<font color=blue>------|%s|</font><p>", itemDetail.Text)
-                } else  if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0   {
-                  fmt.Fprintf(_w, "<font color=blue>++++++|%s|</font><p>", itemDetail.Url)
-                } else {
-                  msg := broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
-                  fmt.Fprintf(_w, "<font color=red>Details:</font>%s<p>", msg)
-                  roundTotal++
-                  pushedDetailList = append(pushedDetailList, itemDetail)
-                }
-            }
+            go dispatch(_w, _r, &roundTotal, &pushedDetailList, client, itemDetail, pushedTime, scheduledTask, ch)
         }
-        msg := summary(_w, _r, client.PushID, pushedDetailList, pushedTime, scheduledTask)
-        fmt.Fprintf(_w, "<font color=green>Summary:</font>%s<p>", msg)
+        c := len(_itemDetailsList)
+        for  i := 0; i < c; i++    {
+          <-ch
+        }
+        roundTotal = 0
+
+        go summary(_w, _r, client.PushID, pushedDetailList, pushedTime, scheduledTask, end )
+    }
+
+    c := len(_clients)
+    for  i := 0; i < c; i++    {
+        <-end
     }
   }
 }
 
 
-func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool ) (pushedMsg string) {
-  pushedCount := len(pushedDetailList)
-  // loopCount := 0
-  // if pushedCount >= 5 {
-  //   loopCount = 5
-  // } else {
-  //   loopCount = pushedCount
-  // }
-  summary := "";
-  for _, itemDetail := range pushedDetailList {
-    summary += ( itemDetail.Title + "<tr>" )
-  }
-  pushedMsg = fmt.Sprintf(
-    `{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "count": %d, "pushed_time" : "%s"}}`,
+func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool, ch chan int )  {
+    pushedCount := len(pushedDetailList)
+    //Push server can not accept to long contents.
+    loopCount := pushedCount
+    if loopCount > 5 {
+       loopCount = 5
+    }
+    summary := ""
+    for  i := 0; i < loopCount; i++    {
+      summary += ( pushedDetailList[i].Title + "<tr>" )
+    }
+
+    pushedMsg := fmt.Sprintf(  `{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "count": %d, "pushed_time" : "%s"}}`,
     clientIds,
     summary,
     pushedCount,
@@ -156,22 +173,23 @@ func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushed
       if  err != nil {
         fmt.Fprintf(_w, "%s", "Error by doing client(broadcast).")
       }
-      } else {
+    } else {
         fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
-      }
-      return
+    }
+    //fmt.Fprintf(_w, "summary %s", pushedMsg)
+    ch <- 0
 }
 
 
-func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string , scheduledTask bool) (pushedMsg string) {
-  pushedMsg = fmt.Sprintf(
+func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string , scheduledTask bool)  {
+  pushedMsg := fmt.Sprintf(
     `{"registration_ids" : ["%s"],"data" : {"by": "%s", "c_id": %d, "score": %d, "comments_count": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s", "pushed_time" : "%s"}}`,
     clientIds,
     details.By,
     details.Id,
     details.Score,
     len(details.Kids),
-    details.Text,
+    "",//details.Text,
     details.Time,
     details.Title,
     details.Url,
@@ -194,5 +212,4 @@ func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, deta
   } else {
       fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
   }
-  return
 }

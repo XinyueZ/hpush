@@ -24,6 +24,7 @@ import com.hpush.app.adapters.MessagesListAdapter;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
+import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
@@ -62,10 +63,24 @@ public class MessagesListFragment extends BaseFragment {
 	 * Application's database.
 	 */
 	private DB mDB;
+	/**
+	 * Indicator for empty data.
+	 */
+	private View mEmptyV;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
+
+	/**
+	 * Handler for {@link LoadAllEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link LoadAllEvent}.
+	 */
+	public void onEvent(LoadAllEvent e) {
+		loadMessages();
+	}
 
 	/**
 	 * Handler for {@link RemoveAllEvent}.
@@ -154,6 +169,7 @@ public class MessagesListFragment extends BaseFragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		mEmptyV = view.findViewById(R.id.empty_ll);
 		mDB = DB.getInstance(getActivity().getApplication());
 		mRv = (ObservableRecyclerView) view.findViewById(R.id.msg_rv);
 		mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -190,6 +206,15 @@ public class MessagesListFragment extends BaseFragment {
 	}
 
 	/**
+	 * Test whether data is empty not, then shows a message on UI.
+	 */
+	private void testEmpty() {
+		if(getWhichPage() == WhichPage.Messages) {
+			mEmptyV.setVisibility(mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+		}
+	}
+
+	/**
 	 * Load all messages.
 	 */
 	protected void loadMessages() {
@@ -210,7 +235,7 @@ public class MessagesListFragment extends BaseFragment {
 							mAdp.setMessages(data);
 							mAdp.notifyDataSetChanged();
 						}
-
+						testEmpty();
 					}
 				};
 		AsyncTaskCompat.executeParallel(task);
@@ -247,6 +272,7 @@ public class MessagesListFragment extends BaseFragment {
 					protected void onPostExecute(Void data) {
 						super.onPostExecute(data);
 						mAdp.notifyDataSetChanged();
+						testEmpty();
 						EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 					}
 				};
@@ -270,6 +296,7 @@ public class MessagesListFragment extends BaseFragment {
 			protected void onPostExecute(Void data) {
 				super.onPostExecute(data);
 				mAdp.notifyDataSetChanged();
+				testEmpty();
 				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 			}
 		};

@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat.InboxStyle;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
 import com.hpush.app.activities.MainActivity;
+import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.Message;
 import com.hpush.db.DB;
@@ -93,6 +94,8 @@ public class GcmIntentService extends IntentService {
 				mNotifyBuilder.setContentIntent(contentIntent);
 				mNotificationManager.notify(0x98, mNotifyBuilder.build());
 				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
+				//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.
+				EventBus.getDefault().post(new LoadAllEvent());
 			}
 		} else {
 			final String by = msg.getString("by");

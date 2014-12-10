@@ -85,7 +85,7 @@ func loadClients(_r *http.Request) (clients []OtherClient) {
 func handleResponse(_w http.ResponseWriter, _r *http.Request) {
     defer func() {
       if err := recover(); err != nil {
-        fmt.Fprintf(_w, "Some error happened might: Nobody to be pushed")
+        fmt.Fprintf(_w, "Some error happened might: Nobody to be pushed: "  )
       }
     }()
     detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))

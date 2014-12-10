@@ -1,10 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.hpush.app.fragments.MessagesListFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/msg_rv"
-    android:layout_gravity="center" />
+    android:layout_height="match_parent">
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+        android:id="@+id/msg_rv"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/empty_ll"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <com.hpush.views.FontTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            app:font="bold"
+            android:textColor="@color/hacker_orange_deep"
+            android:text="@string/lbl_no_data" />
+
+    </LinearLayout>
+
+
+</FrameLayout>
 
