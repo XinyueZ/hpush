@@ -17,6 +17,7 @@ interface BookmarksTbl extends  MessagesTbl{
 			BY + " TEXT  DEFAULT \"\", " +
 			ID + " INTEGER  DEFAULT -1, " +
 			SCORE + " INTEGER  DEFAULT -1, " +
+			COMMENTS_COUNT + " INTEGER  DEFAULT -1, " +
 			TEXT + " TEXT  DEFAULT \"\", " +
 			TIME + " INTEGER   DEFAULT -1, " +
 			TITLE + " TEXT  DEFAULT \"\", " +

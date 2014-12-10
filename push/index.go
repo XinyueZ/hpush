@@ -124,18 +124,26 @@ func handleDeleteAllUsers(_w http.ResponseWriter, _r *http.Request) {
 
 
 func handleInsert(_w http.ResponseWriter, _r *http.Request) {
+    cxt := appengine.NewContext(_r)
     cookies := _r.Cookies()
+
+    q := datastore.NewQuery("OtherClient").Filter("Account =", cookies[0].Value)
+    clients := make([]OtherClient, 0)
+    q.GetAll(cxt, &clients)
+    if len(clients) > 0 {
+      return
+    }
+
     isFullText, _ := strconv.ParseBool(cookies[2].Value)
     msgCount, _ := strconv.Atoi(cookies[3].Value)
     allowEmptyUrl, _ := strconv.ParseBool(cookies[4].Value)
     otherClient := &OtherClient{cookies[0].Value, cookies[1].Value, isFullText, msgCount, allowEmptyUrl}
-    cxt := appengine.NewContext(_r)
     datastore.Put(cxt, datastore.NewIncompleteKey(cxt, "OtherClient", nil), otherClient)
     fmt.Fprintf(_w, otherClient.PushID )
 
     //Init push
     detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
-    clients := []OtherClient{*otherClient}
+    clients = []OtherClient{*otherClient}
     push(_w, _r, clients, detailsList, false)
 }
 

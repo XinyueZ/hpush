@@ -94,6 +94,7 @@ public class GcmIntentService extends IntentService {
 			final String by = msg.getString("by");
 			final long id = Long.valueOf(msg.getString("c_id"));
 			final long score = Long.valueOf(msg.getString("score"));
+			final long commentsCount = Long.valueOf(msg.getString("comments_count"));
 			final String text = msg.getString("text");
 			final long time = Long.valueOf(msg.getString("time"));
 			final String title = msg.getString("title");
@@ -103,7 +104,7 @@ public class GcmIntentService extends IntentService {
 			Prefs.getInstance(getApplication()).setLastPushedTime(pushedtime);
 
 			DB db = DB.getInstance(getApplication());
-			Message message = new Message(by, id, score, text, time, title, url, pushedtime);
+			Message message = new Message(by, id, score, commentsCount, text, time, title, url, pushedtime);
 			boolean foundMsg = db.findMessage(message);
 			boolean foundBookmark = db.findBookmark(message);
 			if(!foundMsg && !foundBookmark) {//To test whether in our local database or not.

@@ -165,11 +165,12 @@ func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushed
 
 func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string , scheduledTask bool) (pushedMsg string) {
   pushedMsg = fmt.Sprintf(
-    `{"registration_ids" : ["%s"],"data" : {"by": "%s", "c_id": %d, "score": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s", "pushed_time" : "%s"}}`,
+    `{"registration_ids" : ["%s"],"data" : {"by": "%s", "c_id": %d, "score": %d, "comments_count": %d, "text": "%s", "time": %d, "title": "%s", "url": "%s", "pushed_time" : "%s"}}`,
     clientIds,
     details.By,
     details.Id,
     details.Score,
+    len(details.Kids),
     details.Text,
     details.Time,
     details.Title,

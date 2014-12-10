@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.chopping.application.LL;
 import com.chopping.net.TaskHelper;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.utils.Prefs;
@@ -51,17 +52,20 @@ public   class RegGCMTask extends AsyncTask<Void, Void, String> {
 	@Override
 	protected void onPostExecute(final String regId) {
 		if (!TextUtils.isEmpty(regId)) {
+			mPrefs.setPushRegId(regId);
 			StringRequest req = new StringRequest(Request.Method.POST, mPrefs.getPushBackendRegUrl(),
 				new Response.Listener<String>() {
 					@Override
 					public void onResponse(String response) {
-						mPrefs.setPushRegId(regId);
+//						mPrefs.setPushRegId(regId);
+						LL.d(response.toString());
 					}
 				},
 				new Response.ErrorListener() {
 					@Override
 					public void onErrorResponse(VolleyError error) {
-						mPrefs.setPushRegId(null);
+						LL.d(error.toString());
+//						mPrefs.setPushRegId(null);
 					}
 			}) {
 				@Override

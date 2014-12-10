@@ -10,6 +10,7 @@ interface MessagesTbl {
 	static final String BY = "_by";
 	static final String ID = "_id";
 	static final String SCORE = "_score";
+	static final String COMMENTS_COUNT  = "_comments_count";
 	static final String TEXT = "_text";
 	static final String TIME = "_time";
 	static final String TITLE = "_title";
@@ -29,6 +30,7 @@ interface MessagesTbl {
 			BY + " TEXT  DEFAULT \"\", " +
 			ID + " INTEGER  DEFAULT -1, " +
 			SCORE + " INTEGER  DEFAULT -1, " +
+			COMMENTS_COUNT + " INTEGER  DEFAULT -1, " +
 			TEXT + " TEXT  DEFAULT \"\", " +
 			TIME + " INTEGER   DEFAULT -1, " +
 			TITLE + " TEXT  DEFAULT \"\", " +

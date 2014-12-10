@@ -75,6 +75,9 @@ public final class MessageListItem {
 		mChecked = checked;
 	}
 
+	public long getCommentCounts() {
+		return message.getCommentsCount();
+	}
 	public Message getMessage() {
 		return message;
 	}

@@ -652,6 +652,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()));
+					mSnackBar.show(getString(R.string.msg_wait_new_messages));
 					makeAds();
 				}
 			}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {

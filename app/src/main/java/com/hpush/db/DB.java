@@ -90,6 +90,7 @@ public final class DB {
 			v.put(MessagesTbl.BY, item.getBy());
 			v.put(MessagesTbl.ID, item.getId());
 			v.put(MessagesTbl.SCORE, item.getScore());
+			v.put(MessagesTbl.COMMENTS_COUNT, item.getCommentsCount());
 			v.put(MessagesTbl.TEXT, item.getText());
 			v.put(MessagesTbl.TIME, item.getTime());
 			v.put(MessagesTbl.TITLE, item.getTitle());
@@ -115,6 +116,7 @@ public final class DB {
 			v.put(MessagesTbl.BY, item.getBy());
 			v.put(MessagesTbl.ID, item.getId());
 			v.put(MessagesTbl.SCORE, item.getScore());
+			v.put(MessagesTbl.COMMENTS_COUNT, item.getCommentsCount());
 			v.put(MessagesTbl.TEXT, item.getText());
 			v.put(MessagesTbl.TIME, item.getTime());
 			v.put(MessagesTbl.TITLE, item.getTitle());
@@ -139,6 +141,7 @@ public final class DB {
 			ContentValues v = new ContentValues();
 			v.put(MessagesTbl.BY, item.getBy());
 			v.put(MessagesTbl.SCORE, item.getScore());
+			v.put(MessagesTbl.COMMENTS_COUNT, item.getCommentsCount());
 			v.put(MessagesTbl.TEXT, item.getText());
 			v.put(MessagesTbl.TIME, item.getTime());
 			v.put(MessagesTbl.TITLE, item.getTitle());
@@ -163,6 +166,7 @@ public final class DB {
 			ContentValues v = new ContentValues();
 			v.put(MessagesTbl.BY, item.getBy());
 			v.put(MessagesTbl.SCORE, item.getScore());
+			v.put(MessagesTbl.COMMENTS_COUNT, item.getCommentsCount());
 			v.put(MessagesTbl.TEXT, item.getText());
 			v.put(MessagesTbl.TIME, item.getTime());
 			v.put(MessagesTbl.TITLE, item.getTitle());
@@ -262,6 +266,7 @@ public final class DB {
 						c.getString(c.getColumnIndex(MessagesTbl.BY)),
 						c.getLong(c.getColumnIndex(MessagesTbl.ID)),
 						c.getLong(c.getColumnIndex(MessagesTbl.SCORE)),
+						c.getLong(c.getColumnIndex(MessagesTbl.COMMENTS_COUNT)),
 						c.getString(c.getColumnIndex(MessagesTbl.TEXT)),
 						c.getLong(c.getColumnIndex(MessagesTbl.TIME)),
 						c.getString(c.getColumnIndex(MessagesTbl.TITLE)),
@@ -295,6 +300,7 @@ public final class DB {
 						c.getString(c.getColumnIndex(MessagesTbl.BY)),
 						c.getLong(c.getColumnIndex(MessagesTbl.ID)),
 						c.getLong(c.getColumnIndex(MessagesTbl.SCORE)),
+						c.getLong(c.getColumnIndex(MessagesTbl.COMMENTS_COUNT)),
 						c.getString(c.getColumnIndex(MessagesTbl.TEXT)),
 						c.getLong(c.getColumnIndex(MessagesTbl.TIME)),
 						c.getString(c.getColumnIndex(MessagesTbl.TITLE)),

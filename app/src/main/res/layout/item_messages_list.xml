@@ -88,6 +88,15 @@
                     app:font="bold"
                     style="@style/Data_Messages_List_Item_TextView" />
 
+                <ImageView
+                    android:src="@drawable/ic_comments_count"
+                    style="@style/Data_Icon_Messages_List_Item_ImageView" />
+
+                <com.hpush.views.FontTextView
+                    android:id="@+id/comments_count_tv"
+                    app:font="bold"
+                    style="@style/Data_Messages_List_Item_TextView" />
+
 
             </LinearLayout>
         </LinearLayout>

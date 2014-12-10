@@ -100,6 +100,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 			viewHolder.mContentTv.setText("Content");
 		}
 		viewHolder.mScoresTv.setText(msg.getScore() + "");
+		viewHolder.mCommentsCountTv.setText(msg.getCommentCounts()+"");
 		viewHolder.mEditorTv.setText(msg.getBy());
 		viewHolder.mTimeTv.setText(Utils.convertTimestamps2DateString(viewHolder.itemView.getContext(),
 				msg.getTime() * 1000));
@@ -164,6 +165,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 		TextView mHeadLineTv;
 		TextView mContentTv;
 		TextView mScoresTv;
+		TextView mCommentsCountTv;
 		TextView mEditorTv;
 		TextView mTimeTv;
 //		View mCommentsV;
@@ -176,6 +178,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 			mHeadLineTv = (TextView) convertView.findViewById(R.id.headline_tv);
 			mContentTv = (TextView) convertView.findViewById(R.id.content_tv);
 			mScoresTv = (TextView) convertView.findViewById(R.id.scores_tv);
+			mCommentsCountTv = (TextView) convertView.findViewById(R.id.comments_count_tv);
 			mEditorTv = (TextView) convertView.findViewById(R.id.editor_tv);
 			mTimeTv = (TextView) convertView.findViewById(R.id.time_tv);
 			mToolbar = (Toolbar) convertView.findViewById(R.id.toolbar);
