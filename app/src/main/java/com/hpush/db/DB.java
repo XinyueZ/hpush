@@ -191,9 +191,13 @@ public final class DB {
 		boolean success;
 		try {
 			long rowId;
-			String whereClause = MessagesTbl.ID + "=?";
-			String[] whereArgs = new String[] {  String.valueOf(item.getId()) };
-			rowId = mDB.delete(MessagesTbl.TABLE_NAME, whereClause, whereArgs);
+			if(item != null) {
+				String whereClause = MessagesTbl.ID + "=?";
+				String[] whereArgs = new String[] { String.valueOf(item.getId()) };
+				rowId = mDB.delete(MessagesTbl.TABLE_NAME, whereClause, whereArgs);
+			} else {
+				rowId = mDB.delete(MessagesTbl.TABLE_NAME, null, null);
+			}
 			success = rowId > 0;
 			if (success) {
 				Cursor c = mDB.query(MessagesTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, null, null, null, null, null);
@@ -216,9 +220,13 @@ public final class DB {
 		boolean success;
 		try {
 			long rowId;
-			String whereClause =  MessagesTbl.ID + "=?";
-			String[] whereArgs = new String[] {  String.valueOf(item.getId()) };
-			rowId = mDB.delete(BookmarksTbl.TABLE_NAME, whereClause, whereArgs);
+			if(item != null) {
+				String whereClause = MessagesTbl.ID + "=?";
+				String[] whereArgs = new String[] { String.valueOf(item.getId()) };
+				rowId = mDB.delete(BookmarksTbl.TABLE_NAME, whereClause, whereArgs);
+			} else {
+				rowId = mDB.delete(BookmarksTbl.TABLE_NAME, null, null);
+			}
 			success = rowId > 0;
 			if (success) {
 				Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, null, null, null, null, null);

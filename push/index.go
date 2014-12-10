@@ -129,9 +129,10 @@ func handleInsert(_w http.ResponseWriter, _r *http.Request) {
 
     q := datastore.NewQuery("OtherClient").Filter("Account =", cookies[0].Value)
     clients := make([]OtherClient, 0)
-    q.GetAll(cxt, &clients)
+    keys, _:= q.GetAll(cxt, &clients)
     if len(clients) > 0 {
-      return
+      //Delete old one if find a existed item.
+      datastore.DeleteMulti(cxt, keys);
     }
 
     isFullText, _ := strconv.ParseBool(cookies[2].Value)

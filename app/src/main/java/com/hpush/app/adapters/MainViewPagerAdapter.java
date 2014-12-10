@@ -15,6 +15,7 @@ import com.hpush.app.fragments.MessagesListFragment;
 public final class MainViewPagerAdapter extends FragmentPagerAdapter  {
 	private Context mContext;
 	private final int[] TITLES = { R.string.lbl_last_messages, R.string.lbl_bookmark };
+	private int mScrollY;
 
 	public MainViewPagerAdapter(Context cxt, FragmentManager fm) {
 		super(fm);
@@ -46,4 +47,13 @@ public final class MainViewPagerAdapter extends FragmentPagerAdapter  {
 	public CharSequence getPageTitle(int position) {
 		return mContext.getString(TITLES[position]);
 	}
+
+	public void setScrollY(int scrollY) {
+		mScrollY = scrollY;
+	}
+
+	public Fragment getItemAt(int position) {
+		return getItem(position);
+	}
+
 }

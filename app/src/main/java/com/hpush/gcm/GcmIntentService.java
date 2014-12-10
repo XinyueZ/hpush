@@ -14,9 +14,12 @@ import android.support.v4.app.NotificationCompat.InboxStyle;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
 import com.hpush.app.activities.MainActivity;
+import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.Message;
 import com.hpush.db.DB;
 import com.hpush.utils.Prefs;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Handle notification.
@@ -89,6 +92,7 @@ public class GcmIntentService extends IntentService {
 						.setContentTitle(summaryTitle).setContentText(summary).setStyle(style.setBigContentTitle(summaryTitle).setSummaryText("+" + count + "..." )).setAutoCancel(true).setLargeIcon(mLargeIcon);
 				mNotifyBuilder.setContentIntent(contentIntent);
 				mNotificationManager.notify(0x98, mNotifyBuilder.build());
+				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 			}
 		} else {
 			final String by = msg.getString("by");

@@ -5,13 +5,17 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.res.TypedArray;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
@@ -25,12 +29,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.chopping.activities.BaseActivity;
 import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
 import com.crashlytics.android.Crashlytics;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
+import com.github.ksoichiro.android.observablescrollview.Scrollable;
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -55,6 +63,9 @@ import com.hpush.bus.LoginedGPlusEvent;
 import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.SelectMessageEvent;
+import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
+import com.hpush.db.DB;
+import com.hpush.db.DB.Sort;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
@@ -65,6 +76,8 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import de.greenrobot.event.EventBus;
 
@@ -73,7 +86,8 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class MainActivity extends BaseActivity implements ConnectionCallbacks, OnConnectionFailedListener {
+public final class MainActivity extends BaseActivity implements ConnectionCallbacks, OnConnectionFailedListener,
+		ObservableScrollViewCallbacks {
 	/**
 	 * Main layout for this component.
 	 */
@@ -82,6 +96,10 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 * The pagers
 	 */
 	private ViewPager mViewPager;
+	/**
+	 * Adapter for {@link #mViewPager}.
+	 */
+	private MainViewPagerAdapter mPagerAdapter;
 	/**
 	 * Navigation drawer.
 	 */
@@ -114,6 +132,15 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 * The interstitial ad.
 	 */
 	private InterstitialAd mInterstitialAd;
+	/**
+	 * Count of total messages saved.
+	 */
+	private TextView mTotalTv;
+
+	/**
+	 * Container for toolbar and viewpager.
+	 */
+	private View mHeaderView;
 
 	private SnackBar mSnackBar;
 	private SignInButton mGPlusBtn;
@@ -198,6 +225,16 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	public void onEvent(LogoutGPlusEvent e) {
 		logoutGPlus();
 	}
+
+	/**
+	 * Handler for {@link UpdateCurrentTotalMessagesEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link UpdateCurrentTotalMessagesEvent}.
+	 */
+	public void onEvent(UpdateCurrentTotalMessagesEvent e) {
+		this.refreshCurrentTotalMessages();
+	}
 	//------------------------------------------------
 
 	@Override
@@ -205,11 +242,15 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		super.onCreate(savedInstanceState);
 		Crashlytics.start(this);
 		setContentView(LAYOUT);
+		mHeaderView = findViewById(R.id.error_content);
+		ViewCompat.setElevation(mHeaderView, getResources().getDimension(R.dimen.toolbar_elevation));
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
 		initDrawer();
 		mViewPager = (ViewPager) findViewById(R.id.vp);
-		mViewPager.setAdapter(new MainViewPagerAdapter(this, getSupportFragmentManager()));
+		mPagerAdapter = new MainViewPagerAdapter(this, getSupportFragmentManager());
+		mViewPager.setAdapter(mPagerAdapter);
+		mViewPager.setPadding(0, 2 * calcActionBarHeight(), 0, 0);
 		// Bind the tabs to the ViewPager
 		mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		mTabs.setViewPager(mViewPager);
@@ -222,7 +263,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 
 			@Override
 			public void onPageSelected(int position) {
-
+				propagateToolbarState(toolbarIsShown());
 			}
 
 			@Override
@@ -230,6 +271,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 
 			}
 		});
+		propagateToolbarState(toolbarIsShown());
 
 		mRemoveAllBtn = (ImageButton) findViewById(R.id.remove_all_btn);
 		mRemoveAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
@@ -258,9 +300,11 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 				loginGPlus();
 			}
 		});
-		if(!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
+		if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
 			mPlusClient.connect();
 		}
+		mTotalTv = (TextView) findViewById(R.id.total_tv);
+		this.refreshCurrentTotalMessages();
 	}
 
 
@@ -269,7 +313,6 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		super.onNewIntent(intent);
 		setIntent(intent);
 	}
-
 
 
 	/**
@@ -722,7 +765,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		}
 		Prefs prefs = Prefs.getInstance(getApplication());
 		if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
-			AsyncTaskCompat.executeParallel( new UnregGCMTask(getApplication(), prefs.getGoogleAccount()));
+			AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication(), prefs.getGoogleAccount()));
 			prefs.setGoogleAccount(null);
 			handleGPlusLinkedUI();
 		}
@@ -737,4 +780,171 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			mPlusClient.connect();
 		}
 	}
+
+
+	/**
+	 * @return The height of actionbar.
+	 */
+	private int calcActionBarHeight() {
+		int[] abSzAttr;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			abSzAttr = new int[] { android.R.attr.actionBarSize };
+		} else {
+			abSzAttr = new int[] { R.attr.actionBarSize };
+		}
+		TypedArray a = obtainStyledAttributes(abSzAttr);
+		return a.getDimensionPixelSize(0, -1);
+	}
+
+	private void refreshCurrentTotalMessages() {
+		AsyncTask<Void, int[], int[]> task = new AsyncTask<Void, int[], int[]>() {
+			@Override
+			protected int[] doInBackground(Void... params) {
+				DB db = DB.getInstance(getApplication());
+				return new  int[]{ db.getBookmarks(Sort.DESC).size() , db.getMessages(Sort.DESC).size()};
+			}
+
+			@Override
+			protected void onPostExecute(int[] ints) {
+				super.onPostExecute(ints);
+				int sum = ints[0] + ints[1];
+				mTotalTv.setText(sum + "");
+			}
+		};
+		AsyncTaskCompat.executeParallel(task);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//UI effect:
+	//https://github.com/ksoichiro/Android-ObservableScrollView/blob/master/observablescrollview-samples/src/main/java/com/github/ksoichiro/android/observablescrollview/samples/ViewPagerTabActivity.java
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	private int mBaseTranslationY;
+
+	@Override
+	public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+		int toolbarHeight = mToolbar.getHeight();
+		float currentHeaderTranslationY = ViewHelper.getTranslationY(mHeaderView);
+		if (firstScroll) {
+			if (-toolbarHeight < currentHeaderTranslationY) {
+				mBaseTranslationY = scrollY;
+			}
+		}
+		int headerTranslationY = Math.min(0, Math.max(-toolbarHeight, -(scrollY - mBaseTranslationY)));
+		ViewPropertyAnimator.animate(mHeaderView).cancel();
+		ViewHelper.setTranslationY(mHeaderView, headerTranslationY);
+	}
+
+	@Override
+	public void onDownMotionEvent() {
+
+	}
+
+
+	@Override
+	public void onUpOrCancelMotionEvent(ScrollState scrollState) {
+		mBaseTranslationY = 0;
+
+		Fragment fragment = mPagerAdapter.getItemAt(mViewPager.getCurrentItem());
+		if (fragment == null) {
+			return;
+		}
+		View view = fragment.getView();
+		if (view == null) {
+			return;
+		}
+
+		// ObservableXxxViews have same API
+		// but currently they don't have any common interfaces.
+		adjustToolbar(scrollState, view);
+	}
+
+	private void adjustToolbar(ScrollState scrollState, View view) {
+		int toolbarHeight = mToolbar.getHeight();
+		final Scrollable scrollView = (Scrollable) view.findViewById(R.id.msg_rv);
+		if (scrollView == null) {
+			return;
+		}
+		if (scrollState == ScrollState.UP) {
+			if (toolbarHeight < scrollView.getCurrentScrollY()) {
+				hideToolbar();
+			} else if (scrollView.getCurrentScrollY() < toolbarHeight) {
+				showToolbar();
+			}
+		} else if (scrollState == ScrollState.DOWN) {
+			if (toolbarHeight < scrollView.getCurrentScrollY()) {
+				showToolbar();
+			}
+		}
+	}
+
+	private void hideToolbar() {
+		float headerTranslationY = ViewHelper.getTranslationY(mHeaderView);
+		int toolbarHeight = mToolbar.getHeight();
+		if (headerTranslationY != -toolbarHeight) {
+			ViewPropertyAnimator.animate(mHeaderView).cancel();
+			ViewPropertyAnimator.animate(mHeaderView).translationY(-toolbarHeight).setDuration(200).start();
+		}
+		propagateToolbarState(false);
+	}
+
+	private void showToolbar() {
+		float headerTranslationY = ViewHelper.getTranslationY(mHeaderView);
+		if (headerTranslationY != 0) {
+			ViewPropertyAnimator.animate(mHeaderView).cancel();
+			ViewPropertyAnimator.animate(mHeaderView).translationY(0).setDuration(200).start();
+		}
+		propagateToolbarState(true);
+	}
+
+	private void propagateToolbarState(boolean isShown) {
+		int toolbarHeight = mToolbar.getHeight();
+
+		// Set scrollY for the fragments that are not created yet
+		mPagerAdapter.setScrollY(isShown ? 0 : toolbarHeight);
+
+		// Set scrollY for the active fragments
+		for (int i = 0; i < mPagerAdapter.getCount(); i++) {
+			// Skip current item
+			if (i == mViewPager.getCurrentItem()) {
+				continue;
+			}
+
+			// Skip destroyed or not created item
+			Fragment f = mPagerAdapter.getItemAt(i);
+			if (f == null) {
+				continue;
+			}
+
+			View view = f.getView();
+			if (view == null) {
+				continue;
+			}
+			propagateToolbarState(isShown, view, toolbarHeight);
+		}
+	}
+
+
+	private void propagateToolbarState(boolean isShown, View view, int toolbarHeight) {
+		Scrollable scrollView = (Scrollable) view.findViewById(R.id.msg_rv);
+		if (scrollView == null) {
+			return;
+		}
+		if (isShown) {
+			// Scroll up
+			if (0 < scrollView.getCurrentScrollY()) {
+				scrollView.scrollVerticallyTo(0);
+			}
+		} else {
+			// Scroll down (to hide padding)
+			if (scrollView.getCurrentScrollY() < toolbarHeight * 2) {
+				scrollView.scrollVerticallyTo(toolbarHeight * 2);
+			}
+		}
+	}
+
+	private boolean toolbarIsShown() {
+		return ViewHelper.getTranslationY(mHeaderView) == 0;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

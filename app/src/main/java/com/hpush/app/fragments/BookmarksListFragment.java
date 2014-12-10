@@ -16,15 +16,11 @@ import com.hpush.db.DB.Sort;
  * @author Xinyue Zhao
  */
 public final class BookmarksListFragment extends MessagesListFragment{
-	/**
-	 * Main layout for this component.
-	 */
-	private static final int LAYOUT = R.layout.fragment_bookmarks_list;
 
 	/**
 	 *  Menu on toolbar.
 	 */
-	public static final int TOOLBAR_MENU = R.menu.item2;
+	private static final int TOOLBAR_MENU = R.menu.item2;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
@@ -81,14 +77,10 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 * @param obj The item to delete.
 	 */
 	protected void deleteDataOnDB(MessageListItem obj) {
-		getDB().removeBookmark(obj.getMessage());
+		getDB().removeBookmark(obj == null ? null : obj.getMessage());
 	}
 
 
-	@Override
-	protected int getLayoutID() {
-		return LAYOUT;
-	}
 
 	/**
 	 *

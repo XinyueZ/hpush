@@ -32,14 +32,15 @@
     <string name="lbl_share_item_title">Hacker News</string>
     <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload App:\n
         https://play.google.com/store/apps/details?id=com.hpush</string>
-
+    <string name="lbl_total_messages_head">You have</string>
+    <string name="lbl_total_messages_tail">message(s).</string>
 
     <string name="msg_push_registering">Signing in push…</string>
     <string name="msg_push_unregistering">Signing out push…</string>
     <string name="msg_app_init">Initialization…</string>
     <string name="msg_save_data">Saving data…</string>
     <string name="msg_wait_new_messages">Please wait and you\'ll get latest news from community as soon as possible.</string>
-
+    <string name="msg_remall_all">Remove all messages here?</string>
 
     <string name="setting_push_title">@string/lbl_turn_on_push_info</string>
     <string name="setting_push_cat">Push</string>
