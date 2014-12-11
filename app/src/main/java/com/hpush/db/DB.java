@@ -1,14 +1,18 @@
 package com.hpush.db;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.util.LongSparseArray;
+import android.text.TextUtils;
 
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
+import com.hpush.utils.Prefs;
 
 
 /**
@@ -259,14 +263,16 @@ public final class DB {
 	}
 
 
-	public synchronized LongSparseArray<MessageListItem> getMessages(Sort sort) {
+	public synchronized List<MessageListItem> getMessages(Sort sort) {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
+		String sortTypeValue = Prefs.getInstance(mContext.getApplicationContext()).getSortTypeValue();
+		String sortColumn = TextUtils.equals(sortTypeValue, "0") ? MessagesTbl.SCORE : MessagesTbl.PUSHED_TIME;
 		Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
-				MessagesTbl.PUSHED_TIME + " " + sort.toString());
+				sortColumn + " " + sort.toString());
 		Message item    ;
-		LongSparseArray<MessageListItem>  list = new LongSparseArray<>();
+		List<MessageListItem>  list = new ArrayList<>();
 		try {
 			while (c.moveToNext()) {
 				item = new Message(
@@ -281,7 +287,7 @@ public final class DB {
 						c.getString(c.getColumnIndex(MessagesTbl.URL)),
 						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
 				);
-				list.put(c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)), new MessageListItem(item));
+				list.add(new MessageListItem(item));
 			}
 		} finally {
 			if (c != null) {
@@ -293,14 +299,17 @@ public final class DB {
 	}
 
 
-	public synchronized LongSparseArray<MessageListItem> getBookmarks(Sort sort) {
+	public synchronized List<MessageListItem> getBookmarks(Sort sort) {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
+
+		String sortTypeValue = Prefs.getInstance(mContext.getApplicationContext()).getSortTypeValue();
+		String sortColumn = TextUtils.equals(sortTypeValue, "0") ? MessagesTbl.SCORE : MessagesTbl.PUSHED_TIME;
 		Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, null, null, null, null, null,
-				MessagesTbl.PUSHED_TIME + " " + sort.toString());
+				sortColumn + " " + sort.toString());
 		Message item   ;
-		LongSparseArray<MessageListItem>  list = new LongSparseArray<>();
+		List<MessageListItem>  list = new ArrayList<>();
 		try {
 			while (c.moveToNext()) {
 				item = new Message(
@@ -315,7 +324,7 @@ public final class DB {
 						c.getString(c.getColumnIndex(MessagesTbl.URL)),
 						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
 				);
-				list.put(c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),  new MessageListItem(item));
+				list.add(new MessageListItem(item));
 			}
 		} finally {
 			if (c != null) {

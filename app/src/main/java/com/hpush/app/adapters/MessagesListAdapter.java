@@ -1,9 +1,10 @@
 package com.hpush.app.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.MenuRes;
-import android.support.v4.util.LongSparseArray;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
@@ -41,7 +42,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	/**
 	 * Data collection.
 	 */
-	private LongSparseArray<MessageListItem> mMessages;
+	private List<MessageListItem> mMessages;
 	/**
 	 * The overflow for toolbar on items.
 	 */
@@ -52,7 +53,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	 * @param messages Data source for the list.
 	 *                 @param menuResId   The overflow for toolbar on items.
 	 */
-	public MessagesListAdapter(LongSparseArray<MessageListItem> messages, @MenuRes int menuResId) {
+	public MessagesListAdapter(List<MessageListItem> messages, @MenuRes int menuResId) {
 		mMessages = messages;
 		this.menuResId = menuResId;
 	}
@@ -61,14 +62,14 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	 * Set data-source.
 	 * @param messages Data source for the list.
 	 */
-	public void setMessages(LongSparseArray<MessageListItem> messages) {
+	public void setMessages(List<MessageListItem> messages) {
 		mMessages = messages;
 	}
 	/**
 	 * Get data-source.
 	 * @return  Data source for the list.
 	 */
-	public LongSparseArray<MessageListItem> getMessages() {
+	public List<MessageListItem> getMessages() {
 		return mMessages;
 	}
 
@@ -81,8 +82,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 
 	@Override
 	public void onBindViewHolder(final MessagesListAdapter.ViewHolder viewHolder, int i) {
-		long id = mMessages.keyAt(i);
-		final MessageListItem msg = mMessages.get(id);
+		final MessageListItem msg = mMessages.get(i);
 		if (!TextUtils.isEmpty(msg.getTitle())) {
 			viewHolder.mFloatTv.setText(msg.getTitle().charAt(0) + "");
 			viewHolder.mHeadLineTv.setVisibility(View.VISIBLE);

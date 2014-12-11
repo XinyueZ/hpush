@@ -47,4 +47,16 @@
             android:inputType="number"/>
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/setting_view"
+        android:layout="@layout/setting_entry">
+        <ListPreference
+            android:key="key.sort.type"
+            android:title="@string/setting_sort"
+            android:layout="@layout/setting_item"
+            android:entries="@array/setting_sort_types"
+            android:entryValues="@array/setting_sort_values"
+            android:defaultValue="@string/default_sort_value"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

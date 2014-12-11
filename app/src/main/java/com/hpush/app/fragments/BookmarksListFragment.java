@@ -1,7 +1,8 @@
 package com.hpush.app.fragments;
 
+import java.util.List;
+
 import android.content.Context;
-import android.support.v4.util.LongSparseArray;
 
 import com.hpush.R;
 import com.hpush.bus.BookmarkAllEvent;
@@ -81,7 +82,7 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 * Get data from application's database.
 	 * @return List of all data from DB.
 	 */
-	protected LongSparseArray<MessageListItem> fetchDataFromDB() {
+	protected List<MessageListItem> fetchDataFromDB() {
 		return getDB().getBookmarks(Sort.DESC);
 	}
 

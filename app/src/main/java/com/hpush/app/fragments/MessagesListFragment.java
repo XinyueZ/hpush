@@ -1,5 +1,6 @@
 package com.hpush.app.fragments;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.os.AsyncTaskCompat;
-import android.support.v4.util.LongSparseArray;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
@@ -148,14 +148,11 @@ public class MessagesListFragment extends BaseFragment {
 		if (getWhichPage() != e.getWhichPage()) {
 			return;
 		}
-		LongSparseArray<MessageListItem> items = mAdp.getMessages();
+		List<MessageListItem> items = mAdp.getMessages();
 		boolean hasSelected = false;
 
-		long key;
-		MessageListItem obj;
-		for (int i = 0; i < items.size(); i++) {
-			key = items.keyAt(i);
-			obj = items.get(key);
+
+		for (MessageListItem obj : items) {
 			if (obj.isChecked()) {
 				hasSelected = true;
 				break;
@@ -285,15 +282,15 @@ public class MessagesListFragment extends BaseFragment {
 	 * Load all messages.
 	 */
 	protected void loadMessages() {
-		AsyncTask<Void, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>> task =
-				new AsyncTask<Void, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>>() {
+		AsyncTask<Void, List<MessageListItem> , List<MessageListItem> > task =
+				new AsyncTask<Void, List<MessageListItem> , List<MessageListItem> >() {
 					@Override
-					protected LongSparseArray<MessageListItem> doInBackground(Void... params) {
+					protected List<MessageListItem> doInBackground(Void... params) {
 						return fetchDataFromDB();
 					}
 
 					@Override
-					protected void onPostExecute(LongSparseArray<MessageListItem> data) {
+					protected void onPostExecute(List<MessageListItem>  data) {
 						super.onPostExecute(data);
 						if (mAdp == null) {
 							mAdp = new MessagesListAdapter(data, getToolbarMenuId());
@@ -314,24 +311,21 @@ public class MessagesListFragment extends BaseFragment {
 	 * Remove items that have been selected.
 	 */
 	private void removeSelectedItems() {
-		AsyncTask<LongSparseArray<MessageListItem>, Void, Void> task =
-				new AsyncTask<LongSparseArray<MessageListItem>, Void, Void>() {
+		AsyncTask<List<MessageListItem>, Void, Void> task =
+				new AsyncTask<List<MessageListItem>, Void, Void>() {
 					@Override
-					protected Void doInBackground(LongSparseArray<MessageListItem>... params) {
-						LongSparseArray<MessageListItem> data = params[0];
-						LongSparseArray<MessageListItem> rmvData = new LongSparseArray<>();
-						long key;
-						for (int i = 0; i < data.size(); i++) {
-							key = data.keyAt(i);
-							MessageListItem obj = data.get(key);
+					protected Void doInBackground(List<MessageListItem>... params) {
+						List<MessageListItem> data = params[0];
+						List<MessageListItem> rmvData = new ArrayList<>();
+
+						for (MessageListItem obj : data) {
 							if (obj.isChecked()) {
 								deleteDataOnDB(obj);
-								rmvData.put(key, obj);
+								rmvData.add(obj);
 							}
 						}
-						for (int i = 0; i < rmvData.size(); i++) {
-							key = rmvData.keyAt(i);
-							data.remove(key);
+						for (MessageListItem rd : rmvData) {
+							data.remove(rd);
 						}
 						return null;
 					}
@@ -376,39 +370,33 @@ public class MessagesListFragment extends BaseFragment {
 	 * Bookmark items that have been selected.
 	 */
 	private void bookmarkSelectedItems() {
-		AsyncTask<LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>>
+		AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>
 				task =
-				new AsyncTask<LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>>() {
+				new AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>() {
 					@Override
-					protected LongSparseArray<MessageListItem> doInBackground(
-							LongSparseArray<MessageListItem>... params) {
-						LongSparseArray<MessageListItem> data = params[0];
-						LongSparseArray<MessageListItem> rmvData = new LongSparseArray<>();
-						long key;
-						for (int i = 0; i < data.size(); i++) {
-							key = data.keyAt(i);
-							MessageListItem obj = data.get(key);
+					protected List<MessageListItem> doInBackground(
+							List<MessageListItem>... params) {
+						List<MessageListItem> data = params[0];
+						List<MessageListItem> rmvData = new ArrayList<>();
+
+						for (MessageListItem obj :data) {
 							if (obj.isChecked()) {
 								deleteDataOnDB(obj);
-								rmvData.put(key, obj);
+								rmvData.add(obj);
 							}
 						}
-						for (int i = 0; i < rmvData.size(); i++) {
-							key = rmvData.keyAt(i);
-							data.remove(key);
+						for (MessageListItem rd : rmvData) {
+							data.remove(rd);
 						}
 						return rmvData;
 					}
 
 					@Override
-					protected void onPostExecute(LongSparseArray<MessageListItem> rmvData) {
+					protected void onPostExecute(List<MessageListItem> rmvData) {
 						super.onPostExecute(rmvData);
 						mAdp.notifyDataSetChanged();
 
-						long key;
-						for (int i = 0; i < rmvData.size(); i++) {
-							key = rmvData.keyAt(i);
-							MessageListItem obj = rmvData.get(key);
+						for (MessageListItem obj : rmvData) {
 							mDB.addBookmark(obj.getMessage());
 						}
 
@@ -425,39 +413,32 @@ public class MessagesListFragment extends BaseFragment {
 	 * 		The item to bookmark.
 	 */
 	private void bookmarkOneItem(final MessageListItem itemToBookmark) {
-		AsyncTask<LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>>
+		AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>
 				task =
-				new AsyncTask<LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>, LongSparseArray<MessageListItem>>() {
+				new AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>() {
 					@Override
-					protected LongSparseArray<MessageListItem> doInBackground(
-							LongSparseArray<MessageListItem>... params) {
-						LongSparseArray<MessageListItem> data = params[0];
-						LongSparseArray<MessageListItem> rmvData = new LongSparseArray<>();
-						long key;
-						for (int i = 0; i < data.size(); i++) {
-							key = data.keyAt(i);
-							MessageListItem obj = data.get(key);
+					protected List<MessageListItem> doInBackground(
+							List<MessageListItem>... params) {
+						List<MessageListItem> data = params[0];
+						List<MessageListItem> rmvData = new ArrayList<>();
+						for (MessageListItem obj:data) {
 							if (obj.getId() == itemToBookmark.getId()) {
 								deleteDataOnDB(obj);
-								rmvData.put(key, obj);
+								rmvData.add( obj);
 							}
 						}
-						for (int i = 0; i < rmvData.size(); i++) {
-							key = rmvData.keyAt(i);
-							data.remove(key);
+						for (MessageListItem rd : rmvData) {
+							data.remove(rd);
 						}
 						return rmvData;
 					}
 
 					@Override
-					protected void onPostExecute(LongSparseArray<MessageListItem> rmvData) {
+					protected void onPostExecute(List<MessageListItem> rmvData) {
 						super.onPostExecute(rmvData);
 						mAdp.notifyDataSetChanged();
 
-						long key;
-						for (int i = 0; i < rmvData.size(); i++) {
-							key = rmvData.keyAt(i);
-							MessageListItem obj = rmvData.get(key);
+						for (MessageListItem obj :rmvData) {
 							mDB.addBookmark(obj.getMessage());
 						}
 
@@ -479,7 +460,7 @@ public class MessagesListFragment extends BaseFragment {
 	 *
 	 * @return List of all data from DB.
 	 */
-	protected LongSparseArray<MessageListItem> fetchDataFromDB() {
+	protected List<MessageListItem> fetchDataFromDB() {
 		return mDB.getMessages(Sort.DESC);
 	}
 

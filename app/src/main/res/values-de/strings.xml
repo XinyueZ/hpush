@@ -28,7 +28,7 @@
     <string name="lbl_share_app_content">Hallo!\n\nDie Push-Benachrichtigung aus Hacker-News zu empfangen?\n\nDownload:\n
         http://tinyurl.com/pcopzdh</string>
     <string name="lbl_share_item_title">Hacker News</string>
-    <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload App:\n
+    <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload Hacker News Push App:\n
         http://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">Du hast jetzt</string>
     <string name="lbl_total_messages_tail">Meldung(en).</string>
@@ -50,6 +50,12 @@
     <string name="setting_messages_count">%1$s Push-Benachrichtigung</string>
     <string name="setting_only_save_latest">Nur die letzten empfangenen Benachrichtigung zu speichern?</string>
     <string name="setting_allow_empty_url">Zulassen und enthalten Nachrichten, die ohne externen Link ankommen.</string>
+    <string name="setting_view">Ansicht</string>
+    <string name="setting_sort">Sortierung</string>
+    <string-array name="setting_sort_types">
+        <item>Absteigende Sortierung nach Score des Threads</item>
+        <item>Absteigende Sortierung nach Ankunft des Threads</item>
+    </string-array>
 
     <string name="btn_confirm">Sicher</string>
     <string name="btn_cancel">Abbrechen</string>

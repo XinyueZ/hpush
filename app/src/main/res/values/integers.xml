@@ -2,4 +2,5 @@
 <resources>
     <integer name="default_msg_count">20</integer>
     <integer name="max_msg_count">100</integer>
+
 </resources>

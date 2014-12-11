@@ -25,6 +25,7 @@ public final class Prefs extends BasicPrefs {
 	public static final String KEY_ALLOW_EMPTY_URL = "key.allow.empty.url";
 	private static final String KEY_LAST_PUSHED_TIME = "key.last.pushed.time";
 	private static final String KEY_G_ACCOUNT = "key.g.account";
+	public static final String KEY_SORT_TYPE = "key.sort.type";
 
 	/**
 	 * Storage. Whether the "End User License Agreement" has been shown and agreed at application's first start.
@@ -196,5 +197,13 @@ public final class Prefs extends BasicPrefs {
 	 */
 	public int getSyncRetry() {
 		return getInt(SYNC_RETRY, 60);
+	}
+
+	/**
+	 *
+	 * @return Sort type, by score or time of push.
+	 */
+	public String getSortTypeValue() {
+		return getString(KEY_SORT_TYPE, mContext.getString(R.string.default_sort_value));
 	}
 }
