@@ -24,10 +24,10 @@
     <string name="lbl_logout_gplus">退出</string>
     <string name="lbl_has_been_bookmarked">已经编入收藏夹。</string>
     <string name="lbl_share_app_title">一个不错的应用: %s</string>
-    <string name="lbl_share_app_content">你好！\n\n\u00A0\u00A0\u00A0\u00A0获取Hacker News社区的推送很方便？\n\n下载:https://play.google.com/store/apps/details?id=com.hpush</string>
+    <string name="lbl_share_app_content">你好！\n\n\u00A0\u00A0\u00A0\u00A0获取Hacker News社区的推送很方便？\n\n下载:\nhttp://tinyurl.com/pcopzdh</string>
     <string name="lbl_share_item_title">Hacker News</string>
     <string name="lbl_share_item_content">%1$s\n%2$s\n\n下载:\n
-        https://play.google.com/store/apps/details?id=com.hpush</string>
+        http://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">你当前拥有</string>
     <string name="lbl_total_messages_tail">消息。</string>
     <string name="lbl_no_data">目前没有消息，请等待来自社区的推送。</string>
