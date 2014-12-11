@@ -1,5 +1,10 @@
 package com.hpush.app.fragments;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,14 +14,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.util.LongSparseArray;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request.Method;
 import com.chopping.application.BasicPrefs;
 import com.chopping.fragments.BaseFragment;
+import com.chopping.net.GsonRequestTask;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.hpush.R;
@@ -28,7 +39,9 @@ import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
+import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
+import com.hpush.data.SyncList;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
 import com.hpush.utils.Prefs;
@@ -67,10 +80,50 @@ public class MessagesListFragment extends BaseFragment {
 	 * Indicator for empty data.
 	 */
 	private View mEmptyV;
+	/**
+	 * Refresh view.
+	 */
+	private SwipeRefreshLayout mSwipeRefreshLayout;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
+
+	/**
+	 * Handler for {@link SyncList}.
+	 *
+	 * @param e
+	 * 		Event {@link SyncList}.
+	 */
+	public void onEvent(SyncList e) {
+		if (getWhichPage() == WhichPage.Messages) {
+			mSwipeRefreshLayout.setRefreshing(false);
+		}
+
+		AsyncTask<SyncList, Void, Void> task = new AsyncTask<SyncList, Void, Void>() {
+			@Override
+			protected Void doInBackground(SyncList... params) {
+				Activity activity = getActivity();
+				if (activity != null) {
+					SyncList syncList = params[0];
+					List<Message> msgs = syncList.getSyncList();
+					DB db = DB.getInstance(activity.getApplication());
+					for (Message msg : msgs) {
+						syncDB(db, msg);
+					}
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void aVoid) {
+				super.onPostExecute(aVoid);
+				loadMessages();
+			}
+		};
+		AsyncTaskCompat.executeParallel(task, e);
+	}
+
 
 	/**
 	 * Handler for {@link LoadAllEvent}.
@@ -92,7 +145,7 @@ public class MessagesListFragment extends BaseFragment {
 		if (mAdp == null || mAdp.getMessages() == null || mAdp.getMessages().size() == 0) {
 			return;
 		}
-		if(getWhichPage() != e.getWhichPage()) {
+		if (getWhichPage() != e.getWhichPage()) {
 			return;
 		}
 		LongSparseArray<MessageListItem> items = mAdp.getMessages();
@@ -163,7 +216,7 @@ public class MessagesListFragment extends BaseFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(LAYOUT, container, false);
+		return inflater.inflate(getLayoutResId(), container, false);
 	}
 
 	@Override
@@ -174,7 +227,7 @@ public class MessagesListFragment extends BaseFragment {
 		mRv = (ObservableRecyclerView) view.findViewById(R.id.msg_rv);
 		mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 		mRv.setHasFixedSize(false);
-		Activity parentActivity = getActivity();
+		final Activity parentActivity = getActivity();
 		if (parentActivity instanceof ObservableScrollViewCallbacks) {
 			final int initialPosition = 0;
 			ViewTreeObserver vto = mRv.getViewTreeObserver();
@@ -192,7 +245,21 @@ public class MessagesListFragment extends BaseFragment {
 
 			mRv.setScrollViewCallbacks((ObservableScrollViewCallbacks) parentActivity);
 		}
+
+		if (getWhichPage() == WhichPage.Messages) {
+			mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.content_srl);
+			mSwipeRefreshLayout.setColorSchemeResources(R.color.hacker_orange, R.color.hacker_orange_mid_deep,
+					R.color.hacker_orange_deep, R.color.hacker_orange);
+
+			mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+				@Override
+				public void onRefresh() {
+					sync();
+				}
+			});
+		}
 	}
+
 
 	@Override
 	public void onResume() {
@@ -209,7 +276,7 @@ public class MessagesListFragment extends BaseFragment {
 	 * Test whether data is empty not, then shows a message on UI.
 	 */
 	private void testEmpty() {
-		if(getWhichPage() == WhichPage.Messages) {
+		if (getWhichPage() == WhichPage.Messages) {
 			mEmptyV.setVisibility(mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 		}
 	}
@@ -236,6 +303,7 @@ public class MessagesListFragment extends BaseFragment {
 							mAdp.notifyDataSetChanged();
 						}
 						testEmpty();
+						EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 					}
 				};
 		AsyncTaskCompat.executeParallel(task);
@@ -434,11 +502,83 @@ public class MessagesListFragment extends BaseFragment {
 	}
 
 	/**
-	 *
 	 * @return Define the command whom to do remove.
 	 */
 	protected WhichPage getWhichPage() {
 		return WhichPage.Messages;
 	}
 
+	/**
+	 * @return Layout id.
+	 */
+	protected int getLayoutResId() {
+		return LAYOUT;
+	}
+
+	/**
+	 * Sync DB when sync has been fired, see {@link #sync()}.
+	 *
+	 * @param db
+	 * 		The instance of {@link com.hpush.db.DB}.
+	 * @param message
+	 * 		The msg one of the sync-list.
+	 */
+	protected void syncDB(DB db, Message message) {
+		boolean foundMsg = db.findMessage(message);
+		boolean foundBookmark = db.findBookmark(message);
+		if(!foundMsg && !foundBookmark) {//To test whether in our local database or not.
+			//Save in database.
+			db.addMessage(message);
+		} else {
+			if(foundMsg) {
+				db.updateMessage(message);
+			} else if(foundBookmark) {
+				db.updateBookmark(message);
+			}
+		}
+	}
+
+	/**
+	 * Sync data from backend and refresh DB, see {@link #syncDB(com.hpush.db.DB, com.hpush.data.Message)}.
+	 */
+	private void sync() {
+		final Prefs prefs = (Prefs) getPrefs();
+		GsonRequestTask<SyncList> task = new GsonRequestTask<SyncList>(getActivity().getApplication(),
+				Method.POST, prefs.getPushBackendSyncUrl(), SyncList.class) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				Map<String, String> headers = super.getHeaders();
+				if (headers == null || headers.equals(Collections.emptyMap())) {
+					headers = new HashMap<>();
+				}
+				Prefs prefs = (Prefs) getPrefs();
+				headers.put("Cookie",
+						"Account=" + prefs.getGoogleAccount() + ";pushID=" + prefs.getPushRegId() +
+								";isFullText=" + prefs.isOnlyFullText() + ";msgCount=" +
+								prefs.getMsgCount() + ";allowEmptyLink=" + prefs.allowEmptyUrl());
+				return headers;
+			}
+		};
+		task.setRetryPolicy(new DefaultRetryPolicy(prefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+		task.execute();
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				 if(mSwipeRefreshLayout != null) {
+					 mSwipeRefreshLayout.setRefreshing(false);
+				 }
+			}
+		},
+		prefs.getSyncRetry() * 1000);
+	}
+
+	private android.os.Handler mHandler = new android.os.Handler()   ;
+
+	@Override
+	protected void onReload() {
+		if(getWhichPage()==WhichPage.Messages) {
+			sync();
+		}
+	}
 }

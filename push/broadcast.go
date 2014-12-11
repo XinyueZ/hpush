@@ -32,6 +32,24 @@ type ItemDetails struct {
 }
 
 
+type SyncItemDetails struct {
+  By string
+  Id int64
+  Kids int
+  Score int64
+  Text string
+  Time int64
+  Title string
+  Type string
+  Url string
+  Pushed_Time string
+}
+
+type SyncItemDetailsList struct {
+  SyncList []SyncItemDetails
+}
+
+
 func getTopStories(_w http.ResponseWriter, _r *http.Request) []int64{
     if req, err := http.NewRequest(API_METHOD, API_GET_TOP_STORIES, nil); err == nil {
         cxt := appengine.NewContext(_r)
@@ -83,19 +101,9 @@ func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) (
   return detailsList
 }
 
-/*
-func showDetailsList(_w http.ResponseWriter, _r *http.Request) {
-    itemIds :=  getTopStories(_w, _r)
-    if itemIds != nil {
-      detailsList, _ :=   getItemDetails(_w, _r, itemIds )
-      for _, detail := range detailsList {
-        fmt.Fprintf(_w, "Details:%#v", *detail)
-      }
-    }
-}
-*/
 
-func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int, pushedDetailList *[]*ItemDetails, client OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) {
+func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int, pushedDetailList *[]*ItemDetails,
+  client OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) {
     if *roundTotal < client.MsgCount {
         if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
           ch <- 0
@@ -112,8 +120,9 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int, pushedD
     }
 }
 
-func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _itemDetailsList []*ItemDetails, scheduledTask bool) {
+func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient,   scheduledTask bool) {
   if _clients != nil {
+    _itemDetailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
     t := time.Now()
     pushedTime := t.Format("20060102150405")
     end := make(chan int)
@@ -128,11 +137,8 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, _ite
         for  i := 0; i < c; i++    {
           <-ch
         }
-        roundTotal = 0
-
         go summary(_w, _r, client.PushID, pushedDetailList, pushedTime, scheduledTask, end )
     }
-
     c := len(_clients)
     for  i := 0; i < c; i++    {
         <-end
@@ -145,14 +151,13 @@ func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushed
     pushedCount := len(pushedDetailList)
     //Push server can not accept to long contents.
     loopCount := pushedCount
-    if loopCount > 5 {
-       loopCount = 5
+    if loopCount > SUMMARY_MAX {
+       loopCount = SUMMARY_MAX
     }
     summary := ""
     for  i := 0; i < loopCount; i++    {
       summary += ( pushedDetailList[i].Title + "<tr>" )
     }
-
     pushedMsg := fmt.Sprintf(  `{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "count": %d, "pushed_time" : "%s"}}`,
     clientIds,
     summary,
@@ -192,7 +197,7 @@ func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, deta
     "",//details.Text,
     details.Time,
     details.Title,
-    details.Url,
+    getTinyUrl(_w, _r,   details.Url),
     pushedTime)
   pushedMsgBytes := bytes.NewBufferString(pushedMsg)
 
@@ -212,4 +217,57 @@ func  broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, deta
   } else {
       fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
   }
+}
+
+
+func sync(_w http.ResponseWriter, _r *http.Request, client *OtherClient) {
+    _itemDetailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
+    syncItems := []SyncItemDetails{}
+    var roundTotal int = 0
+    t := time.Now()
+    pushedTime := t.Format("20060102150405")
+    for _, itemDetail := range _itemDetailsList {
+                  //Same logical like dispatch, but I don't use routine.
+                  if roundTotal < client.MsgCount {
+                              if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
+                              } else  if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0   {
+                              } else {
+                                    roundTotal++
+                                    syncItem := SyncItemDetails {
+                                      By : itemDetail.By,
+                                      Id : itemDetail.Id,
+                                      Kids : len(itemDetail.Kids),
+                                      Score :itemDetail.Score,
+                                      Text :itemDetail.Text,
+                                      Time :itemDetail.Time,
+                                      Title :itemDetail.Title,
+                                      Url : getTinyUrl(_w, _r, itemDetail.Url),
+                                      Pushed_Time: pushedTime}
+                                      syncItems = append(syncItems, syncItem)
+                              }
+                 } else {
+                   break
+                 }
+    }
+    json, _ := json.Marshal(SyncItemDetailsList{syncItems})
+    _w.Header().Set("Content-Type", API_RESTYPE)
+    fmt.Fprintf(_w, string(json))
+}
+
+
+func getTinyUrl(_w http.ResponseWriter, _r *http.Request, orignalUrl string) (tingUrl string){
+  if orignalUrl != "" {
+    if req, err := http.NewRequest(API_METHOD, TINY + orignalUrl, nil); err == nil {
+      cxt := appengine.NewContext(_r)
+      httpClient := urlfetch.Client(cxt)
+      _r, err := httpClient.Do(req)
+      defer _r.Body.Close()
+      if err == nil {
+        if bytes, err := ioutil.ReadAll(_r.Body); err == nil {
+          tingUrl = string(bytes)
+        }
+      }
+    }
+  }
+  return
 }

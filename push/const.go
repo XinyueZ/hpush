@@ -19,6 +19,9 @@ const (
   API_METHOD = "GET"
   API_RESTYPE = "application/json"
 
+  TINY = "http://tinyurl.com/api-create.php?url="
+
+  SUMMARY_MAX = 2
   // DEF_FULL_TEXT = true
   // DEF_MSG_COUNT = 3
 )

@@ -3,14 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.hpush.app.fragments.MessagesListFragment"
+    android:background="@color/common_transparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
-        android:id="@+id/msg_rv"
-        android:layout_gravity="center"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/content_srl">
+
+        <com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView
+            android:id="@+id/msg_rv"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/empty_ll"
@@ -34,7 +43,5 @@
             android:text="@string/lbl_no_data" />
 
     </LinearLayout>
-
-
 </FrameLayout>
 

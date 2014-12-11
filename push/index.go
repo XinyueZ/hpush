@@ -33,8 +33,7 @@ const (
   responseForm = `<html><body><form action="/" method="post">{{.}}</p><div><input type="submit" value="Repush"></div></form></body></html>`
 )
 
-//func main() {
-//}
+
 
 type OtherClient struct {
   Account string
@@ -53,6 +52,7 @@ func init() {
   http.HandleFunc("/responseX", handleResponseX)//For scheduled tasks.
   http.HandleFunc("/dela",handleDeleteAllUsers)
   http.HandleFunc("/edit",handleEdit)
+  http.HandleFunc("/sync",handleSync)
 }
 /*
 func login(_w http.ResponseWriter, _r *http.Request) {
@@ -88,9 +88,8 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
         fmt.Fprintf(_w, "Some error happened might: Nobody to be pushed: "  )
       }
     }()
-    detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
     clients := loadClients(_r)
-    push(_w, _r, clients, detailsList, false)
+    push(_w, _r, clients,  false)
     responseTemplate.Execute(_w, fmt.Sprintf("Finished client push users:%d",  len(clients)))
 }
 
@@ -98,14 +97,13 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
 //For scheduled tasks.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 func handleResponseX(_w http.ResponseWriter, _r *http.Request) {
-  defer func() {
+    defer func() {
     if err := recover(); err != nil {
       fmt.Fprintf(_w, "Some error happened might: Nobody to be pushed")
     }
     }()
-    detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
     clients := loadClients(_r)
-    push(_w, _r, clients, detailsList, true)
+    push(_w, _r, clients,  true)
     responseTemplate.Execute(_w, fmt.Sprintf("Finished client push users:%d",  len(clients)))
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,9 +141,8 @@ func handleInsert(_w http.ResponseWriter, _r *http.Request) {
     fmt.Fprintf(_w, otherClient.PushID )
 
     //Init push
-    detailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
     clients = []OtherClient{*otherClient}
-    push(_w, _r, clients, detailsList, false)
+    push(_w, _r, clients,  false)
 }
 
 
@@ -171,3 +168,22 @@ func handleEdit(_w http.ResponseWriter, _r *http.Request) {
     otherClient := &OtherClient{cookies[0].Value, cookies[1].Value, isFullText, msgCount, allowEmptyUrl}
     datastore.Put(cxt, keys[0], otherClient);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//For sync request.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+func handleSync(_w http.ResponseWriter, _r *http.Request) {
+  // defer func() {
+  //   if err := recover(); err != nil {
+  //     fmt.Fprintf(_w, "Some error happened might: sync")
+  //   }
+  // }()
+  cxt := appengine.NewContext(_r)
+  cookies := _r.Cookies()
+  q := datastore.NewQuery("OtherClient").Filter("Account =", cookies[0].Value)
+  clients := make([]OtherClient, 0)
+  q.GetAll(cxt, &clients)
+  client := clients[0]
+  sync(_w, _r, &client)
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////

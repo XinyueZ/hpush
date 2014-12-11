@@ -37,9 +37,11 @@ public final class Prefs extends BasicPrefs {
 	private static final String PUSH_URL_INFO_BACKEND_REG = "push_url_info_backend_reg";
 	private static final String PUSH_URL_INFO_BACKEND_UNREG = "push_url_info_backend_unreg";
 	private static final String PUSH_URL_INFO_BACKEND_EDIT = "push_url_info_backend_edit";
+	private static final String PUSH_URL_INFO_BACKEND_SYNC = "push_url_info_backend_sync";
 	private static final String HACKER_NEWS_HOME_URL = "hacker_news_home_url";
 	private static final String HACKER_NEWS_COMMENTS_URL = "hacker_news_comments_url";
 	private static final String KEY_SHOWN_DETAILS_ADS_TIMES = "ads";
+	private static final String SYNC_RETRY = "sync_retry";
 
 	/**
 	 * Created a DeviceData storage.
@@ -118,6 +120,10 @@ public final class Prefs extends BasicPrefs {
 		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_EDIT, null);
 	}
 
+	public String getPushBackendSyncUrl() {
+		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_SYNC, null);
+	}
+
 	public String getHackerNewsHomeUrl() {
 		return getString(HACKER_NEWS_HOME_URL, null);
 	}
@@ -182,5 +188,13 @@ public final class Prefs extends BasicPrefs {
 	 */
 	public String getGoogleAccount() {
 		return getString(KEY_G_ACCOUNT, null);
+	}
+
+	/**
+	 *@return  Timeout for retry to sync data on backend.
+	 *
+	 */
+	public int getSyncRetry() {
+		return getInt(SYNC_RETRY, 60);
 	}
 }

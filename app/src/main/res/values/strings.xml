@@ -34,7 +34,7 @@
         http://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">You have</string>
     <string name="lbl_total_messages_tail">message(s).</string>
-    <string name="lbl_no_data">There\'re no messages at moment, waiting for push-messages from community.</string>
+    <string name="lbl_no_data">There\'re no messages at moment, however you can synchronize by pulling here.</string>
 
     <string name="msg_push_registering">Signing in push…</string>
     <string name="msg_push_unregistering">Signing out push…</string>

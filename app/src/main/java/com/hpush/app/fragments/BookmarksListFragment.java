@@ -9,6 +9,7 @@ import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.data.MessageListItem;
+import com.hpush.data.SyncList;
 import com.hpush.db.DB.Sort;
 
 /**
@@ -17,7 +18,10 @@ import com.hpush.db.DB.Sort;
  * @author Xinyue Zhao
  */
 public final class BookmarksListFragment extends MessagesListFragment{
-
+	/**
+	 * Main layout for this component.
+	 */
+	private static final int LAYOUT = R.layout.fragment_bookmarks_list;
 	/**
 	 *  Menu on toolbar.
 	 */
@@ -26,7 +30,15 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
-
+	/**
+	 * Handler for {@link SyncList}.
+	 *
+	 * @param e
+	 * 		Event {@link}.
+	 */
+	public void onEvent(SyncList e) {
+		//We don't sync in bookmark.
+	}
 	/**
 	 * Handler for {@link BookmarkedEvent}.
 	 *
@@ -99,4 +111,10 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	protected int getToolbarMenuId() {
 		return TOOLBAR_MENU;
 	}
+
+	@Override
+	protected int getLayoutResId() {
+		return LAYOUT;
+	}
+
 }

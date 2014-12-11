@@ -30,7 +30,7 @@
         http://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">你当前拥有</string>
     <string name="lbl_total_messages_tail">消息。</string>
-    <string name="lbl_no_data">目前没有消息，请等待来自社区的推送。</string>
+    <string name="lbl_no_data">当前没有消息，但是你可以通过下拉来同步数据。</string>
 
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>

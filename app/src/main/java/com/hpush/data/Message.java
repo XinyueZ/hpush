@@ -3,16 +3,28 @@ package com.hpush.data;
 
 import java.io.Serializable;
 
+import com.google.gson.annotations.SerializedName;
+
 public final class Message implements Serializable{
+	@SerializedName("dbid")
 	private long mDbId;
+	@SerializedName("By")
 	private String mBy;
+	@SerializedName("Id")
 	private long mId;
+	@SerializedName("Score")
 	private long mScore;
+	@SerializedName("Kids")
 	private long mCommentsCount;
+	@SerializedName("Text")
 	private String mText;
+	@SerializedName("Time")
 	private long mTime;
+	@SerializedName("Title")
 	private String mTitle;
+	@SerializedName("Url")
 	private String mUrl;
+	@SerializedName("Pushed_Time")
 	private long mPushedTime;
 
 	public Message(long dbId, String by, long id, long score, long commentsCount, String text, long time, String title, String url, long pushedTime) {
