@@ -120,34 +120,49 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int, pushedD
     }
 }
 
+func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string , scheduledTask bool, dispatchCh chan int ) {
+    pushedDetailList := []*ItemDetails{}
+    ch := make(chan int)
+    var roundTotal int = 0
+  //  fmt.Fprintf(_w,  "(<font color=green>%s</font>)(<font color=red>start</font>).</p>", client.Account)
+    for _, itemDetail := range _itemDetailsList {
+      go dispatch(_w, _r, &roundTotal, &pushedDetailList, client, itemDetail, pushedTime, scheduledTask, ch)
+    }
+    c := len(_itemDetailsList)
+    for  i := 0; i < c; i++    {
+      <-ch
+    }
+    endCh := make(chan int)
+    go summary(_w, _r, client.PushID, pushedDetailList, pushedTime, scheduledTask, endCh )
+    <-endCh
+//    fmt.Fprintf(_w,  "(<font color=blue>%s</font>)(<font color=red>finished</font>).</p>", client.Account)
+    dispatchCh <- 0
+}
+
 func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient,   scheduledTask bool) {
   if _clients != nil {
     _itemDetailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
     t := time.Now()
     pushedTime := t.Format("20060102150405")
-    end := make(chan int)
+
+    //Check how many clients needs PUSH.
+    totalDispatch := len(_clients)
+    dispatchCh := make(chan int)
+
+    //Dispatch PUSHs to clients.
     for _, client := range _clients {
-        pushedDetailList := []*ItemDetails{}
-        ch := make(chan int)
-        var roundTotal int = 0
-        for _, itemDetail := range _itemDetailsList {
-            go dispatch(_w, _r, &roundTotal, &pushedDetailList, client, itemDetail, pushedTime, scheduledTask, ch)
-        }
-        c := len(_itemDetailsList)
-        for  i := 0; i < c; i++    {
-          <-ch
-        }
-        go summary(_w, _r, client.PushID, pushedDetailList, pushedTime, scheduledTask, end )
+        go dispatchOnClients(_w, _r, _itemDetailsList, client, pushedTime, scheduledTask, dispatchCh)
     }
-    c := len(_clients)
-    for  i := 0; i < c; i++    {
-        <-end
+
+    //Wait for all pushed clients.
+    for  i := 0; i < totalDispatch; i++  {
+      <-dispatchCh
     }
   }
 }
 
 
-func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool, ch chan int )  {
+func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool, endCh chan int )  {
     pushedCount := len(pushedDetailList)
     //Push server can not accept to long contents.
     loopCount := pushedCount
@@ -182,7 +197,7 @@ func  summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushed
         fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
     }
     //fmt.Fprintf(_w, "summary %s", pushedMsg)
-    ch <- 0
+    endCh <- 0
 }
 
 

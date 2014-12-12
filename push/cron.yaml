@@ -4,4 +4,4 @@ cron:
   #live:
   schedule: every 30 minutes
   #dev:
-  #schedule: every 3 minutes
+  #schedule: every 10 minutes
