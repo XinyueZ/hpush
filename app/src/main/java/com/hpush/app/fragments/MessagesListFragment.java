@@ -1,10 +1,7 @@
 package com.hpush.app.fragments;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,12 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request.Method;
 import com.chopping.application.BasicPrefs;
 import com.chopping.fragments.BaseFragment;
-import com.chopping.net.GsonRequestTask;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.hpush.R;
@@ -45,6 +38,7 @@ import com.hpush.data.MessageListItem;
 import com.hpush.data.SyncList;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
+import com.hpush.gcm.SyncTask;
 import com.hpush.utils.Prefs;
 
 import de.greenrobot.event.EventBus;
@@ -533,26 +527,8 @@ public class MessagesListFragment extends BaseFragment {
 	 * Sync data from backend and refresh DB, see {@link #syncDB(com.hpush.db.DB, com.hpush.data.Message)}.
 	 */
 	private void sync() {
+		SyncTask.sync(getActivity().getApplication());
 		final Prefs prefs = (Prefs) getPrefs();
-		GsonRequestTask<SyncList> task = new GsonRequestTask<SyncList>(getActivity().getApplication(),
-				Method.POST, prefs.getPushBackendSyncUrl(), SyncList.class) {
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				Map<String, String> headers = super.getHeaders();
-				if (headers == null || headers.equals(Collections.emptyMap())) {
-					headers = new HashMap<>();
-				}
-				Prefs prefs = (Prefs) getPrefs();
-				headers.put("Cookie",
-						"Account=" + prefs.getGoogleAccount() + ";pushID=" + prefs.getPushRegId() +
-								";isFullText=" + prefs.isOnlyFullText() + ";msgCount=" +
-								prefs.getMsgCount() + ";allowEmptyLink=" + prefs.allowEmptyUrl());
-				return headers;
-			}
-		};
-		task.setRetryPolicy(new DefaultRetryPolicy(prefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-		task.execute();
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {

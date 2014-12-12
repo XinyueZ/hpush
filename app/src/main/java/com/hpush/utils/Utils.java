@@ -1,9 +1,9 @@
 package com.hpush.utils;
 
+import java.util.Map;
+
 import android.content.Context;
 import android.content.Intent;
-
-import com.hpush.db.MessagesTbl;
 
 import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
 import static android.text.format.DateUtils.FORMAT_SHOW_DATE;
@@ -46,6 +46,25 @@ public final class Utils {
 			return i;
 		}
 		return null;
+	}
+
+	/**
+	 * Do some correct on http-header.
+	 * @param headers The available http-header.
+	 */
+	public static void makeHttpHeaders(Map<String, String> headers) {
+		if (headers.get("Keep-Alive") == null) {
+			headers.put("Keep-Alive", "gzip");
+		}
+		if (headers.get("Accept-Encoding") == null) {
+			headers.put("Accept-Encoding", "gzip");
+		}
+		if (headers.get("Content-Type") == null) {
+			headers.put("Content-Type", "application/x-www-form-urlencoded");
+		}
+		if (headers.get("Content-Length") == null) {
+			headers.put("Content-Length", "0");
+		}
 	}
 
 }

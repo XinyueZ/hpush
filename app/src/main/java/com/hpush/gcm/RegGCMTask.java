@@ -18,6 +18,7 @@ import com.chopping.application.LL;
 import com.chopping.net.TaskHelper;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.utils.Prefs;
+import com.hpush.utils.Utils;
 
 /**
  * Register GCM.
@@ -74,6 +75,7 @@ public   class RegGCMTask extends AsyncTask<Void, Void, String> {
 					if (headers == null || headers.equals(Collections.emptyMap())) {
 						headers = new HashMap<>();
 					}
+					Utils.makeHttpHeaders(headers);
 					headers.put("Cookie", "Account=" + mPrefs.getGoogleAccount()+";pushID=" + regId + ";isFullText=" + mPrefs.isOnlyFullText() + ";msgCount=" + mPrefs.getMsgCount() + ";allowEmptyLink=" + mPrefs.allowEmptyUrl());
 					return headers;
 				}

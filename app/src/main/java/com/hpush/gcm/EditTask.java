@@ -12,6 +12,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.StringRequest;
 import com.chopping.net.TaskHelper;
 import com.hpush.utils.Prefs;
+import com.hpush.utils.Utils;
 
 /**
  * Edit user setting on server.
@@ -32,6 +33,7 @@ public final class EditTask extends StringRequest {
 		if (headers == null || headers.equals(Collections.emptyMap())) {
 			headers = new HashMap<>();
 		}
+		Utils.makeHttpHeaders(headers);
 		headers.put("Cookie", "Account=" + mPrefs.getGoogleAccount()+
 				";pushID=" + mPrefs.getPushRegId() + ";isFullText=" + mPrefs.isOnlyFullText() + ";msgCount=" + mPrefs.getMsgCount() + ";allowEmptyLink=" +
 						mPrefs.allowEmptyUrl());
