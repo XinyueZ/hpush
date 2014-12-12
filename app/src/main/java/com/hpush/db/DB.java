@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
-import com.hpush.utils.Utils;
+import com.hpush.utils.Prefs;
 
 
 /**
@@ -267,7 +267,7 @@ public final class DB {
 			open();
 		}
 		Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
-				Utils.getSortBy(mContext) + " " + sort.toString());
+				 getSortBy(mContext) + " " + sort.toString());
 		Message item    ;
 		List<MessageListItem>  list = new ArrayList<>();
 		try {
@@ -301,7 +301,7 @@ public final class DB {
 			open();
 		}
 		Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, null, null, null, null, null,
-				Utils.getSortBy(mContext) + " " + sort.toString());
+				 getSortBy(mContext) + " " + sort.toString());
 		Message item   ;
 		List<MessageListItem>  list = new ArrayList<>();
 		try {
@@ -360,5 +360,37 @@ public final class DB {
 			close();
 		}
 		return success ;
+	}
+
+
+	/**
+	 * Get column name to sort data.
+	 * <p/>
+	 * <code> <p/>
+	 * <item>Scores</item> <p/>
+	 * <item>Arrival</item> <p/>
+	 * <item>Creation</item> <p/>
+	 * <item>Comments</item> <p/>
+	 * </code>
+	 *
+	 * @param cxt
+	 * 		{@link android.content.Context}.
+	 *
+	 * @return Name of column.
+	 */
+	private static String getSortBy(Context cxt) {
+		String sortTypeValue = Prefs.getInstance(cxt.getApplicationContext()).getSortTypeValue();
+		switch (sortTypeValue) {
+		case "0":
+			return MessagesTbl.SCORE;
+		case "1":
+			return MessagesTbl.PUSHED_TIME;
+		case "2":
+			return MessagesTbl.TIME;
+		case "3":
+			return MessagesTbl.COMMENTS_COUNT;
+		default:
+			return MessagesTbl.TIME;
+		}
 	}
 }

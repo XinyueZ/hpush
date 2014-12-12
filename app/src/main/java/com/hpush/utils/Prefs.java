@@ -156,11 +156,17 @@ public final class Prefs extends BasicPrefs {
 	public boolean isOnlyFullText() {
 		return getBoolean(KEY_FULL_TEXT, mContext.getResources().getBoolean(R.bool.default_accept_full_text));
 	}
-
+	/**
+	 * @return Message count that are available to receiver, "0-100".
+	 */
 	public String getMsgCount() {
 		return getString(KEY_MSG_COUNT, getDefaultDefaultMsgCount() + "");
 	}
 
+	/**
+	 * Set message count that are available to receiver.
+	 * @param msgCount message count "0-100".
+	 */
 	public void setMsgCount(String msgCount) {
 		  setString(KEY_MSG_COUNT, msgCount);
 	}
@@ -207,10 +213,18 @@ public final class Prefs extends BasicPrefs {
 
 	/**
 	 *
-	 * @return Sort type, by score or time of push.
+	 * @return Sort type, by score or time of push, "0-4".
 	 */
 	public String getSortTypeValue() {
 		return getString(KEY_SORT_TYPE, getDefaultSortValue() + "");
+	}
+
+	/**
+	 * Set sort type.
+	 * @param sortTypeValue "0-4".
+	 */
+	public void setSortTypeValue(String sortTypeValue) {
+		setString(KEY_SORT_TYPE, sortTypeValue);
 	}
 
 	private int getDefaultDefaultMsgCount() {

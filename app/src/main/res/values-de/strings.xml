@@ -58,6 +58,10 @@
         <item>Erstellungszeit</item>
         <item>Kommentare</item>
     </string-array>
+    <string name="setting_sort_scores">Ergebnis</string>
+    <string name="setting_sort_arrival">Ankunftszeit</string>
+    <string name="setting_sort_creation">Erstellungszeit</string>
+    <string name="setting_sort_comments">Kommentare</string>
 
     <string name="btn_confirm">Sicher</string>
     <string name="btn_cancel">Abbrechen</string>

@@ -27,8 +27,7 @@
                     style="@style/Headline_Messages_List_Item_TextView"
                     android:layout_gravity="top"
                     android:gravity="top"
-                    android:layout_marginLeft="@dimen/padding_to_float_small_button_size"
-                    />
+                    android:layout_marginLeft="@dimen/padding_to_float_small_button_size" />
             </FrameLayout>
 
             <com.hpush.views.FontTextView
@@ -43,7 +42,7 @@
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
-                    style="@style/ActionBar_ToolBar_On_Item"  />
+                    style="@style/ActionBar_ToolBar_On_Item" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -58,7 +57,6 @@
                         android:id="@+id/time_tv"
                         style="@style/Data_Messages_List_Item_TextView" />
                 </LinearLayout>
-
 
 
             </FrameLayout>
@@ -78,22 +76,30 @@
                     app:font="bold"
                     style="@style/Data_Messages_List_Item_TextView" />
 
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:src="@drawable/ic_comments_count"
+                        style="@style/Data_Icon_Messages_List_Item_ImageView" />
+
+
+                    <com.hpush.views.FontTextView
+                        android:id="@+id/comments_count_tv"
+                        app:font="bold"
+                        style="@style/Data_Messages_List_Item_TextView" />
+
+                </LinearLayout>
 
                 <ImageView
                     android:src="@drawable/ic_editor"
                     style="@style/Data_Icon_Messages_List_Item_ImageView" />
 
+
                 <com.hpush.views.FontTextView
                     android:id="@+id/editor_tv"
-                    app:font="bold"
-                    style="@style/Data_Messages_List_Item_TextView" />
-
-                <ImageView
-                    android:src="@drawable/ic_comments_count"
-                    style="@style/Data_Icon_Messages_List_Item_ImageView" />
-
-                <com.hpush.views.FontTextView
-                    android:id="@+id/comments_count_tv"
                     app:font="bold"
                     style="@style/Data_Messages_List_Item_TextView" />
 

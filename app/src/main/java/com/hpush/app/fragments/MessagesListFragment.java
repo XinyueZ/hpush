@@ -38,6 +38,7 @@ import com.hpush.bus.BookmarkedEvent;
 import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
+import com.hpush.bus.SortAllEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
@@ -89,6 +90,15 @@ public class MessagesListFragment extends BaseFragment {
 	//Subscribes, event-handlers
 	//------------------------------------------------
 
+	/**
+	 * Handler for {@link SortAllEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link SortAllEvent}.
+	 */
+	public void onEvent(SortAllEvent e) {
+		loadMessages();
+	}
 	/**
 	 * Handler for {@link SyncList}.
 	 *

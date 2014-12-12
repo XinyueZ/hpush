@@ -25,6 +25,7 @@ import com.hpush.bus.SelectMessageEvent;
 import com.hpush.data.MessageListItem;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
+import com.hpush.views.OnViewAnimatedClickedListener;
 import com.hpush.views.OnViewAnimatedClickedListener2;
 
 import de.greenrobot.event.EventBus;
@@ -110,8 +111,12 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 				EventBus.getDefault().post(new ClickMessageEvent(msg.getMessage()));
 			}
 		});
-
-
+		((View)viewHolder.mCommentsCountTv.getParent()).setOnClickListener(new OnViewAnimatedClickedListener() {
+			@Override
+			public void onClick() {
+				EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.itemView));
+			}
+		});
 		viewHolder.mToolbar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem menuItem) {

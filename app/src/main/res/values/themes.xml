@@ -12,7 +12,7 @@
         <item name="android:textColorPrimary">@color/common_white</item>
         <!-- android:textColorPrimaryInverse is the  color of the title    text in the Toolbar, in the Theme.AppCompat.Light theme:  -->
         <item name="android:textColorPrimaryInverse">@color/common_white</item>
-        <item name="android:colorAccent">@color/primary_accent</item>
+        <item name="android:colorAccent">@color/common_white</item>
         <item name="android:actionModeBackground">@color/common_orange</item>
         <!-- android:textColorSecondary is the color of the menu overflow icon (three vertical dots) -->
         <item name="android:textColorSecondary">@color/common_white</item>
@@ -24,7 +24,7 @@
         <item name="windowActionBarOverlay">false</item>
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
-        <item name="colorAccent">@color/primary_accent</item>
+        <item name="colorAccent">@color/common_white</item>
         <item name="actionModeBackground">@color/common_orange</item>
         <!--
             android:actionMenuTextColor is the color of the text of

@@ -48,34 +48,4 @@ public final class Utils {
 		return null;
 	}
 
-	/**
-	 * Get column name to sort data.
-	 * <p/>
-	 * <code> <p/>
-	 * <item>Scores</item> <p/>
-	 * <item>Arrival</item> <p/>
-	 * <item>Creation</item> <p/>
-	 * <item>Comments</item> <p/>
-	 * </code>
-	 *
-	 * @param cxt
-	 * 		{@link android.content.Context}.
-	 *
-	 * @return Name of column.
-	 */
-	public static String getSortBy(Context cxt) {
-		String sortTypeValue = Prefs.getInstance(cxt.getApplicationContext()).getSortTypeValue();
-		switch (sortTypeValue) {
-		case "0":
-			return MessagesTbl.SCORE;
-		case "1":
-			return MessagesTbl.PUSHED_TIME;
-		case "2":
-			return MessagesTbl.TIME;
-		case "3":
-			return MessagesTbl.COMMENTS_COUNT;
-		default:
-			return MessagesTbl.TIME;
-		}
-	}
 }

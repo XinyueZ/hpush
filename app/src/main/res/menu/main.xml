@@ -1,6 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".app.activities.MainActivity">
 
+    <item
+        android:id="@+id/action_sort"
+        android:title="@string/setting_sort"
+        app:actionProviderClass="com.hpush.views.SortActionViewProvider"
+        android:icon="@drawable/ic_action_view_sort"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_share_app"

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<string name="setting_sort_scores">Scores</string>--><!--<string name="setting_sort_arrival">Arrival</string>--><!--<string name="setting_sort_creation">Creation</string>--><!--<string name="setting_sort_comments">Comments</string>-->
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_sort_scores"
+            android:title="@string/setting_sort_scores"
+            android:checkable="true"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/action_sort_arrival"
+            android:title="@string/setting_sort_arrival"
+            android:checkable="true"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_sort_creation"
+            android:title="@string/setting_sort_creation"
+            android:checkable="true"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_sort_comments"
+            android:title="@string/setting_sort_comments"
+            android:checkable="true"
+            app:showAsAction="never" />
+    </group>
+</menu>
