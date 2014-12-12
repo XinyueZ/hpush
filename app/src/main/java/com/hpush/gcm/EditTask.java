@@ -7,6 +7,7 @@ import java.util.Map;
 import android.content.Context;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.StringRequest;
@@ -25,6 +26,8 @@ public final class EditTask extends StringRequest {
 	public EditTask(Context cxt, int method, String url, Listener<String> listener, ErrorListener errorListener ) {
 		super(method, url, listener, errorListener);
 		mPrefs = Prefs.getInstance(cxt.getApplicationContext());
+		setRetryPolicy(new DefaultRetryPolicy(mPrefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 	}
 
 	@Override

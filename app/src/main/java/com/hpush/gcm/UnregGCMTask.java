@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -74,6 +75,8 @@ public   class UnregGCMTask extends AsyncTask<Void, Void, String> {
 					return headers;
 				}
 			};
+			req.setRetryPolicy(new DefaultRetryPolicy(mPrefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 			TaskHelper.getRequestQueue().add(req);
 //		}
 	}

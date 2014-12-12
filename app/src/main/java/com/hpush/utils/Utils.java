@@ -59,9 +59,7 @@ public final class Utils {
 	 * @param headers The available http-header.
 	 */
 	public static void makeHttpHeaders(Map<String, String> headers) {
-		if (headers.get("Keep-Alive") == null) {
-			headers.put("Keep-Alive", "gzip");
-		}
+
 		if (headers.get("Accept-Encoding") == null) {
 			headers.put("Accept-Encoding", "gzip");
 		}
