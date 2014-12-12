@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.InboxStyle;
@@ -21,6 +23,8 @@ import com.hpush.db.DB;
 import com.hpush.utils.Prefs;
 
 import de.greenrobot.event.EventBus;
+
+import static android.media.AudioManager.RINGER_MODE_SILENT;
 
 /**
  * Handle notification.
@@ -92,6 +96,17 @@ public class GcmIntentService extends IntentService {
 				mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_stat_yp).setTicker(summaryTitle)
 						.setContentTitle(summaryTitle).setContentText(summary).setStyle(style.setBigContentTitle(summaryTitle).setSummaryText("+" + count + "..." )).setAutoCancel(true).setLargeIcon(mLargeIcon);
 				mNotifyBuilder.setContentIntent(contentIntent);
+
+
+				AudioManager audioManager = (AudioManager)  getSystemService(Context.AUDIO_SERVICE);
+				if (audioManager.getRingerMode() != RINGER_MODE_SILENT) {
+					mNotifyBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000 });
+					mNotifyBuilder.setSound(Uri.parse(String.format("android.resource://%s/%s", getPackageName(),
+							R.raw.signal)));
+				}
+				mNotifyBuilder.setLights(getResources().getColor(R.color.primary_color), 1000, 1000);
+
+
 				mNotificationManager.notify(0x98, mNotifyBuilder.build());
 				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 				//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.

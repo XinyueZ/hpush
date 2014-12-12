@@ -5,17 +5,17 @@ package com.hpush.db;
  *
  * @author Xinyue Zhao
  */
-interface MessagesTbl {
+public interface MessagesTbl {
 	static final String DB_ID = "_db_id";
 	static final String BY = "_by";
 	static final String ID = "_id";
-	static final String SCORE = "_score";
-	static final String COMMENTS_COUNT  = "_comments_count";
+	public static final String SCORE = "_score";
+	public static final String COMMENTS_COUNT  = "_comments_count";
 	static final String TEXT = "_text";
-	static final String TIME = "_time";
+	public static final String TIME = "_time";
 	static final String TITLE = "_title";
 	static final String URL = "_url";
-	static final String PUSHED_TIME = "_pushed_time";
+	public static final String PUSHED_TIME = "_pushed_time";
 	static final String TABLE_NAME = "messages";
 
 

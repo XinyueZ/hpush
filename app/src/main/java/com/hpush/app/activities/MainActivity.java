@@ -512,7 +512,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 				@Override
 				public void onDrawerOpened(View drawerView) {
 					super.onDrawerOpened(drawerView);
-					//					animShowMainUI();
+					showToolbar();
 				}
 			};
 			mDrawerLayout.setDrawerListener(mDrawerToggle);

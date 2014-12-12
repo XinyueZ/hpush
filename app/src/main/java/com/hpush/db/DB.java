@@ -8,11 +8,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
-import com.hpush.utils.Prefs;
+import com.hpush.utils.Utils;
 
 
 /**
@@ -267,10 +266,8 @@ public final class DB {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
-		String sortTypeValue = Prefs.getInstance(mContext.getApplicationContext()).getSortTypeValue();
-		String sortColumn = TextUtils.equals(sortTypeValue, "0") ? MessagesTbl.SCORE : MessagesTbl.PUSHED_TIME;
 		Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
-				sortColumn + " " + sort.toString());
+				Utils.getSortBy(mContext) + " " + sort.toString());
 		Message item    ;
 		List<MessageListItem>  list = new ArrayList<>();
 		try {
@@ -303,11 +300,8 @@ public final class DB {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
-
-		String sortTypeValue = Prefs.getInstance(mContext.getApplicationContext()).getSortTypeValue();
-		String sortColumn = TextUtils.equals(sortTypeValue, "0") ? MessagesTbl.SCORE : MessagesTbl.PUSHED_TIME;
 		Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, null, null, null, null, null,
-				sortColumn + " " + sort.toString());
+				Utils.getSortBy(mContext) + " " + sort.toString());
 		Message item   ;
 		List<MessageListItem>  list = new ArrayList<>();
 		try {

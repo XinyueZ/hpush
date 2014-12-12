@@ -54,16 +54,19 @@
     <string name="setting_only_save_latest">Only save the latest messages and remove old ones before saving?</string>
     <string name="setting_allow_empty_url">Allow messages that don\'t have external links.</string>
     <string name="setting_view">View</string>
-    <string name="setting_sort">Sort</string>
+    <string name="setting_sort">Sort order by</string>
     <string-array name="setting_sort_types">
-        <item>Descending order by scores</item>
-        <item>Descending order by loading time</item>
+        <item>Scores</item>
+        <item>Arrival</item>
+        <item>Creation</item>
+        <item>Comments</item>
     </string-array>
     <string-array name="setting_sort_values">
         <item>0</item>
         <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
-    <string name="default_sort_value">0</string>
 
     <!-- Shown in the 'About' window of the app. -->
     <string name="about_body">&lt;b&gt;%1$s &lt;/b&gt;&lt;br&gt;Version %2$s &lt;br&gt;</string>

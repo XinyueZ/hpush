@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v4.os.AsyncTaskCompat;
@@ -131,8 +132,16 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 		EditTextPreference count = (EditTextPreference) findPreference(Prefs.KEY_MSG_COUNT);
 		count.setSummary(getString(R.string.setting_messages_count, prefs.getMsgCount()));
+		count.setText(prefs.getMsgCount());
 		count.setOnPreferenceChangeListener(this);
 
+		ListPreference sort = (ListPreference) findPreference(Prefs.KEY_SORT_TYPE);
+		String value = prefs.getSortTypeValue();
+		sort.setValue(value);
+		int pos = Integer.valueOf(value);
+		String[] arr = getResources().getStringArray(R.array.setting_sort_types);
+		sort.setSummary(arr[pos]);
+		sort.setOnPreferenceChangeListener(this);
 
 		((MarginLayoutParams) findViewById(android.R.id.list).getLayoutParams()).topMargin = getActionBarHeight(this);
 	}
@@ -215,8 +224,17 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 			int max = getResources().getInteger(R.integer.max_msg_count);
 			if (count > max) {
 				count = max;
+				Prefs.getInstance(getApplication()).setMsgCount(max+"");
+				preference.setSummary(getString(R.string.setting_messages_count, count + ""));
+				return false;
 			}
 			preference.setSummary(getString(R.string.setting_messages_count, count + ""));
+		}
+
+		if(preference.getKey().equals(Prefs.KEY_SORT_TYPE)) {
+			int pos = Integer.valueOf(newValue.toString());
+			String[] arr = getResources().getStringArray(R.array.setting_sort_types);
+			preference.setSummary(arr[pos]);
 		}
 		return true;
 	}

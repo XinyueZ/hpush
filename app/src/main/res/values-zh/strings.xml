@@ -49,10 +49,12 @@
     <string name="setting_only_save_latest">只保留最近推送的信息？</string>
     <string name="setting_allow_empty_url">允许没有外部链接的推送消息。</string>
     <string name="setting_view">显示</string>
-    <string name="setting_sort">排序</string>
+    <string name="setting_sort">排序按照</string>
     <string-array name="setting_sort_types">
-        <item>按照帖子热度从大到小排序</item>
-        <item>按照获取到帖子的时间从大到小排序</item>
+        <item>帖子热度</item>
+        <item>取到帖子的时间</item>
+        <item>创建帖子的时间</item>
+        <item>评论人数</item>
     </string-array>
 
     <!-- Shown in the 'About' window of the app. -->

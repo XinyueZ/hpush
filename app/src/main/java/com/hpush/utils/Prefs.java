@@ -43,6 +43,8 @@ public final class Prefs extends BasicPrefs {
 	private static final String HACKER_NEWS_COMMENTS_URL = "hacker_news_comments_url";
 	private static final String KEY_SHOWN_DETAILS_ADS_TIMES = "ads";
 	private static final String SYNC_RETRY = "sync_retry";
+	private static final String DEFAULT_SORT_VALUE = "default_sort_value";
+	private static final String DEFAULT_MSG_COUNT = "default_msg_count";
 
 	/**
 	 * Created a DeviceData storage.
@@ -156,7 +158,11 @@ public final class Prefs extends BasicPrefs {
 	}
 
 	public String getMsgCount() {
-		return getString(KEY_MSG_COUNT, "" + mContext.getResources().getInteger(R.integer.default_msg_count));
+		return getString(KEY_MSG_COUNT, getDefaultDefaultMsgCount() + "");
+	}
+
+	public void setMsgCount(String msgCount) {
+		  setString(KEY_MSG_COUNT, msgCount);
 	}
 
 	public boolean isOnlySaveLatest() {
@@ -204,6 +210,14 @@ public final class Prefs extends BasicPrefs {
 	 * @return Sort type, by score or time of push.
 	 */
 	public String getSortTypeValue() {
-		return getString(KEY_SORT_TYPE, mContext.getString(R.string.default_sort_value));
+		return getString(KEY_SORT_TYPE, getDefaultSortValue() + "");
+	}
+
+	private int getDefaultDefaultMsgCount() {
+		return getInt(DEFAULT_MSG_COUNT, 100);
+	}
+
+	private int getDefaultSortValue() {
+		return getInt(DEFAULT_SORT_VALUE, 2);
 	}
 }

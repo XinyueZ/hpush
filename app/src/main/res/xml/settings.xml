@@ -39,7 +39,6 @@
             android:layout="@layout/setting_item"
             android:defaultValue="@bool/default_allow_empty_url" />
         <EditTextPreference
-            android:defaultValue="@integer/default_msg_count"
             android:key="key.msg.count"
             android:title="@string/setting_count"
             android:summary="@string/setting_messages_count"
@@ -55,8 +54,7 @@
             android:title="@string/setting_sort"
             android:layout="@layout/setting_item"
             android:entries="@array/setting_sort_types"
-            android:entryValues="@array/setting_sort_values"
-            android:defaultValue="@string/default_sort_value"/>
+            android:entryValues="@array/setting_sort_values" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -51,10 +51,12 @@
     <string name="setting_only_save_latest">Nur die letzten empfangenen Benachrichtigung zu speichern?</string>
     <string name="setting_allow_empty_url">Zulassen und enthalten Nachrichten, die ohne externen Link ankommen.</string>
     <string name="setting_view">Ansicht</string>
-    <string name="setting_sort">Sortierung</string>
+    <string name="setting_sort">Sortierung nach</string>
     <string-array name="setting_sort_types">
-        <item>Absteigende Sortierung nach Score des Threads</item>
-        <item>Absteigende Sortierung nach Ankunft des Threads</item>
+        <item>Ergebnis</item>
+        <item>Ankunftszeit</item>
+        <item>Erstellungszeit</item>
+        <item>Kommentare</item>
     </string-array>
 
     <string name="btn_confirm">Sicher</string>
