@@ -32,7 +32,8 @@
         http://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">Du hast jetzt</string>
     <string name="lbl_total_messages_tail">Meldung(en).</string>
-    <string name="lbl_no_data">Es gibt keine Nachrichten im Augenblick, aber Du kannst von hier ziehen, Daten zu synchronisieren.</string>
+    <string name="lbl_no_data">Es gibt keine Nachrichten im Augenblick, aber Du kannst unterziehen, Daten zu synchronisieren.</string>
+    <string name="lbl_no_push_set">Du hast Push-Benachrichtigung noch nicht eingeschaltet, bitte bei der Einstellung einschalten, aber Du kannst unterziehen, Daten zu synchronisieren.</string>
 
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>

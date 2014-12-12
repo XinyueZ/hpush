@@ -8,6 +8,7 @@ import com.hpush.R;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
+import com.hpush.bus.GCMRegistedEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.data.MessageListItem;
 import com.hpush.data.SyncList;
@@ -31,6 +32,16 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
+	/**
+	 * Handler for {@link  com.hpush.bus.GCMRegistedEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.hpush.bus.GCMRegistedEvent}.
+	 */
+	public void onEvent(GCMRegistedEvent e) {
+	}
+
+
 	/**
 	 * Handler for {@link SyncList}.
 	 *

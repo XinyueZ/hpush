@@ -17,8 +17,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.chopping.application.LL;
 import com.chopping.net.TaskHelper;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.hpush.bus.GCMRegistedEvent;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Register GCM.
@@ -53,6 +56,7 @@ public   class RegGCMTask extends AsyncTask<Void, Void, String> {
 	@Override
 	protected void onPostExecute(final String regId) {
 		if (!TextUtils.isEmpty(regId)) {
+			EventBus.getDefault().post(new GCMRegistedEvent());
 			mPrefs.setPushRegId(regId);
 			StringRequest req = new StringRequest(Request.Method.POST, mPrefs.getPushBackendRegUrl(),
 				new Response.Listener<String>() {

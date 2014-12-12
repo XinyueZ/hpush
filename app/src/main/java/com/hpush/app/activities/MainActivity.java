@@ -697,7 +697,22 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 					.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()));
+					AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()) {
+						@Override
+						protected void onPreExecute() {
+							super.onPreExecute();
+							mProgressDialog = ProgressDialog.show(MainActivity.this, null, getString(
+									R.string.msg_push_registering));
+						}
+
+						@Override
+						protected void onPostExecute(String regId) {
+							super.onPostExecute(regId);
+							if (mProgressDialog != null && mProgressDialog.isShowing()) {
+								mProgressDialog.dismiss();
+							}
+						}
+					});
 					mSnackBar.show(getString(R.string.msg_wait_new_messages));
 					makeAds();
 				}

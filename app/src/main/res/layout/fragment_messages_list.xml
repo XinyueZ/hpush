@@ -43,5 +43,37 @@
             android:text="@string/lbl_no_data" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/empty_ll_2"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.hpush.views.FontTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            app:font="bold"
+            android:textColor="@color/hacker_orange_deep"
+            android:text="@string/lbl_no_push_set" />
+
+        <Button
+            android:id="@+id/open_setting_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/common_white"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:background="#dd4b39"
+            android:text="@string/lbl_setting" />
+
+
+    </LinearLayout>
 </FrameLayout>
 

@@ -14,8 +14,10 @@ import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
@@ -24,10 +26,12 @@ import com.chopping.fragments.BaseFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.hpush.R;
+import com.hpush.app.activities.SettingActivity;
 import com.hpush.app.adapters.MessagesListAdapter;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
+import com.hpush.bus.GCMRegistedEvent;
 import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
@@ -76,6 +80,10 @@ public class MessagesListFragment extends BaseFragment {
 	 */
 	private View mEmptyV;
 	/**
+	 * Indicator for empty data.
+	 */
+	private View mEmpty2V;
+	/**
 	 * Refresh view.
 	 */
 	private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -83,6 +91,17 @@ public class MessagesListFragment extends BaseFragment {
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
+
+	/**
+	 * Handler for {@link  GCMRegistedEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link GCMRegistedEvent}.
+	 */
+	public void onEvent(GCMRegistedEvent e) {
+		testEmpty();
+
+	}
 
 	/**
 	 * Handler for {@link SortAllEvent}.
@@ -224,6 +243,15 @@ public class MessagesListFragment extends BaseFragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		mEmptyV = view.findViewById(R.id.empty_ll);
+		mEmpty2V = view.findViewById(R.id.empty_ll_2);
+		if(getWhichPage() == WhichPage.Messages) {
+			mEmpty2V.findViewById(R.id.open_setting_btn).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					SettingActivity.showInstance(getActivity(), v);
+				}
+			});
+		}
 		mDB = DB.getInstance(getActivity().getApplication());
 		mRv = (ObservableRecyclerView) view.findViewById(R.id.msg_rv);
 		mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -266,6 +294,7 @@ public class MessagesListFragment extends BaseFragment {
 	public void onResume() {
 		super.onResume();
 		loadMessages();
+		testEmpty();
 	}
 
 	@Override
@@ -277,8 +306,14 @@ public class MessagesListFragment extends BaseFragment {
 	 * Test whether data is empty not, then shows a message on UI.
 	 */
 	private void testEmpty() {
-		if (getWhichPage() == WhichPage.Messages) {
-			mEmptyV.setVisibility(mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+		if (getWhichPage() == WhichPage.Messages ) {
+			mEmptyV.setVisibility(View.GONE);
+			mEmpty2V.setVisibility(View.GONE);
+			if( !TextUtils.isEmpty(Prefs.getInstance(getActivity().getApplication()).getPushRegId())) {
+				mEmptyV.setVisibility(mAdp == null || mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+			} else {
+				mEmpty2V.setVisibility(mAdp == null ||  mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+			}
 		}
 	}
 

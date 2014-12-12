@@ -31,6 +31,7 @@
     <string name="lbl_total_messages_head">你当前拥有</string>
     <string name="lbl_total_messages_tail">消息。</string>
     <string name="lbl_no_data">当前没有消息，但是你可以通过下拉来同步数据。</string>
+    <string name="lbl_no_push_set">你还没打开推送功能，请在“设置”中打开，不过你可以通过下拉这里来同步数据。</string>
 
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>
