@@ -460,14 +460,16 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 * Show button for gplus.
 	 */
 	private void showGPlusButton() {
-		mGPlusBtn.setVisibility(View.VISIBLE);
+		float initAplha = ViewHelper.getAlpha(mGPlusBtn);
+		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 1 ).setDuration(0).start();
 	}
 
 	/**
 	 * Dismiss button for gplus.
 	 */
 	private void hideGPlusButton() {
-		mGPlusBtn.setVisibility(View.GONE);
+		float initAplha = ViewHelper.getAlpha(mGPlusBtn);
+		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 0 ).setDuration(0).start();
 	}
 
 	private void handleGPlusLinkedUI() {
