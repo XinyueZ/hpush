@@ -56,8 +56,8 @@ public   class RegGCMTask extends AsyncTask<Void, Void, String> {
 	@Override
 	protected void onPostExecute(final String regId) {
 		if (!TextUtils.isEmpty(regId)) {
-			EventBus.getDefault().post(new GCMRegistedEvent());
 			mPrefs.setPushRegId(regId);
+			EventBus.getDefault().post(new GCMRegistedEvent());
 			StringRequest req = new StringRequest(Request.Method.POST, mPrefs.getPushBackendRegUrl(),
 				new Response.Listener<String>() {
 					@Override

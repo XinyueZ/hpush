@@ -83,34 +83,37 @@ public class GcmIntentService extends IntentService {
 			final int count = Integer.valueOf(msg.getString("count"));
 			if(count > 0) {
 				String [] lines = summary.split("<tr>");
-				InboxStyle style = new InboxStyle();
-				for(String line : lines) {
-					style.addLine(line);
+				if(lines.length>0) {
+					InboxStyle style = new InboxStyle();
+					for (String line : lines) {
+						style.addLine(line);
+					}
+					final String summaryTitle = getString(R.string.lbl_update_from_hacker_news, count);
+					mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+					Intent intent = new Intent(this, MainActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
+							intent, PendingIntent.FLAG_ONE_SHOT);
+					mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_stat_yp).setTicker(summaryTitle)
+							.setContentTitle(summaryTitle).setContentText(lines[0]).setStyle(style.setBigContentTitle(
+									summaryTitle).setSummaryText("+" + count + "...")).setAutoCancel(true).setLargeIcon(
+									mLargeIcon);
+					mNotifyBuilder.setContentIntent(contentIntent);
+
+
+					AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+					if (audioManager.getRingerMode() != RINGER_MODE_SILENT) {
+						mNotifyBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000 });
+						mNotifyBuilder.setSound(Uri.parse(String.format("android.resource://%s/%s", getPackageName(), R.raw.signal)));
+					}
+					mNotifyBuilder.setLights(getResources().getColor(R.color.primary_color), 1000, 1000);
+
+
+					mNotificationManager.notify(0x98, mNotifyBuilder.build());
+					EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
+					//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.
+					EventBus.getDefault().post(new LoadAllEvent());
 				}
-				final String summaryTitle = getString(R.string.lbl_update_from_hacker_news, count);
-				mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-				Intent intent = new Intent(this, MainActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
-						intent, PendingIntent.FLAG_ONE_SHOT);
-				mNotifyBuilder = new NotificationCompat.Builder(GcmIntentService.this).setWhen(System.currentTimeMillis()).setSmallIcon(R.drawable.ic_stat_yp).setTicker(summaryTitle)
-						.setContentTitle(summaryTitle).setContentText(summary).setStyle(style.setBigContentTitle(summaryTitle).setSummaryText("+" + count + "..." )).setAutoCancel(true).setLargeIcon(mLargeIcon);
-				mNotifyBuilder.setContentIntent(contentIntent);
-
-
-				AudioManager audioManager = (AudioManager)  getSystemService(Context.AUDIO_SERVICE);
-				if (audioManager.getRingerMode() != RINGER_MODE_SILENT) {
-					mNotifyBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000 });
-					mNotifyBuilder.setSound(Uri.parse(String.format("android.resource://%s/%s", getPackageName(),
-							R.raw.signal)));
-				}
-				mNotifyBuilder.setLights(getResources().getColor(R.color.primary_color), 1000, 1000);
-
-
-				mNotificationManager.notify(0x98, mNotifyBuilder.build());
-				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
-				//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.
-				EventBus.getDefault().post(new LoadAllEvent());
 			}
 		} else {
 			final String by = msg.getString("by");
