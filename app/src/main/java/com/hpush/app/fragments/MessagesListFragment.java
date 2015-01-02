@@ -184,19 +184,22 @@ public class MessagesListFragment extends BaseFragment {
 		if (hasSelected) {
 			removeSelectedItems();
 		} else {
-			new AlertDialog.Builder(getActivity()).setTitle(R.string.application_name).setMessage(
-					R.string.msg_remall_all).setCancelable(false).setPositiveButton(R.string.lbl_yes,
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							removeAllItems();
-						}
-					}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					//Do nothing at moment.
-				}
-			}).create().show();
+			Activity activity = getActivity();
+			if (activity != null) {
+				new AlertDialog.Builder(activity).setTitle(R.string.application_name).setMessage(
+						R.string.msg_remall_all).setCancelable(false).setPositiveButton(R.string.lbl_yes,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								removeAllItems();
+							}
+						}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						//Do nothing at moment.
+					}
+				}).create().show();
+			}
 		}
 	}
 
@@ -309,10 +312,13 @@ public class MessagesListFragment extends BaseFragment {
 		if (getWhichPage() == WhichPage.Messages ) {
 			mEmptyV.setVisibility(View.GONE);
 			mEmpty2V.setVisibility(View.GONE);
-			if( !TextUtils.isEmpty(Prefs.getInstance(getActivity().getApplication()).getPushRegId())) {
-				mEmptyV.setVisibility(mAdp == null || mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-			} else {
-				mEmpty2V.setVisibility(mAdp == null ||  mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+			Activity activity = getActivity();
+			if (activity != null) {
+				if( !TextUtils.isEmpty(Prefs.getInstance(activity.getApplication()).getPushRegId())) {
+					mEmptyV.setVisibility(mAdp == null || mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+				} else {
+					mEmpty2V.setVisibility(mAdp == null ||  mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+				}
 			}
 		}
 	}
@@ -562,17 +568,21 @@ public class MessagesListFragment extends BaseFragment {
 	 * Sync data from backend and refresh DB, see {@link #syncDB(com.hpush.db.DB, com.hpush.data.Message)}.
 	 */
 	private void sync() {
-		SyncTask.sync(getActivity().getApplication());
-		final Prefs prefs = (Prefs) getPrefs();
-		mHandler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				 if(mSwipeRefreshLayout != null) {
-					 mSwipeRefreshLayout.setRefreshing(false);
-				 }
-			}
-		},
-		prefs.getSyncRetry() * 1000);
+		Activity activity = getActivity();
+		if (activity != null) {
+			SyncTask.sync(activity.getApplication());
+			final Prefs prefs = (Prefs) getPrefs();
+			mHandler.postDelayed(new Runnable() {
+									 @Override
+									 public void run() {
+										 if(mSwipeRefreshLayout != null) {
+											 mSwipeRefreshLayout.setRefreshing(false);
+										 }
+									 }
+								 },
+					prefs.getSyncRetry() * 1000);
+		}
+
 	}
 
 	private android.os.Handler mHandler = new android.os.Handler()   ;
