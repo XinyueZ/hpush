@@ -21,7 +21,7 @@ const (
 
   TINY = "http://tinyurl.com/api-create.php?url="
 
-  SUMMARY_MAX = 2
+  SUMMARY_MAX = 3
   // DEF_FULL_TEXT = true
   // DEF_MSG_COUNT = 3
 )
