@@ -3,13 +3,14 @@ package com.hpush.app.adapters;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.MenuRes;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -117,29 +118,33 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 				EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.itemView));
 			}
 		});
+
+
 		viewHolder.mToolbar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem menuItem) {
 				switch (menuItem.getItemId()) {
+				case R.id.action_item_share:
+					Context cxt = viewHolder.itemView.getContext();
+					Menu menu = viewHolder.mToolbar.getMenu();
+					MenuItem menuShare = menu.findItem(R.id.action_item_share);
+					//Getting the actionprovider associated with the menu item whose id is share.
+					android.support.v7.widget.ShareActionProvider provider =
+							(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
+					String url = msg.getUrl();
+					if (TextUtils.isEmpty(url)) {
+						url = Prefs.getInstance(cxt.getApplicationContext()).getHackerNewsCommentsUrl() + msg.getId();
+					}
+					//Setting a share intent.
+					String subject = cxt.getString(R.string.lbl_share_item_title);
+					String text = cxt.getString(R.string.lbl_share_item_content, msg.getTitle(), url);
+					provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
+					break;
 				case R.id.action_item_comment:
 					EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.itemView));
 					break;
 				case R.id.action_item_link:
 					EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.itemView));
-					break;
-				case R.id.action_item_share:
-					Context cxt = viewHolder.itemView.getContext();
-					String url = msg.getUrl();
-					if(TextUtils.isEmpty(url)) {
-						url = Prefs.getInstance(cxt.getApplicationContext()).getHackerNewsCommentsUrl() + msg.getId();
-					}
-					Intent sendIntent = new Intent();
-					sendIntent.setAction(Intent.ACTION_SEND);
-					sendIntent.putExtra(Intent.EXTRA_SUBJECT, cxt.getString(R.string.lbl_share_item_title));
-					sendIntent.putExtra(Intent.EXTRA_TEXT, cxt.getString(R.string.lbl_share_item_content, msg.getTitle(), url));
-					sendIntent.setType("text/plain");
-					sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					cxt.startActivity(sendIntent);
 					break;
 				case R.id.action_item_bookmark:
 					EventBus.getDefault().post(new BookmarkMessageEvent(msg));

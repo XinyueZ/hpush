@@ -353,6 +353,17 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 
+
+		menu.findItem(R.id.action_setting).setVisible(mPlusClient != null && mPlusClient.isConnected());
+		if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
+			menu.findItem(R.id.action_setting).setVisible(true);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+
 		MenuItem menuShare = menu.findItem(R.id.action_share_app);
 		//Getting the actionprovider associated with the menu item whose id is share.
 		android.support.v7.widget.ShareActionProvider provider =
@@ -362,13 +373,8 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		String text = getString(R.string.lbl_share_app_content);
 		provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
 
-		menu.findItem(R.id.action_setting).setVisible(mPlusClient != null && mPlusClient.isConnected());
-		if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
-			menu.findItem(R.id.action_setting).setVisible(true);
-		}
-		return true;
+		return super.onPrepareOptionsMenu(menu);
 	}
-
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
