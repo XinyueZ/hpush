@@ -21,7 +21,8 @@
     <item
         android:id="@+id/action_item_share"
         android:title="@string/lbl_share"
-        app:showAsAction="never" />
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_item_bookmark"
         android:title="@string/lbl_bookmark"

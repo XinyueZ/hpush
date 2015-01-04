@@ -2,12 +2,14 @@ package com.hpush.app.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.os.AsyncTaskCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.Toolbar;
@@ -27,7 +29,9 @@ import com.hpush.R;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
+import com.hpush.db.DB;
 import com.hpush.utils.Prefs;
+import com.hpush.utils.Utils;
 import com.hpush.views.WebViewEx;
 import com.hpush.views.WebViewEx.OnWebViewExScrolledListener;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -204,14 +208,50 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(MENU, menu);
 		if(msg == null) {
 			menu.findItem(R.id.action_item_comment).setVisible(false);
 			menu.findItem(R.id.action_item_share).setVisible(false);
 			menu.findItem(R.id.action_item_bookmark).setVisible(false);
 		}
+
+		AsyncTask<Void,Boolean,Boolean> task = new AsyncTask<Void, Boolean,Boolean>() {
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				msg = (Message) getIntent().getSerializableExtra(EXTRAS_MSG);
+				DB db = DB.getInstance(getApplication());
+				return db.findBookmark(msg);
+			}
+
+			@Override
+			protected void onPostExecute(Boolean found) {
+				super.onPostExecute(found);
+				if(found) {
+					menu.findItem(R.id.action_item_bookmark).setVisible(false);
+				}
+			}
+		};
+		AsyncTaskCompat.executeParallel(task);
 		return true;
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem menuShare = menu.findItem(R.id.action_item_share);
+		//Getting the actionprovider associated with the menu item whose id is share.
+		android.support.v7.widget.ShareActionProvider provider =
+				(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
+		//Setting a share intent.
+		String url = msg.getUrl();
+		if(TextUtils.isEmpty(url)) {
+			url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
+		}
+		String subject = getString(R.string.lbl_share_item_title);
+		String text = getString(R.string.lbl_share_item_content, msg.getTitle(), url);
+		provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
+
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
@@ -236,20 +276,6 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 			break;
 		case R.id.action_item_comment:
 			showInstance(this, Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId(), null, msg);
-			break;
-		case R.id.action_item_share:
-			Context cxt = getApplication();
-			String url = msg.getUrl();
-			if(TextUtils.isEmpty(url)) {
-				url = Prefs.getInstance(cxt.getApplicationContext()).getHackerNewsCommentsUrl() + msg.getId();
-			}
-			Intent sendIntent = new Intent();
-			sendIntent.setAction(Intent.ACTION_SEND);
-			sendIntent.putExtra(Intent.EXTRA_SUBJECT, cxt.getString(R.string.lbl_share_item_title));
-			sendIntent.putExtra(Intent.EXTRA_TEXT, cxt.getString(R.string.lbl_share_item_content, msg.getTitle(), url));
-			sendIntent.setType("text/plain");
-			sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			cxt.startActivity(sendIntent);
 			break;
 		case R.id.action_item_bookmark:
 			EventBus.getDefault().postSticky(new BookmarkMessageEvent(new MessageListItem(msg)));
