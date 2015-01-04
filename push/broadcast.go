@@ -112,36 +112,50 @@ func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) [
 
 func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
 	client OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) {
-	if *roundTotal < client.MsgCount {
-		if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
-			ch <- 0
-		} else if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0 {
-			ch <- 0
+	if ch != nil {
+		if *roundTotal < client.MsgCount {
+			if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
+				ch <- 0
+			} else if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0 {
+				ch <- 0
+			} else {
+				(*roundTotal)++
+				broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
+				ch <- 0
+			}
 		} else {
-			(*roundTotal)++
-			broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
 			ch <- 0
 		}
 	} else {
-		ch <- 0
+		broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
 	}
 }
 
-func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool, dispatchCh chan int) {
-	ch := make(chan int)
-	var roundTotal int = 0
-	//  fmt.Fprintf(_w,  "(<font color=green>%s</font>)(<font color=red>start</font>).</p>", client.Account)
-	for _, itemDetail := range _itemDetailsList {
-		go dispatch(_w, _r, &roundTotal,  client, itemDetail, pushedTime, scheduledTask, ch)
+func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool, dispatchCh chan int, syncType bool) {
+	if !syncType {
+		ch := make(chan int)
+		var roundTotal int = 0
+		for _, itemDetail := range _itemDetailsList {
+			go dispatch(_w, _r, &roundTotal,  client, itemDetail, pushedTime, scheduledTask, ch)
+		}
+		c := len(_itemDetailsList)
+		for i := 0; i < c; i++ {
+			<-ch
+		}
+	} else {
+		var roundTotal int = 0
+		for _, itemDetail := range _itemDetailsList {
+			dispatch(_w, _r, &roundTotal,  client, itemDetail, pushedTime, scheduledTask, nil)
+		}
 	}
-	c := len(_itemDetailsList)
-	for i := 0; i < c; i++ {
-		<-ch
+
+	if !syncType {
+		endCh := make(chan int)
+		go summary(_w, _r, client.PushID, _itemDetailsList, pushedTime, scheduledTask, endCh)
+		<-endCh
+	} else {
+		summary(_w, _r, client.PushID, _itemDetailsList, pushedTime, scheduledTask, nil)
 	}
-	endCh := make(chan int)
-	go summary(_w, _r, client.PushID, _itemDetailsList, pushedTime, scheduledTask, endCh)
-	<-endCh
-	//    fmt.Fprintf(_w,  "(<font color=blue>%s</font>)(<font color=red>finished</font>).</p>", client.Account)
 	dispatchCh <- 0
 }
 
@@ -157,7 +171,7 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, sche
 
 		//Dispatch PUSHs to clients.
 		for _, client := range _clients {
-			go dispatchOnClients(_w, _r, _itemDetailsList, client, pushedTime, scheduledTask, dispatchCh)
+			go dispatchOnClients(_w, _r, _itemDetailsList, client, pushedTime, scheduledTask, dispatchCh, true)
 		}
 
 		//Wait for all pushed clients.
@@ -202,7 +216,9 @@ func summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedD
 		fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
 	}
 	//fmt.Fprintf(_w, "summary %s", pushedMsg)
-	endCh <- 0
+	if endCh != nil {
+		endCh <- 0
+	}
 }
 
 func broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, details *ItemDetails, pushedTime string, scheduledTask bool) {
