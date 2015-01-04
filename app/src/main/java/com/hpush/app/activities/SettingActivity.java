@@ -281,6 +281,13 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	@Override
 	public void onBackPressed() {
+		save();
+	}
+
+	/**
+	 * Save settings on server.
+	 */
+	private void save() {
 		dismissPb();
 		mPb = ProgressDialog.show(this, null, getString(R.string.msg_save_data));
 		mPb.setCancelable(true);
@@ -296,7 +303,18 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 			}, new Response.ErrorListener() {
 				@Override
 				public void onErrorResponse(VolleyError error) {
-					backPressed();
+					String msg = getString(R.string.meta_server_black);
+					new AlertDialog.Builder(SettingActivity.this).setTitle(R.string.application_name).setMessage(msg)
+							.setCancelable(true).setPositiveButton(R.string.btn_retry, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							save();
+						}
+					}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+						}
+					}).create().show();
 				}
 			} ).execute();
 		} else {

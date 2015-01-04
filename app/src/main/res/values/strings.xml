@@ -94,6 +94,7 @@
     <string name="btn_ok">Ok</string>
     <string name="btn_agree">I agree.</string>
     <string name="btn_not_agree">I do not agree.</string>
+    <string name="btn_retry">Retry</string>
 
     <string name="ad_inters_unit_id">ca-app-pub-9133982521997162/9212548933</string>
     <string name="play_service_url">market://details?id=com.google.android.gms</string>

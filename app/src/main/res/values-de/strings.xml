@@ -70,4 +70,5 @@
     <string name="btn_ok">Ok</string>
     <string name="btn_not_agree">Stimmt nicht zu.</string>
     <string name="btn_agree">Stimmt zu</string>
+    <string name="btn_retry">Wiederholen</string>
 </resources>
