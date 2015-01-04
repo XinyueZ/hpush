@@ -76,7 +76,9 @@ func loadDetailsList(_w http.ResponseWriter, _r *http.Request, itemId int64, det
 		cxt := appengine.NewContext(_r)
 		httpClient := urlfetch.Client(cxt)
 		res, err := httpClient.Do(req)
-		defer res.Body.Close()
+		if res != nil {
+			defer res.Body.Close()
+		}
 		if err == nil {
 			if bytes, err := ioutil.ReadAll(res.Body); err == nil {
 				details := new(ItemDetails)
@@ -111,7 +113,8 @@ func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) [
 }
 
 func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
-	client OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) {
+	client OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) (brk bool) {
+	brk = false
 	if ch != nil {
 		if *roundTotal < client.MsgCount {
 			if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
@@ -127,25 +130,37 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
 			ch <- 0
 		}
 	} else {
-		broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
+		if *roundTotal < client.MsgCount {
+			if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
+			} else if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0 {
+			} else {
+				(*roundTotal)++
+				broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
+			}
+		} else {
+			brk = true
+		}
 	}
+	return
 }
 
 func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool, dispatchCh chan int, syncType bool) {
+	var roundTotal int = 0
 	if !syncType {
 		ch := make(chan int)
-		var roundTotal int = 0
 		for _, itemDetail := range _itemDetailsList {
-			go dispatch(_w, _r, &roundTotal,  client, itemDetail, pushedTime, scheduledTask, ch)
+			go dispatch(_w, _r, &roundTotal, client, itemDetail, pushedTime, scheduledTask, ch)
 		}
 		c := len(_itemDetailsList)
 		for i := 0; i < c; i++ {
 			<-ch
 		}
 	} else {
-		var roundTotal int = 0
 		for _, itemDetail := range _itemDetailsList {
-			dispatch(_w, _r, &roundTotal,  client, itemDetail, pushedTime, scheduledTask, nil)
+			brk := dispatch(_w, _r, &roundTotal, client, itemDetail, pushedTime, scheduledTask, nil)
+			if brk {
+				break
+			}
 		}
 	}
 
@@ -207,15 +222,11 @@ func summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedD
 		}
 		c := appengine.NewContext(_r)
 		client := urlfetch.Client(c)
-		res, err := client.Do(req)
-		defer res.Body.Close()
-		if err != nil {
-			fmt.Fprintf(_w, "%s", "Error by doing client(broadcast).")
+		res, _ := client.Do(req)
+		if res != nil {
+			defer res.Body.Close()
 		}
-	} else {
-		fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
 	}
-	//fmt.Fprintf(_w, "summary %s", pushedMsg)
 	if endCh != nil {
 		endCh <- 0
 	}
@@ -244,13 +255,10 @@ func broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, detai
 		}
 		c := appengine.NewContext(_r)
 		client := urlfetch.Client(c)
-		res, err := client.Do(req)
-		defer res.Body.Close()
-		if err != nil {
-			fmt.Fprintf(_w, "%s", "Error by doing client(broadcast).")
+		res, _ := client.Do(req)
+		if res != nil {
+			defer res.Body.Close()
 		}
-	} else {
-		fmt.Fprintf(_w, "%s", "Error by making new request(broadcast).")
 	}
 }
 
@@ -272,7 +280,7 @@ func sync(_w http.ResponseWriter, _r *http.Request, client *OtherClient) {
 					Id:          itemDetail.Id,
 					Kids:        len(itemDetail.Kids),
 					Score:       itemDetail.Score,
-					Text:        "",//itemDetail.Text,
+					Text:        "", //itemDetail.Text,
 					Time:        itemDetail.Time,
 					Title:       itemDetail.Title,
 					Url:         getTinyUrl(_w, _r, itemDetail.Url),
@@ -293,12 +301,18 @@ func getTinyUrl(_w http.ResponseWriter, _r *http.Request, orignalUrl string) (ti
 		if req, err := http.NewRequest(API_METHOD, TINY+orignalUrl, nil); err == nil {
 			cxt := appengine.NewContext(_r)
 			httpClient := urlfetch.Client(cxt)
-			_r, err := httpClient.Do(req)
-			defer _r.Body.Close()
+			res, err := httpClient.Do(req)
+			if res != nil {
+				defer res.Body.Close()
+			}
 			if err == nil {
-				if bytes, err := ioutil.ReadAll(_r.Body); err == nil {
+				if bytes, err := ioutil.ReadAll(res.Body); err == nil {
 					tingUrl = string(bytes)
+				} else {
+					tingUrl = orignalUrl
 				}
+			} else {
+				tingUrl = orignalUrl
 			}
 		}
 	}
