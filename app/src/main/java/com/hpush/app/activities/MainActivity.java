@@ -55,6 +55,7 @@ import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
 import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;
 import com.hpush.app.fragments.AppListImpFragment;
+import com.hpush.app.fragments.GPlusFragment;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
@@ -322,6 +323,9 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 
 		if(getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+			getSupportFragmentManager().beginTransaction().replace(R.id.gplus_container, GPlusFragment.newInstance(getApplication()))
+					.commit();
 		}
 
 		mHeaderView = findViewById(R.id.error_content);

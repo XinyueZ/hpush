@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:showIn="@layout/item_messages_list">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/ActionBar_ToolBar_On_Item" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="left"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@drawable/ic_time"
+                style="@style/Data_Icon_Messages_List_Item_ImageView" />
+
+            <com.hpush.views.FontTextView
+                android:id="@+id/time_tv"
+                style="@style/Data_Messages_List_Item_TextView" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</merge>
