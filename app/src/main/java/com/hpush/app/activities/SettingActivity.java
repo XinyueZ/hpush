@@ -29,7 +29,9 @@ import com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent;
 import com.chopping.exceptions.CanNotOpenOrFindAppPropertiesException;
 import com.chopping.exceptions.InvalidAppPropertiesException;
 import com.hpush.R;
+import com.hpush.bus.DeleteAccountEvent;
 import com.hpush.bus.EditSettingsEvent;
+import com.hpush.bus.InsertAccountEvent;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
@@ -196,6 +198,8 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if (preference.getKey().equals(Prefs.KEY_PUSH_SETTING)) {
 			mChangedPushStatus = true;
+			EventBus.getDefault().removeStickyEvent(InsertAccountEvent.class);
+			EventBus.getDefault().removeStickyEvent(DeleteAccountEvent.class);
 			if (!Boolean.valueOf(newValue.toString())) {
 				AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication() ) {
 					ProgressDialog dlg;
