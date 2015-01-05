@@ -59,14 +59,18 @@ import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
+import com.hpush.bus.EditSettingsEvent;
 import com.hpush.bus.LoginedGPlusEvent;
 import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SelectMessageEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
+import com.hpush.data.FunctionType;
+import com.hpush.data.Status;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
+import com.hpush.gcm.EditTask;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
@@ -236,6 +240,37 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	public void onEvent(UpdateCurrentTotalMessagesEvent e) {
 		this.refreshCurrentTotalMessages();
 	}
+
+	/**
+	 * Handler for {@link EditSettingsEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link EditSettingsEvent}.
+	 */
+	public void onEvent(EditSettingsEvent e) {
+		saveSettings();
+	}
+
+	/**
+	 * Handler for {@link Status}.
+	 *
+	 * @param e
+	 * 		Event {@link Status}.
+	 */
+	public void onEvent(Status e) {
+		dismissProgressDialog();
+		switch (FunctionType.fromName(e.getFunction())) {
+		case Edit:
+			if(e.status()) {
+				EventBus.getDefault().removeStickyEvent(EditSettingsEvent.class);
+				mSnackBar.show(getString(R.string.msg_saved_settings_successfully));
+			} else {
+				saveSettings();
+			}
+			break;
+		}
+	}
+
 	//------------------------------------------------
 
 	@Override
@@ -714,9 +749,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 						@Override
 						protected void onPostExecute(String regId) {
 							super.onPostExecute(regId);
-							if (mProgressDialog != null && mProgressDialog.isShowing()) {
-								mProgressDialog.dismiss();
-							}
+							dismissProgressDialog();
 						}
 					});
 					mSnackBar.show(getString(R.string.msg_wait_new_messages));
@@ -736,16 +769,12 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 
 	@Override
 	public void onDisconnected() {
-		if (mProgressDialog != null && mProgressDialog.isShowing()) {
-			mProgressDialog.dismiss();
-		}
+		dismissProgressDialog();
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
-		if (mProgressDialog != null && mProgressDialog.isShowing()) {
-			mProgressDialog.dismiss();
-		}
+		dismissProgressDialog();
 		mGPlusBtn.setVisibility(View.VISIBLE);
 
 		if (connectionResult.hasResolution()) {
@@ -837,6 +866,30 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		};
 		AsyncTaskCompat.executeParallel(task);
 	}
+
+	/**
+	 * Save settings on server.
+	 */
+	private void saveSettings() {
+		dismissProgressDialog();
+		Prefs prefs = Prefs.getInstance(getApplication());
+		final String regId = prefs.getPushRegId();
+		if (!TextUtils.isEmpty(regId)) {
+			mProgressDialog = ProgressDialog.show(this, null, getString(R.string.msg_save_data));
+			mProgressDialog.setCancelable(true);
+			new EditTask(getApplication(), prefs.getPushBackendEditUrl()).execute();
+		}
+	}
+
+	/**
+	 * Close progress indicator.
+	 */
+	private void dismissProgressDialog() {
+		if (mProgressDialog != null && mProgressDialog.isShowing()) {
+			mProgressDialog.dismiss();
+		}
+	}
+
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//UI effect:

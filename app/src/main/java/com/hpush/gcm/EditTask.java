@@ -8,10 +8,8 @@ import android.content.Context;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
-import com.android.volley.toolbox.StringRequest;
-import com.chopping.net.TaskHelper;
+import com.chopping.net.GsonRequestTask;
+import com.hpush.data.Status;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 
@@ -20,11 +18,11 @@ import com.hpush.utils.Utils;
  *
  * @author Xinyue Zhao
  */
-public final class EditTask extends StringRequest {
+public final class EditTask extends GsonRequestTask {
 	private final Prefs mPrefs;
 
-	public EditTask(Context cxt, int method, String url, Listener<String> listener, ErrorListener errorListener ) {
-		super(method, url, listener, errorListener);
+	public EditTask(Context cxt,   String url  ) {
+		super(  cxt, Method.POST, url, Status.class);
 		mPrefs = Prefs.getInstance(cxt.getApplicationContext());
 		setRetryPolicy(new DefaultRetryPolicy(mPrefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
 				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -41,9 +39,5 @@ public final class EditTask extends StringRequest {
 				";pushID=" + mPrefs.getPushRegId() + ";isFullText=" + mPrefs.isOnlyFullText() + ";msgCount=" + mPrefs.getMsgCount() + ";allowEmptyLink=" +
 						mPrefs.allowEmptyUrl());
 		return headers;
-	}
-
-	public void execute() {
-		TaskHelper.getRequestQueue().add(this);
 	}
 }

@@ -153,6 +153,11 @@ func handleDelete(_w http.ResponseWriter, _r *http.Request) {
 }
 
 func handleEdit(_w http.ResponseWriter, _r *http.Request) {
+	defer func() {
+		if err := recover(); err != nil {
+			status(_w, false, "edit")
+		}
+	}()
 	cxt := appengine.NewContext(_r)
 	cookies := _r.Cookies()
 	q := datastore.NewQuery("OtherClient").Filter("Account =", cookies[0].Value)
@@ -163,6 +168,7 @@ func handleEdit(_w http.ResponseWriter, _r *http.Request) {
 	allowEmptyUrl, _ := strconv.ParseBool(cookies[4].Value)
 	otherClient := &OtherClient{cookies[0].Value, cookies[1].Value, isFullText, msgCount, allowEmptyUrl}
 	datastore.Put(cxt, keys[0], otherClient)
+	status(_w, true, "edit")
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,3 +190,13 @@ func handleSync(_w http.ResponseWriter, _r *http.Request) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+func status(_w http.ResponseWriter, ok bool, funcName string) {
+	status := "false"
+	if ok {
+		status = "true"
+	}
+	s := fmt.Sprintf(`{"status":%s, "function":%s }`, status, funcName)
+	_w.Header().Set("Content-Type", API_RESTYPE)
+	fmt.Fprintf(_w, s)
+}

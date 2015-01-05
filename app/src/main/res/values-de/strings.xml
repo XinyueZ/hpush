@@ -41,6 +41,7 @@
     <string name="msg_save_data">Daten werden gespeichert…</string>
     <string name="msg_wait_new_messages">Bitte warten Sie, so schnell wie möglich neuesten Nachrichten von Gemeinschaft zu erhalten.</string>
     <string name="msg_remall_all">Möchtest Du alle Meldungen entfernen?</string>
+    <string name="msg_saved_settings_successfully">Speicherte die Einstellungen.</string>
 
     <string name="setting_push_cat">Benachrichtigungen</string>
     <string name="setting_push_off">Aus</string>

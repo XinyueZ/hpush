@@ -15,23 +15,19 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 
-import com.android.volley.Request.Method;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.chopping.application.LL;
 import com.chopping.bus.ApplicationConfigurationDownloadedEvent;
 import com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent;
 import com.chopping.exceptions.CanNotOpenOrFindAppPropertiesException;
 import com.chopping.exceptions.InvalidAppPropertiesException;
 import com.hpush.R;
-import com.hpush.gcm.EditTask;
+import com.hpush.bus.EditSettingsEvent;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
@@ -281,45 +277,8 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	@Override
 	public void onBackPressed() {
-		save();
-	}
-
-	/**
-	 * Save settings on server.
-	 */
-	private void save() {
-		dismissPb();
-		mPb = ProgressDialog.show(this, null, getString(R.string.msg_save_data));
-		mPb.setCancelable(true);
-		Prefs prefs = Prefs.getInstance(getApplication());
-		final String regId = prefs.getPushRegId();
-		if (!TextUtils.isEmpty(regId)) {
-			 new EditTask(getApplication(), Method.POST, prefs
-					.getPushBackendEditUrl(), new Response.Listener<String>() {
-				@Override
-				public void onResponse(String response) {
-					backPressed();
-				}
-			}, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					String msg = getString(R.string.meta_server_black);
-					new AlertDialog.Builder(SettingActivity.this).setTitle(R.string.application_name).setMessage(msg)
-							.setCancelable(true).setPositiveButton(R.string.btn_retry, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton) {
-							save();
-						}
-					}).setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-						}
-					}).create().show();
-				}
-			} ).execute();
-		} else {
-			backPressed();
-		}
+		EventBus.getDefault().postSticky(new EditSettingsEvent());
+		backPressed();
 	}
 
 	private void onAppConfigLoaded() {

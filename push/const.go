@@ -3,9 +3,9 @@ package pushmessager
 
 const (
   //Release,live
-  API_KEY="AIzaSyAIC_FMDkMAkj6xsaolwCkgAqUcfQ7Qg7I"
+  //API_KEY="AIzaSyAIC_FMDkMAkj6xsaolwCkgAqUcfQ7Qg7I"
   //Dev,stage
-  //API_KEY="AIzaSyCTBktsn__VC5VzD93ccj-Jps3FDZcV4f0"
+  API_KEY="AIzaSyCTBktsn__VC5VzD93ccj-Jps3FDZcV4f0"
 
   API_HOST = "https://hacker-news.firebaseio.com"
   API_VERSION = "/v0"
