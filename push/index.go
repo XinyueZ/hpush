@@ -120,6 +120,11 @@ func handleDeleteAllUsers(_w http.ResponseWriter, _r *http.Request) {
 }
 
 func handleInsert(_w http.ResponseWriter, _r *http.Request) {
+	defer func() {
+		if err := recover(); err != nil {
+			status(_w, false, "insert")
+		}
+	}()
 	cxt := appengine.NewContext(_r)
 	cookies := _r.Cookies()
 
@@ -136,7 +141,7 @@ func handleInsert(_w http.ResponseWriter, _r *http.Request) {
 	allowEmptyUrl, _ := strconv.ParseBool(cookies[4].Value)
 	otherClient := &OtherClient{cookies[0].Value, cookies[1].Value, isFullText, msgCount, allowEmptyUrl}
 	datastore.Put(cxt, datastore.NewIncompleteKey(cxt, "OtherClient", nil), otherClient)
-	fmt.Fprintf(_w, otherClient.PushID)
+	status(_w, true, "insert")
 
 	//Init push
 	clients = []OtherClient{*otherClient}
@@ -144,12 +149,18 @@ func handleInsert(_w http.ResponseWriter, _r *http.Request) {
 }
 
 func handleDelete(_w http.ResponseWriter, _r *http.Request) {
+	defer func() {
+		if err := recover(); err != nil {
+			status(_w, false, "delete")
+		}
+	}()
 	cxt := appengine.NewContext(_r)
 	cookies := _r.Cookies()
 	q := datastore.NewQuery("OtherClient").Filter("Account =", cookies[0].Value)
 	clients := make([]OtherClient, 0)
 	keys, _ := q.GetAll(cxt, &clients)
 	datastore.DeleteMulti(cxt, keys)
+	status(_w, true, "delete")
 }
 
 func handleEdit(_w http.ResponseWriter, _r *http.Request) {

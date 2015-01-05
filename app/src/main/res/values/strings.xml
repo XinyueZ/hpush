@@ -43,8 +43,10 @@
     <string name="msg_app_init">Initialization…</string>
     <string name="msg_save_data">Saving data…</string>
     <string name="msg_wait_new_messages">Please wait and you\'ll get latest news from community as soon as possible.</string>
-    <string name="msg_remall_all">Remove all messages here?</string>
+    <string name="msg_remove_all">Remove all messages here?</string>
     <string name="msg_saved_settings_successfully">Saved setting successfully.</string>
+    <string name="msg_saved_account_successfully">Saved the push-account on server successfully.</string>
+    <string name="msg_deleted_account_successfully">Removed the push-account on server successfully.</string>
 
     <string name="setting_push_title">@string/lbl_turn_on_push_info</string>
     <string name="setting_push_cat">Push</string>

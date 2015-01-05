@@ -6,7 +6,7 @@ package com.hpush.data;
  * @author Xinyue Zhao
  */
 public enum FunctionType {
-	Edit("edit");
+	Edit("edit"), Insert("insert"), Delete("delete");
 
 	/**
 	 * Name of function.
@@ -33,6 +33,10 @@ public enum FunctionType {
 		switch (name) {
 		case "edit":
 			return Edit;
+		case "insert":
+			return Insert;
+		case "delete":
+			return Delete;
 		default:
 			return null;
 		}

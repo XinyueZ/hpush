@@ -166,10 +166,10 @@ func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsLis
 
 	if !syncType {
 		endCh := make(chan int)
-		go summary(_w, _r, client.PushID, _itemDetailsList, pushedTime, scheduledTask, endCh)
+		go summary(_w, _r, client , _itemDetailsList, pushedTime, scheduledTask, endCh)
 		<-endCh
 	} else {
-		summary(_w, _r, client.PushID, _itemDetailsList, pushedTime, scheduledTask, nil)
+		summary(_w, _r, client, _itemDetailsList, pushedTime, scheduledTask, nil)
 	}
 	dispatchCh <- 0
 }
@@ -196,10 +196,9 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, sche
 	}
 }
 
-func summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool, endCh chan int) {
-	pushedCount := len(pushedDetailList)
+func summary(_w http.ResponseWriter, _r *http.Request, _client OtherClient, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool, endCh chan int) {
 	//Push server can not accept to long contents.
-	loopCount := pushedCount
+	loopCount := len(pushedDetailList)
 	if loopCount > SUMMARY_MAX {
 		loopCount = SUMMARY_MAX
 	}
@@ -208,9 +207,9 @@ func summary(_w http.ResponseWriter, _r *http.Request, clientIds string, pushedD
 		summary += (pushedDetailList[i].Title + "<tr>")
 	}
 	pushedMsg := fmt.Sprintf(`{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "count": %d, "pushed_time" : "%s"}}`,
-		clientIds,
+		_client.PushID,
 		summary,
-		pushedCount,
+		_client.MsgCount,
 		pushedTime)
 	pushedMsgBytes := bytes.NewBufferString(pushedMsg)
 

@@ -57,9 +57,11 @@ import com.hpush.app.fragments.AppListImpFragment;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
+import com.hpush.bus.DeleteAccountEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
 import com.hpush.bus.EditSettingsEvent;
+import com.hpush.bus.InsertAccountEvent;
 import com.hpush.bus.LoginedGPlusEvent;
 import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
@@ -70,7 +72,7 @@ import com.hpush.data.FunctionType;
 import com.hpush.data.Status;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
-import com.hpush.gcm.EditTask;
+import com.hpush.gcm.ChangeSettingsTask;
 import com.hpush.gcm.RegGCMTask;
 import com.hpush.gcm.UnregGCMTask;
 import com.hpush.utils.Prefs;
@@ -146,7 +148,6 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 * Container for toolbar and viewpager.
 	 */
 	private View mHeaderView;
-
 	private SnackBar mSnackBar;
 	private SignInButton mGPlusBtn;
 	private PlusClient mPlusClient;
@@ -252,6 +253,27 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	}
 
 	/**
+	 * Handler for {@link InsertAccountEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link InsertAccountEvent}.
+	 */
+	public void onEvent(InsertAccountEvent e) {
+		new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendRegUrl()).execute();
+	}
+
+
+	/**
+	 * Handler for {@link DeleteAccountEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link DeleteAccountEvent}.
+	 */
+	public void onEvent(DeleteAccountEvent e) {
+		new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl()).execute();
+	}
+
+	/**
 	 * Handler for {@link Status}.
 	 *
 	 * @param e
@@ -266,6 +288,24 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 				mSnackBar.show(getString(R.string.msg_saved_settings_successfully));
 			} else {
 				saveSettings();
+			}
+			break;
+		case Insert:
+			if(e.status()) {
+				EventBus.getDefault().removeStickyEvent(InsertAccountEvent.class);
+				mSnackBar.show(getString(R.string.msg_saved_account_successfully));
+				makeAds();
+			} else {
+				new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendRegUrl())
+							.execute();
+			}
+			break;
+		case Delete:
+			if(e.status()) {
+				EventBus.getDefault().removeStickyEvent(DeleteAccountEvent.class);
+				mSnackBar.show(getString(R.string.msg_deleted_account_successfully));
+			} else {
+				new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl()).execute();
 			}
 			break;
 		}
@@ -745,20 +785,13 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 							mProgressDialog = ProgressDialog.show(MainActivity.this, null, getString(
 									R.string.msg_push_registering));
 						}
-
-						@Override
-						protected void onPostExecute(String regId) {
-							super.onPostExecute(regId);
-							dismissProgressDialog();
-						}
 					});
 					mSnackBar.show(getString(R.string.msg_wait_new_messages));
-					makeAds();
 				}
 			}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					makeAds();
+
 				}
 			}).create().show();
 		}
@@ -818,7 +851,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		}
 		Prefs prefs = Prefs.getInstance(getApplication());
 		if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
-			AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication(), prefs.getGoogleAccount()));
+			AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication()));
 			prefs.setGoogleAccount(null);
 			handleGPlusLinkedUI();
 		}
@@ -877,7 +910,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		if (!TextUtils.isEmpty(regId)) {
 			mProgressDialog = ProgressDialog.show(this, null, getString(R.string.msg_save_data));
 			mProgressDialog.setCancelable(true);
-			new EditTask(getApplication(), prefs.getPushBackendEditUrl()).execute();
+			new ChangeSettingsTask(getApplication(), prefs.getPushBackendEditUrl()).execute();
 		}
 	}
 

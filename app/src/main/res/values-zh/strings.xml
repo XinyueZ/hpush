@@ -38,8 +38,10 @@
     <string name="msg_app_init">初始化…</string>
     <string name="msg_save_data">保存数据…</string>
     <string name="msg_wait_new_messages">请等待，你将会获得最近和最新的社区消息。</string>
-    <string name="msg_remall_all">是否要删除这里所有的消息？</string>
-    <string name="msg_saved_settings_successfully">保存设置。</string>
+    <string name="msg_remove_all">是否要删除这里所有的消息？</string>
+    <string name="msg_saved_settings_successfully">成功保存设置。</string>
+    <string name="msg_saved_account_successfully">成功保存推送账号。</string>
+    <string name="msg_deleted_account_successfully">成功删除推送账号。</string>
 
     <string name="setting_push_cat">推送</string>
     <string name="setting_push_off">关闭</string>

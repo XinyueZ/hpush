@@ -187,7 +187,7 @@ public class MessagesListFragment extends BaseFragment {
 			Activity activity = getActivity();
 			if (activity != null) {
 				new AlertDialog.Builder(activity).setTitle(R.string.application_name).setMessage(
-						R.string.msg_remall_all).setCancelable(false).setPositiveButton(R.string.lbl_yes,
+						R.string.msg_remove_all).setCancelable(false).setPositiveButton(R.string.lbl_yes,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {

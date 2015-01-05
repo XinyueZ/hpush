@@ -15,6 +15,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,6 +50,10 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 * Progress indicator.
 	 */
 	private ProgressDialog mPb;
+	/**
+	 * Flag for any change of push.
+	 */
+	private boolean mChangedPushStatus;
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
@@ -177,8 +182,9 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	@Override
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		if (preference.getKey().equals(Prefs.KEY_PUSH_SETTING)) {
+			mChangedPushStatus = true;
 			if (!Boolean.valueOf(newValue.toString())) {
-				AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication(), Prefs.getInstance(getApplication()).getGoogleAccount()) {
+				AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication() ) {
 					ProgressDialog dlg;
 
 					@Override
@@ -209,7 +215,9 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 					@Override
 					protected void onPostExecute(String regId) {
 						super.onPostExecute(regId);
-						dlg.dismiss();
+						if (!TextUtils.isEmpty(regId)) {
+							dlg.dismiss();
+						}
 					}
 				});
 			}
@@ -238,7 +246,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	@Override
 	protected void onResume() {
-		EventBus.getDefault().register(this);
+		EventBus.getDefault().registerSticky(this);
 		super.onResume();
 
 		String mightError = null;
@@ -277,7 +285,9 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	@Override
 	public void onBackPressed() {
-		EventBus.getDefault().postSticky(new EditSettingsEvent());
+		if(!mChangedPushStatus) {
+			EventBus.getDefault().postSticky(new EditSettingsEvent());
+		}
 		backPressed();
 	}
 

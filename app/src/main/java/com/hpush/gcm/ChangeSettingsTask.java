@@ -14,14 +14,14 @@ import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 
 /**
- * Edit user setting on server.
+ * Request changing user settings on server.
  *
  * @author Xinyue Zhao
  */
-public final class EditTask extends GsonRequestTask {
+public final class ChangeSettingsTask extends GsonRequestTask {
 	private final Prefs mPrefs;
 
-	public EditTask(Context cxt,   String url  ) {
+	public ChangeSettingsTask(Context cxt, String url) {
 		super(  cxt, Method.POST, url, Status.class);
 		mPrefs = Prefs.getInstance(cxt.getApplicationContext());
 		setRetryPolicy(new DefaultRetryPolicy(mPrefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
