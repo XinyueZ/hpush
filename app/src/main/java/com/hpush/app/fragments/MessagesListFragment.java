@@ -14,6 +14,7 @@ import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -257,7 +258,11 @@ public class MessagesListFragment extends BaseFragment {
 		}
 		mDB = DB.getInstance(getActivity().getApplication());
 		mRv = (ObservableRecyclerView) view.findViewById(R.id.msg_rv);
-		mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
+		if(getResources().getBoolean(R.bool.landscape)) {
+			mRv.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+		} else {
+			mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
+		}
 		mRv.setHasFixedSize(false);
 		final Activity parentActivity = getActivity();
 		if (parentActivity instanceof ObservableScrollViewCallbacks) {

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
@@ -106,7 +107,9 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Prefs prefs = Prefs.getInstance(getApplication());
-
+		if(getResources().getBoolean(R.bool.landscape)) {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		}
 		addPreferencesFromResource(R.xml.settings);
 		mPb = ProgressDialog.show(this, null, getString(R.string.msg_app_init));
 		mPb.setCancelable(true);
