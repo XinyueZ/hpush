@@ -117,7 +117,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		mToolbar.setNavigationOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				finish();
+				backPressed();
 			}
 		});
 
@@ -143,6 +143,16 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		String[] arr = getResources().getStringArray(R.array.setting_sort_types);
 		sort.setSummary(arr[pos]);
 		sort.setOnPreferenceChangeListener(this);
+
+
+
+		ListPreference sound = (ListPreference) findPreference(Prefs.KEY_SOUND_TYPE);
+		String soundValue = prefs.getSoundTypeValue();
+		sound.setValue(soundValue);
+		int posSound = Integer.valueOf(soundValue);
+		String[] arrSound = getResources().getStringArray(R.array.setting_sound_types);
+		sound.setSummary(arrSound[posSound]);
+		sound.setOnPreferenceChangeListener(this);
 
 		((MarginLayoutParams) findViewById(android.R.id.list).getLayoutParams()).topMargin = getActionBarHeight(this);
 	}
@@ -172,7 +182,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			finish();
+			backPressed();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -240,6 +250,13 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 			String[] arr = getResources().getStringArray(R.array.setting_sort_types);
 			preference.setSummary(arr[pos]);
 		}
+
+
+		if(preference.getKey().equals(Prefs.KEY_SOUND_TYPE)) {
+			int pos = Integer.valueOf(newValue.toString());
+			String[] arr = getResources().getStringArray(R.array.setting_sound_types);
+			preference.setSummary(arr[pos]);
+		}
 		return true;
 	}
 
@@ -285,9 +302,6 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	@Override
 	public void onBackPressed() {
-		if(!mChangedPushStatus) {
-			EventBus.getDefault().postSticky(new EditSettingsEvent());
-		}
 		backPressed();
 	}
 
@@ -300,6 +314,9 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	}
 
 	private void backPressed() {
+		if(!mChangedPushStatus) {
+			EventBus.getDefault().postSticky(new EditSettingsEvent());
+		}
 		dismissPb();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			finishAfterTransition();

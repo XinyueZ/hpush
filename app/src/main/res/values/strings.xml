@@ -72,6 +72,18 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string name="setting_others">Others</string>
+    <string name="setting_sound">Tone</string>
+    <string-array name="setting_sound_types">
+        <item>Horn</item>
+        <item>Signal</item>
+        <item>S.O.S</item>
+    </string-array>
+    <string-array name="setting_sound_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 
     <string name="setting_sort_scores">Scores</string>
     <string name="setting_sort_arrival">Arrival</string>

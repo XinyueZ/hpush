@@ -57,4 +57,18 @@
             android:entryValues="@array/setting_sort_values" />
     </PreferenceCategory>
 
+
+
+    <PreferenceCategory
+        android:title="@string/setting_others"
+        android:layout="@layout/setting_entry">
+        <ListPreference
+            android:key="key.sound.type"
+            android:title="@string/setting_sound"
+            android:layout="@layout/setting_item"
+            android:entries="@array/setting_sound_types"
+            android:entryValues="@array/setting_sound_values"
+             />
+    </PreferenceCategory>
+
 </PreferenceScreen>

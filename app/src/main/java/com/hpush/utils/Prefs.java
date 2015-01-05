@@ -26,6 +26,7 @@ public final class Prefs extends BasicPrefs {
 	private static final String KEY_LAST_PUSHED_TIME = "key.last.pushed.time";
 	private static final String KEY_G_ACCOUNT = "key.g.account";
 	public static final String KEY_SORT_TYPE = "key.sort.type";
+	public static final String KEY_SOUND_TYPE = "key.sound.type";
 
 	/**
 	 * Storage. Whether the "End User License Agreement" has been shown and agreed at application's first start.
@@ -226,6 +227,21 @@ public final class Prefs extends BasicPrefs {
 	public void setSortTypeValue(String sortTypeValue) {
 		setString(KEY_SORT_TYPE, sortTypeValue);
 	}
+
+
+
+
+	/**
+	 *
+	 * @return sound type, "0-2".
+	 */
+	public String getSoundTypeValue() {
+		return getString(KEY_SOUND_TYPE, "0");
+	}
+
+
+
+
 
 	private int getDefaultDefaultMsgCount() {
 		return getInt(DEFAULT_MSG_COUNT, 100);

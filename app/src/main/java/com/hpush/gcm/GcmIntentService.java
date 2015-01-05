@@ -107,7 +107,23 @@ public class GcmIntentService extends IntentService {
 						AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 						if (audioManager.getRingerMode() != RINGER_MODE_SILENT) {
 							mNotifyBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000 });
-							mNotifyBuilder.setSound(Uri.parse(String.format("android.resource://%s/%s", getPackageName(), R.raw.signal)));
+							String soundType = prefs.getSoundTypeValue();
+							int rawResId;
+							switch (soundType) {
+							case "0":
+								rawResId = R.raw.horn;
+								break;
+							case "1":
+								rawResId = R.raw.signal;
+								break;
+							case "2":
+								rawResId = R.raw.sos;
+								break;
+							default:
+								rawResId = R.raw.horn;
+								break;
+							}
+							mNotifyBuilder.setSound(Uri.parse(String.format("android.resource://%s/%s", getPackageName(), rawResId)));
 						}
 						mNotifyBuilder.setLights(getResources().getColor(R.color.primary_color), 1000, 1000);
 

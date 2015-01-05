@@ -66,6 +66,8 @@
     <string name="setting_sort_arrival">Ankunftszeit</string>
     <string name="setting_sort_creation">Erstellungszeit</string>
     <string name="setting_sort_comments">Kommentare</string>
+    <string name="setting_others">Sonstiges</string>
+    <string name="setting_sound">Ton</string>
 
     <string name="btn_confirm">Sicher</string>
     <string name="btn_cancel">Abbrechen</string>
