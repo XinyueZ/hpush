@@ -323,10 +323,10 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 
 		if(getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-			getSupportFragmentManager().beginTransaction().replace(R.id.gplus_container, GPlusFragment.newInstance(getApplication()))
-					.commit();
 		}
+
+		getSupportFragmentManager().beginTransaction().replace(R.id.gplus_container, GPlusFragment.newInstance(getApplication()))
+				.commit();
 
 		mHeaderView = findViewById(R.id.error_content);
 		ViewCompat.setElevation(mHeaderView, getResources().getDimension(R.dimen.toolbar_elevation));
