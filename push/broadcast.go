@@ -145,14 +145,6 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
 }
 
 func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool, dispatchCh chan int, syncType bool) {
-	if !syncType {
-		endCh := make(chan int)
-		go summary(_w, _r, client, _itemDetailsList, pushedTime, scheduledTask, endCh)
-		<-endCh
-	} else {
-		summary(_w, _r, client, _itemDetailsList, pushedTime, scheduledTask, nil)
-	}
-
 	var roundTotal int = 0
 	if !syncType {
 		ch := make(chan int)
@@ -170,6 +162,14 @@ func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsLis
 				break
 			}
 		}
+	}
+	
+	if !syncType {
+		endCh := make(chan int)
+		go summary(_w, _r, client, _itemDetailsList, pushedTime, scheduledTask, endCh)
+		<-endCh
+	} else {
+		summary(_w, _r, client, _itemDetailsList, pushedTime, scheduledTask, nil)
 	}
 	dispatchCh <- 0
 }
