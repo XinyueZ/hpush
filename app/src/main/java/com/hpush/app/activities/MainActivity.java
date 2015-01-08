@@ -37,6 +37,9 @@ import com.chopping.activities.BaseActivity;
 import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookException;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
@@ -69,8 +72,10 @@ import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SelectMessageEvent;
+import com.hpush.bus.ShareMessageEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.FunctionType;
+import com.hpush.data.MessageListItem;
 import com.hpush.data.Status;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
@@ -272,7 +277,8 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 * 		Event {@link DeleteAccountEvent}.
 	 */
 	public void onEvent(DeleteAccountEvent e) {
-		new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl()).execute();
+		new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl())
+				.execute();
 	}
 
 	/**
@@ -285,7 +291,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		dismissProgressDialog();
 		switch (FunctionType.fromName(e.getFunction())) {
 		case Edit:
-			if(e.status()) {
+			if (e.status()) {
 				EventBus.getDefault().removeStickyEvent(EditSettingsEvent.class);
 				mSnackBar.show(getString(R.string.msg_saved_settings_successfully));
 			} else {
@@ -293,26 +299,53 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			}
 			break;
 		case Insert:
-			if(e.status()) {
+			if (e.status()) {
 				EventBus.getDefault().removeStickyEvent(InsertAccountEvent.class);
 				mSnackBar.show(getString(R.string.msg_saved_account_successfully));
 				makeAds();
 			} else {
 				new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendRegUrl())
-							.execute();
+						.execute();
 			}
 			break;
 		case Delete:
-			if(e.status()) {
+			if (e.status()) {
 				EventBus.getDefault().removeStickyEvent(DeleteAccountEvent.class);
 				mSnackBar.show(getString(R.string.msg_deleted_account_successfully));
 			} else {
-				new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl()).execute();
+				new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl())
+						.execute();
 			}
 			break;
 		}
 	}
 
+
+	/**
+	 * Handler for {@link ShareMessageEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link ShareMessageEvent}.
+	 */
+	public void onEvent(ShareMessageEvent e) {
+		MessageListItem msg = e.getMessage();
+		switch (e.getType()) {
+		case Facebook:
+			Bundle postParams = new Bundle();
+			final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
+					.setName(msg.getTitle()).setDescription(msg.getText()).setLink(msg.getUrl()).build();
+			fbDlg.setOnCompleteListener(new OnCompleteListener() {
+				@Override
+				public void onComplete(Bundle bundle, FacebookException e) {
+					fbDlg.dismiss();
+				}
+			});
+			fbDlg.show();
+			break;
+		case Tweet:
+			break;
+		}
+	}
 	//------------------------------------------------
 
 	@Override
@@ -321,12 +354,12 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		Crashlytics.start(this);
 		setContentView(LAYOUT);
 
-		if(getResources().getBoolean(R.bool.landscape)) {
+		if (getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.gplus_container, GPlusFragment.newInstance(getApplication()))
-				.commit();
+		getSupportFragmentManager().beginTransaction().replace(R.id.gplus_container, GPlusFragment.newInstance(
+				getApplication())).commit();
 
 		mHeaderView = findViewById(R.id.error_content);
 		ViewCompat.setElevation(mHeaderView, getResources().getDimension(R.dimen.toolbar_elevation));
@@ -363,7 +396,8 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		mRemoveAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
-				EventBus.getDefault().post(new RemoveAllEvent(mViewPager.getCurrentItem() == 0? WhichPage.Messages : WhichPage.Bookmarks));
+				EventBus.getDefault().post(new RemoveAllEvent(
+						mViewPager.getCurrentItem() == 0 ? WhichPage.Messages : WhichPage.Bookmarks));
 			}
 		});
 		mBookmarkAllBtn = (ImageButton) findViewById(R.id.bookmark_all_btn);
@@ -552,7 +586,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 */
 	private void showGPlusButton() {
 		float initAplha = ViewHelper.getAlpha(mGPlusBtn);
-		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 1 ).setDuration(0).start();
+		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 1).setDuration(0).start();
 	}
 
 	/**
@@ -560,7 +594,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	 */
 	private void hideGPlusButton() {
 		float initAplha = ViewHelper.getAlpha(mGPlusBtn);
-		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 0 ).setDuration(0).start();
+		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 0).setDuration(0).start();
 	}
 
 	private void handleGPlusLinkedUI() {
@@ -897,7 +931,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			@Override
 			protected int[] doInBackground(Void... params) {
 				DB db = DB.getInstance(getApplication());
-				return new  int[]{ db.getBookmarks(Sort.DESC).size() , db.getMessages(Sort.DESC).size()};
+				return new int[] { db.getBookmarks(Sort.DESC).size(), db.getMessages(Sort.DESC).size() };
 			}
 
 			@Override

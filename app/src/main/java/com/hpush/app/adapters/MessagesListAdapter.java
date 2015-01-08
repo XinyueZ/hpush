@@ -23,6 +23,8 @@ import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.bus.SelectMessageEvent;
+import com.hpush.bus.ShareMessageEvent;
+import com.hpush.bus.ShareMessageEvent.Type;
 import com.hpush.data.MessageListItem;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
@@ -41,6 +43,10 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	 * Main layout for this component.
 	 */
 	private static final int ITEM_LAYOUT = R.layout.item_messages_list;
+	/**
+	 * Menu resource for facebook and tweet.
+	 */
+	private static final int MENU_FB_TW = R.menu.item3;
 	/**
 	 * Data collection.
 	 */
@@ -77,8 +83,10 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 
 	@Override
 	public MessagesListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-		View convertView = LayoutInflater.from(viewGroup.getContext()).inflate(ITEM_LAYOUT, viewGroup, false);
-		MessagesListAdapter.ViewHolder viewHolder = new MessagesListAdapter.ViewHolder(convertView, menuResId);
+		Context cxt = viewGroup.getContext();
+		boolean landscape = cxt.getResources().getBoolean(R.bool.landscape);
+		View convertView = LayoutInflater.from(cxt).inflate(ITEM_LAYOUT, viewGroup, false);
+		MessagesListAdapter.ViewHolder viewHolder = new MessagesListAdapter.ViewHolder(convertView, menuResId, landscape);
 		return viewHolder;
 	}
 
@@ -149,6 +157,27 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 				case R.id.action_item_bookmark:
 					EventBus.getDefault().post(new BookmarkMessageEvent(msg));
 					break;
+				//Facebook and tweet are available for large screen on toolbar which binds menu of item.xml, see different menu resource of item.xml.
+				case R.id.action_facebook:
+					EventBus.getDefault().post(new ShareMessageEvent(msg, Type.Facebook));
+					break;
+				case R.id.action_tweet:
+					break;
+				}
+				return true;
+			}
+		});
+
+		//Facebook and tweet are available for small screen on toolbar-3 which binds menu of item3.xml, see different menu resource of item.xml.
+		viewHolder.mToolbar3.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem menuItem) {
+				switch (menuItem.getItemId()) {
+				case R.id.action_facebook:
+					EventBus.getDefault().post(new ShareMessageEvent(msg, Type.Facebook));
+					break;
+				case R.id.action_tweet:
+					break;
 				}
 				return true;
 			}
@@ -178,11 +207,10 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 		TextView mCommentsCountTv;
 		TextView mEditorTv;
 		TextView mTimeTv;
-//		View mCommentsV;
-//		View mLinkV;
 		Toolbar mToolbar;
+		Toolbar mToolbar3;
 
-		private ViewHolder(View convertView, int menuResId) {
+		private ViewHolder(View convertView, int menuResId, boolean landscape) {
 			super(convertView);
 			mFloatTv = (TextView) convertView.findViewById(R.id.float_tv);
 			mHeadLineTv = (TextView) convertView.findViewById(R.id.headline_tv);
@@ -192,9 +220,14 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 			mEditorTv = (TextView) convertView.findViewById(R.id.editor_tv);
 			mTimeTv = (TextView) convertView.findViewById(R.id.time_tv);
 			mToolbar = (Toolbar) convertView.findViewById(R.id.toolbar);
-//			mCommentsV = convertView.findViewById(R.id.comments_btn);
-//			mLinkV = convertView.findViewById(R.id.link_btn);
 			mToolbar.inflateMenu(menuResId);
+			mToolbar3 = (Toolbar) convertView.findViewById(R.id.toolbar_3);
+			if(!landscape) {
+				mToolbar3.inflateMenu(MENU_FB_TW);
+				mToolbar3.setVisibility(View.VISIBLE);
+			} else {
+				mToolbar3.setVisibility(View.GONE);
+			}
 		}
 	}
 }

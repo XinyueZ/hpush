@@ -19,6 +19,8 @@
     <string name="lbl_item_open_link">Open</string>
     <string name="lbl_item_share">Share</string>
     <string name="lbl_comments">Comments</string>
+    <string name="lbl_facebook">Facebook</string>
+    <string name="lbl_tweet">Tweet</string>
     <string name="lbl_login_gplus">Google+ login…</string>
     <string name="lbl_login_fail">I can not login Google+ …</string>
     <string name="lbl_logout_gplus_cause">Logout Google+ would case unsubscribing PUSH from Hack News …</string>
@@ -111,7 +113,7 @@
     <string name="btn_agree">I agree.</string>
     <string name="btn_not_agree">I do not agree.</string>
     <string name="btn_retry">Retry</string>
-
+    <string name="applicationId">1038826132811079</string>
     <string name="ad_inters_unit_id">ca-app-pub-9133982521997162/9212548933</string>
     <string name="play_service_url">market://details?id=com.google.android.gms</string>
 </resources>
