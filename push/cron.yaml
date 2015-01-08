@@ -2,6 +2,6 @@ cron:
 - description: Get news from Hacker-News and push to clients.
   url: /responseX
   #live:
-  schedule: every 30 minutes
+  schedule: every 15 minutes
   #dev:
   #schedule: every 3 minutes
