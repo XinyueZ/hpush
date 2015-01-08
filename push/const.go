@@ -3,7 +3,8 @@ package pushmessager
 
 const (
   //Release,live
-  API_KEY="AIzaSyAIC_FMDkMAkj6xsaolwCkgAqUcfQ7Qg7I"
+  API_KEY="AIzaSyAIC_FMDkMAkj6xsaolwCkgAqUcfQ7Qg7I" //Dec 5, 2014, 3:24:00 AM
+  //API_KEY="AIzaSyBqw5aLHEdVjRzPl3BtE33NEkdDAz-yfpU" //Jan 8, 2015, 6:31:00 AM
   //Dev,stage
   //API_KEY="AIzaSyCTBktsn__VC5VzD93ccj-Jps3FDZcV4f0"
 
