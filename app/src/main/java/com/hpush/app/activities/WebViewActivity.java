@@ -220,41 +220,42 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 			menu.findItem(R.id.action_item_bookmark).setVisible(false);
 		}
 
-		AsyncTask<Void,Boolean,Boolean> task = new AsyncTask<Void, Boolean,Boolean>() {
-			@Override
-			protected Boolean doInBackground(Void... params) {
-				msg = (Message) getIntent().getSerializableExtra(EXTRAS_MSG);
-				DB db = DB.getInstance(getApplication());
-				return db.findBookmark(msg);
-			}
-
-			@Override
-			protected void onPostExecute(Boolean found) {
-				super.onPostExecute(found);
-				if(found) {
-					menu.findItem(R.id.action_item_bookmark).setVisible(false);
+		if( msg != null) {
+			AsyncTaskCompat.executeParallel(new AsyncTask<Void, Boolean, Boolean>() {
+				@Override
+				protected Boolean doInBackground(Void... params) {
+					msg = (Message) getIntent().getSerializableExtra(EXTRAS_MSG);
+					DB db = DB.getInstance(getApplication());
+					return db.findBookmark(msg);
 				}
-			}
-		};
-		AsyncTaskCompat.executeParallel(task);
+
+				@Override
+				protected void onPostExecute(Boolean found) {
+					super.onPostExecute(found);
+					if (found) {
+						menu.findItem(R.id.action_item_bookmark).setVisible(false);
+					}
+				}
+			});
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		MenuItem menuShare = menu.findItem(R.id.action_item_share);
-		//Getting the actionprovider associated with the menu item whose id is share.
-		android.support.v7.widget.ShareActionProvider provider =
-				(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
-		//Setting a share intent.
-		String url = msg.getUrl();
-		if(TextUtils.isEmpty(url)) {
-			url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
+		if( msg != null ) {
+			MenuItem menuShare = menu.findItem(R.id.action_item_share);
+			//Getting the actionprovider associated with the menu item whose id is share.
+			android.support.v7.widget.ShareActionProvider provider = (android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
+			//Setting a share intent.
+			String url = msg.getUrl();
+			if (TextUtils.isEmpty(url)) {
+				url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
+			}
+			String subject = getString(R.string.lbl_share_item_title);
+			String text = getString(R.string.lbl_share_item_content, msg.getTitle(), url);
+			provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
 		}
-		String subject = getString(R.string.lbl_share_item_title);
-		String text = getString(R.string.lbl_share_item_content, msg.getTitle(), url);
-		provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
-
 		return super.onPrepareOptionsMenu(menu);
 	}
 
