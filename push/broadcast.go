@@ -113,7 +113,7 @@ func getItemDetails(_w http.ResponseWriter, _r *http.Request, itemIds []int64) [
 }
 
 func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
-	client OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) (brk bool) {
+	client *OtherClient, itemDetail *ItemDetails, pushedTime string, scheduledTask bool, ch chan int) (brk bool) {
 	brk = false
 	if ch != nil {
 		if *roundTotal < client.MsgCount {
@@ -144,7 +144,7 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
 	return
 }
 
-func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool, dispatchCh chan int, syncType bool) {
+func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client *OtherClient, pushedTime string, scheduledTask bool, dispatchCh chan int, syncType bool) {
 	var roundTotal int = 0
 	if !syncType {
 		ch := make(chan int)
@@ -163,7 +163,7 @@ func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsLis
 			}
 		}
 	}
-	
+
 	if !syncType {
 		endCh := make(chan int)
 		go summary(_w, _r, client, _itemDetailsList, pushedTime, scheduledTask, endCh)
@@ -186,7 +186,7 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, sche
 
 		//Dispatch PUSHs to clients.
 		for _, client := range _clients {
-			go dispatchOnClients(_w, _r, _itemDetailsList, client, pushedTime, scheduledTask, dispatchCh, true)
+			go dispatchOnClients(_w, _r, _itemDetailsList, &client, pushedTime, scheduledTask, dispatchCh, true)
 		}
 
 		//Wait for all pushed clients.
@@ -196,7 +196,7 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, sche
 	}
 }
 
-func summary(_w http.ResponseWriter, _r *http.Request, _client OtherClient, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool, endCh chan int) {
+func summary(_w http.ResponseWriter, _r *http.Request, _client *OtherClient, pushedDetailList []*ItemDetails, pushedTime string, scheduledTask bool, endCh chan int) {
 	//Push server can not accept to long contents.
 	loopCount := len(pushedDetailList)
 	if loopCount > SUMMARY_MAX {
