@@ -509,6 +509,23 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		case R.id.action_setting:
 			SettingActivity.showInstance(this, null);
 			break;
+		case R.id.action_facebook:
+			Bundle postParams = new Bundle();
+			final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
+					.setCaption(String.format(getString(R.string.lbl_share_app_title), getString(
+							R.string.lbl_share_item_title))).setName(getString(R.string.lbl_share_item_title))
+					.setDescription(getString(R.string.lbl_share_app_content)).setLink(getString(R.string.lbl_app_link))
+					.build();
+			fbDlg.setOnCompleteListener(new OnCompleteListener() {
+				@Override
+				public void onComplete(Bundle bundle, FacebookException e) {
+					fbDlg.dismiss();
+				}
+			});
+			fbDlg.show();
+			break;
+		case R.id.action_tweet:
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

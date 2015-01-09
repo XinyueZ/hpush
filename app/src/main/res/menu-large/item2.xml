@@ -11,7 +11,17 @@
         android:title="@string/lbl_item_open_link"
         app:showAsAction="ifRoom" />
 
-
+    <item
+        android:id="@+id/action_facebook"
+        android:icon="@drawable/ic_action_facebook"
+        android:title="@string/lbl_facebook"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_tweet"
+        android:icon="@drawable/ic_action_tweet"
+        android:title="@string/lbl_tweet"
+        app:showAsAction="always"
+        android:visible="@bool/default_tweet_used" />
 
     <item
         android:id="@+id/action_item_share"

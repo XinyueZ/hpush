@@ -1,5 +1,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_facebook"
         android:icon="@drawable/ic_action_facebook"
@@ -9,6 +9,7 @@
         android:id="@+id/action_tweet"
         android:icon="@drawable/ic_action_tweet"
         android:title="@string/lbl_tweet"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:visible="@bool/default_tweet_used" />
 
 </menu>

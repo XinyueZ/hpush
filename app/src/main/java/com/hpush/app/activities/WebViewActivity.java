@@ -25,6 +25,9 @@ import android.webkit.WebViewClient;
 
 import com.chopping.activities.BaseActivity;
 import com.chopping.application.BasicPrefs;
+import com.facebook.FacebookException;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.hpush.R;
 import com.hpush.bus.BookmarkMessageEvent;
@@ -87,6 +90,7 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	 * Information after adding item to bookmark.
 	 */
 	private SnackBar mSnackBar;
+
 	/**
 	 * Show single instance of {@link WebViewActivity}.
 	 *
@@ -96,20 +100,21 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	 * 		Target to open.
 	 * @param openWevViewV
 	 * 		The view that open the {@link com.hpush.app.activities.WebViewActivity}.
-	 * 	@param msg The message that contains the information that the {@link #mWebView} uses. It might be null.
+	 * @param msg
+	 * 		The message that contains the information that the {@link #mWebView} uses. It might be null.
 	 */
 	public static void showInstance(Activity cxt, String url, View openWevViewV, Message msg) {
 		Intent intent = new Intent(cxt, WebViewActivity.class);
 		intent.putExtra(EXTRAS_URL, url);
 		intent.putExtra(EXTRAS_MSG, msg);
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//		if (openWevViewV != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(cxt,
-//					Pair.create(openWevViewV, "openWevViewV"));
-//			cxt.startActivity(intent, transitionActivityOptions.toBundle());
-//		} else {
-			cxt.startActivity(intent);
-//		}
+		//		if (openWevViewV != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		//			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(cxt,
+		//					Pair.create(openWevViewV, "openWevViewV"));
+		//			cxt.startActivity(intent, transitionActivityOptions.toBundle());
+		//		} else {
+		cxt.startActivity(intent);
+		//		}
 	}
 
 	@Override
@@ -122,7 +127,7 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(LAYOUT);
-		if(getResources().getBoolean(R.bool.landscape)) {
+		if (getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
 		calcActionBarHeight();
@@ -214,13 +219,13 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		getMenuInflater().inflate(MENU, menu);
-		if(msg == null) {
+		if (msg == null) {
 			menu.findItem(R.id.action_item_comment).setVisible(false);
 			menu.findItem(R.id.action_item_share).setVisible(false);
 			menu.findItem(R.id.action_item_bookmark).setVisible(false);
 		}
 
-		if( msg != null) {
+		if (msg != null) {
 			AsyncTaskCompat.executeParallel(new AsyncTask<Void, Boolean, Boolean>() {
 				@Override
 				protected Boolean doInBackground(Void... params) {
@@ -243,10 +248,11 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if( msg != null ) {
+		if (msg != null) {
 			MenuItem menuShare = menu.findItem(R.id.action_item_share);
 			//Getting the actionprovider associated with the menu item whose id is share.
-			android.support.v7.widget.ShareActionProvider provider = (android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
+			android.support.v7.widget.ShareActionProvider provider =
+					(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
 			//Setting a share intent.
 			String url = msg.getUrl();
 			if (TextUtils.isEmpty(url)) {
@@ -261,6 +267,7 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		String name, caption, desc, link;
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -286,6 +293,35 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 			EventBus.getDefault().postSticky(new BookmarkMessageEvent(new MessageListItem(msg)));
 			mSnackBar.show(getString(R.string.lbl_has_been_bookmarked));
 			item.setVisible(false);
+			break;
+		case R.id.action_facebook:
+			if (msg == null) {
+				name = getString(R.string.lbl_share_item_title);
+				caption = String.format(getString(R.string.lbl_share_app_title), getString(
+						R.string.lbl_share_item_title));
+				desc = getString(R.string.lbl_share_app_content);
+				link = getString(R.string.lbl_app_link);
+			} else {
+				name = "";
+				caption = getString(R.string.lbl_share_item_title);
+				link = msg.getUrl();
+				if (TextUtils.isEmpty(link)) {
+					link = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
+				}
+				desc = getString(R.string.lbl_share_item_content, msg.getTitle(), link);
+			}
+			Bundle postParams = new Bundle();
+			final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
+					.setCaption(caption).setName(name).setDescription(desc).setLink(link).build();
+			fbDlg.setOnCompleteListener(new OnCompleteListener() {
+				@Override
+				public void onComplete(Bundle bundle, FacebookException e) {
+					fbDlg.dismiss();
+				}
+			});
+			fbDlg.show();
+			break;
+		case R.id.action_tweet:
 			break;
 		}
 		return super.onOptionsItemSelected(item);

@@ -38,7 +38,7 @@
     <string name="lbl_total_messages_tail">message(s).</string>
     <string name="lbl_no_data">There\'re no messages at moment, however you can synchronize by pulling down.</string>
     <string name="lbl_no_push_set">You have not open your PUSH option, start Setting to open PUSH, however you can synchronize by pulling down.</string>
-
+    <string name="lbl_app_link">http://tinyurl.com/pcopzdh</string>
 
     <string name="msg_push_registering">Signing in push…</string>
     <string name="msg_push_unregistering">Signing out push…</string>

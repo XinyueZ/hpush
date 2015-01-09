@@ -157,7 +157,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 				case R.id.action_item_bookmark:
 					EventBus.getDefault().post(new BookmarkMessageEvent(msg));
 					break;
-				//Facebook and tweet are available for large screen on toolbar which binds menu of item.xml, see different menu resource of item.xml.
+				//Facebook and tweet are available for large screen on toolbar which binds menu of item(2).xml, see different menu resource of item(2).xml.
 				case R.id.action_facebook:
 					EventBus.getDefault().post(new ShareMessageEvent(msg, Type.Facebook));
 					break;
@@ -168,7 +168,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 			}
 		});
 
-		//Facebook and tweet are available for small screen on toolbar-3 which binds menu of item3.xml, see different menu resource of item.xml.
+		//Facebook and tweet are available for small screen on toolbar-3 which binds menu of item3.xml, see different menu resource of item(2).xml.
 		viewHolder.mToolbar3.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem menuItem) {

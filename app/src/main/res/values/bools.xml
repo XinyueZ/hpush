@@ -3,4 +3,5 @@
     <bool name="default_only_save_latest">false</bool>
     <bool name="default_accept_full_text">false</bool>
     <bool name="default_allow_empty_url">true</bool>
+    <bool name="default_tweet_used">false</bool>
 </resources>
