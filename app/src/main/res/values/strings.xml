@@ -31,7 +31,7 @@
     <string name="lbl_share_app_title">A good App you should have: %s</string>
     <string name="lbl_share_app_content">Hello!\n\n\u00A0\u00A0\u00A0\u00A0Subscribe push-news from Hacker-News?\n\nDownload:\n
         http://tinyurl.com/pcopzdh</string>
-    <string name="lbl_share_item_title">Hacker News</string>
+    <string name="lbl_share_item_title">Hacker News Push</string>
     <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload Hacker News Push App:\n
         http://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">You have</string>

@@ -83,7 +83,8 @@ func loadClients(_r *http.Request) (clients []OtherClient) {
 func handleResponse(_w http.ResponseWriter, _r *http.Request) {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Fprintf(_w, "Some error happened might: Nobody to be pushed: ")
+			cxt := appengine.NewContext(_r)
+			cxt.Errorf("handleResponse: %v", err)
 		}
 	}()
 	clients := loadClients(_r)
@@ -97,7 +98,8 @@ func handleResponse(_w http.ResponseWriter, _r *http.Request) {
 func handleResponseX(_w http.ResponseWriter, _r *http.Request) {
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Fprintf(_w, "Some error happened might: Nobody to be pushed")
+			cxt := appengine.NewContext(_r)
+			cxt.Errorf("handleResponseX: %v", err)
 		}
 	}()
 	clients := loadClients(_r)

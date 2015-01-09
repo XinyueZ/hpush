@@ -47,8 +47,8 @@ type SyncItemDetailsList struct {
 }
 
 func getTopStories(_w http.ResponseWriter, _r *http.Request) []int64 {
+	cxt := appengine.NewContext(_r)
 	if req, err := http.NewRequest(API_METHOD, API_GET_TOP_STORIES, nil); err == nil {
-		cxt := appengine.NewContext(_r)
 		httpClient := urlfetch.Client(cxt)
 		_r, err := httpClient.Do(req)
 		defer _r.Body.Close()
@@ -56,24 +56,23 @@ func getTopStories(_w http.ResponseWriter, _r *http.Request) []int64 {
 			if bytes, err := ioutil.ReadAll(_r.Body); err == nil {
 				topStoresRes := make([]int64, 0)
 				json.Unmarshal(bytes, &topStoresRes)
-				//fmt.Fprintf(_w, "Top-stories:%#v", topStoresRes)
 				return topStoresRes
 			} else {
-				fmt.Fprintf(_w, "%s", "Error by json-Unmarshal(top-stories).")
+				cxt.Errorf("getTopStories unmarshal: %v", err)
 			}
 		} else {
-			fmt.Fprintf(_w, "%s", "Error by doing client(top-stories).")
+			cxt.Errorf("getTopStories doing: %v", err)
 		}
 	} else {
-		fmt.Fprintf(_w, "%s", "Error by making new request(top-stories).")
+		cxt.Errorf("getTopStories: %v", err)
 	}
 	return nil
 }
 
 func loadDetailsList(_w http.ResponseWriter, _r *http.Request, itemId int64, detailsList *[]*ItemDetails, ch chan int) {
 	api := fmt.Sprintf(API_GET_ITEM_DETAILS, itemId)
+	cxt := appengine.NewContext(_r)
 	if req, err := http.NewRequest(API_METHOD, api, nil); err == nil {
-		cxt := appengine.NewContext(_r)
 		httpClient := urlfetch.Client(cxt)
 		res, err := httpClient.Do(req)
 		if res != nil {
@@ -86,12 +85,15 @@ func loadDetailsList(_w http.ResponseWriter, _r *http.Request, itemId int64, det
 				*detailsList = append(*detailsList, details)
 				ch <- 0
 			} else {
+				cxt.Errorf("loadDetailsList unmarshal: %v", err)
 				ch <- 0
 			}
 		} else {
+			cxt.Errorf("loadDetailsList doing: %v", err)
 			ch <- 0
 		}
 	} else {
+		cxt.Errorf("loadDetailsList: %v", err)
 		ch <- 0
 	}
 }
@@ -213,21 +215,23 @@ func summary(_w http.ResponseWriter, _r *http.Request, _client OtherClient, push
 		pushedTime)
 	pushedMsgBytes := bytes.NewBufferString(pushedMsg)
 
+	cxt := appengine.NewContext(_r)
 	if req, err := http.NewRequest("POST", PUSH_SENDER, pushedMsgBytes); err == nil {
 		req.Header.Add("Authorization", PUSH_KEY)
 		req.Header.Add("Content-Type", API_RESTYPE)
 		if scheduledTask {
 			req.Header.Add("X-AppEngine-Cron", "true")
 		}
-		c := appengine.NewContext(_r)
-		client := urlfetch.Client(c)
+		client := urlfetch.Client(cxt)
 		res, _ := client.Do(req)
 		if res != nil {
 			defer res.Body.Close()
 		}
 		if err != nil {
-			c.Errorf("Push summary: %v", err)
+			cxt.Errorf("Push summary doing: %v", err)
 		}
+	} else {
+		cxt.Errorf("Push summary: %v", err)
 	}
 	if endCh != nil {
 		endCh <- 0
@@ -245,29 +249,32 @@ func broadcast(_w http.ResponseWriter, _r *http.Request, clientIds string, detai
 		"", //details.Text,
 		details.Time,
 		details.Title,
-		getTinyUrl(_w, _r, details.Url),
+		details.Url,
 		pushedTime)
 	pushedMsgBytes := bytes.NewBufferString(pushedMsg)
 
+	cxt := appengine.NewContext(_r)
 	if req, err := http.NewRequest("POST", PUSH_SENDER, pushedMsgBytes); err == nil {
 		req.Header.Add("Authorization", PUSH_KEY)
 		req.Header.Add("Content-Type", API_RESTYPE)
 		if scheduledTask {
 			req.Header.Add("X-AppEngine-Cron", "true")
 		}
-		c := appengine.NewContext(_r)
-		client := urlfetch.Client(c)
+		client := urlfetch.Client(cxt)
 		res, err := client.Do(req)
 		if res != nil {
 			defer res.Body.Close()
 		}
 		if err != nil {
-			c.Errorf("Push broadcast: %v", err)
+			cxt.Errorf("Push broadcast doing: %v", err)
 		}
+	} else {
+		cxt.Errorf("Push broadcast: %v", err)
 	}
 }
 
 func sync(_w http.ResponseWriter, _r *http.Request, client *OtherClient) {
+	cxt := appengine.NewContext(_r)
 	_itemDetailsList := getItemDetails(_w, _r, getTopStories(_w, _r))
 	syncItems := []SyncItemDetails{}
 	var roundTotal int = 0
@@ -288,7 +295,7 @@ func sync(_w http.ResponseWriter, _r *http.Request, client *OtherClient) {
 					Text:        "", //itemDetail.Text,
 					Time:        itemDetail.Time,
 					Title:       itemDetail.Title,
-					Url:         getTinyUrl(_w, _r, itemDetail.Url),
+					Url:         itemDetail.Url,
 					Pushed_Time: pushedTime}
 				syncItems = append(syncItems, syncItem)
 			}
@@ -296,15 +303,21 @@ func sync(_w http.ResponseWriter, _r *http.Request, client *OtherClient) {
 			break
 		}
 	}
-	json, _ := json.Marshal(SyncItemDetailsList{syncItems})
-	_w.Header().Set("Content-Type", API_RESTYPE)
-	fmt.Fprintf(_w, string(json))
+	if len(syncItems) > 0 {
+		if json, err := json.Marshal(SyncItemDetailsList{syncItems}); err == nil {
+			_w.Header().Set("Content-Type", API_RESTYPE)
+			fmt.Fprintf(_w, string(json))
+		} else {
+			cxt.Errorf("sync marshal: %v", err)
+		}
+	}
 }
 
+//Deprecated, in case that we need more quota safe.
 func getTinyUrl(_w http.ResponseWriter, _r *http.Request, orignalUrl string) (tingUrl string) {
 	if orignalUrl != "" {
+		cxt := appengine.NewContext(_r)
 		if req, err := http.NewRequest(API_METHOD, TINY+orignalUrl, nil); err == nil {
-			cxt := appengine.NewContext(_r)
 			httpClient := urlfetch.Client(cxt)
 			res, err := httpClient.Do(req)
 			if res != nil {
@@ -314,11 +327,15 @@ func getTinyUrl(_w http.ResponseWriter, _r *http.Request, orignalUrl string) (ti
 				if bytes, err := ioutil.ReadAll(res.Body); err == nil {
 					tingUrl = string(bytes)
 				} else {
+					cxt.Errorf("getTinyUrl read: %v", err)
 					tingUrl = orignalUrl
 				}
 			} else {
+				cxt.Errorf("getTinyUrl doing: %v", err)
 				tingUrl = orignalUrl
 			}
+		} else {
+			cxt.Errorf("getTinyUrl: %v", err)
 		}
 	}
 	return
