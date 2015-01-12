@@ -69,6 +69,8 @@ MERGED from com.astuetz:pagerslidingtabstrip:1.0.1:4:5
 MERGED from com.android.support:support-v4:21.0.2:16:5
 MERGED from com.android.support:recyclerview-v7:21.0.2:17:5
 MERGED from com.android.support:support-v4:21.0.2:16:5
+MERGED from com.facebook.android:facebook-android-sdk:3.22.0:24:5
+MERGED from com.android.support:support-v4:21.0.2:16:5
 	android:label
 		ADDED from AndroidManifest.xml:24:9
 		REJECTED from hpush:ChoppingBootstrap:unspecified:14:9
@@ -124,66 +126,80 @@ ADDED from AndroidManifest.xml:50:9
 		ADDED from AndroidManifest.xml:52:13
 	android:name
 		ADDED from AndroidManifest.xml:51:13
-receiver#com.chopping.application.InstalledAppReceiver
-ADDED from AndroidManifest.xml:56:9
-	android:exported
-		ADDED from AndroidManifest.xml:59:13
-	android:enabled
-		ADDED from AndroidManifest.xml:58:13
-	android:name
-		ADDED from AndroidManifest.xml:57:13
-intent-filter#android.intent.action.PACKAGE_ADDED+android.intent.action.PACKAGE_REMOVED
-ADDED from AndroidManifest.xml:60:13
-action#android.intent.action.PACKAGE_ADDED
-ADDED from AndroidManifest.xml:61:17
-	android:name
-		ADDED from AndroidManifest.xml:61:25
-action#android.intent.action.PACKAGE_REMOVED
-ADDED from AndroidManifest.xml:62:17
-	android:name
-		ADDED from AndroidManifest.xml:62:25
-data
-ADDED from AndroidManifest.xml:64:17
-	android:scheme
-		ADDED from AndroidManifest.xml:64:23
-receiver#com.hpush.gcm.GcmBroadcastReceiver
-ADDED from AndroidManifest.xml:69:9
-	android:permission
-		ADDED from AndroidManifest.xml:71:13
-	android:name
-		ADDED from AndroidManifest.xml:70:13
-intent-filter#com.google.android.c2dm.intent.RECEIVE+com.google.android.c2dm.intent.REGISTRATION+com.hpush
-ADDED from AndroidManifest.xml:72:13
-action#com.google.android.c2dm.intent.RECEIVE
-ADDED from AndroidManifest.xml:73:17
-	android:name
-		ADDED from AndroidManifest.xml:73:25
-action#com.google.android.c2dm.intent.REGISTRATION
-ADDED from AndroidManifest.xml:74:17
-	android:name
-		ADDED from AndroidManifest.xml:74:25
-category#com.hpush
-ADDED from AndroidManifest.xml:75:17
-	android:name
-		ADDED from AndroidManifest.xml:75:27
-service#com.hpush.gcm.GcmIntentService
-ADDED from AndroidManifest.xml:79:9
-	android:name
-		ADDED from AndroidManifest.xml:79:18
-activity#com.google.android.gms.ads.AdActivity
-ADDED from AndroidManifest.xml:95:9
-	android:configChanges
-		ADDED from AndroidManifest.xml:97:13
+activity#com.facebook.LoginActivity
+ADDED from AndroidManifest.xml:54:9
+	android:label
+		ADDED from AndroidManifest.xml:56:13
 	android:theme
-		ADDED from AndroidManifest.xml:98:13
+		ADDED from AndroidManifest.xml:57:13
 	android:name
-		ADDED from AndroidManifest.xml:96:13
-meta-data#com.crashlytics.ApiKey
-ADDED from AndroidManifest.xml:101:9
+		ADDED from AndroidManifest.xml:55:13
+meta-data#com.facebook.sdk.ApplicationId
+ADDED from AndroidManifest.xml:59:9
 	android:name
-		ADDED from AndroidManifest.xml:102:13
+		ADDED from AndroidManifest.xml:60:13
 	android:value
-		ADDED from AndroidManifest.xml:103:13
+		ADDED from AndroidManifest.xml:61:13
+receiver#com.chopping.application.InstalledAppReceiver
+ADDED from AndroidManifest.xml:65:9
+	android:exported
+		ADDED from AndroidManifest.xml:68:13
+	android:enabled
+		ADDED from AndroidManifest.xml:67:13
+	android:name
+		ADDED from AndroidManifest.xml:66:13
+intent-filter#android.intent.action.PACKAGE_ADDED+android.intent.action.PACKAGE_REMOVED
+ADDED from AndroidManifest.xml:69:13
+action#android.intent.action.PACKAGE_ADDED
+ADDED from AndroidManifest.xml:70:17
+	android:name
+		ADDED from AndroidManifest.xml:70:25
+action#android.intent.action.PACKAGE_REMOVED
+ADDED from AndroidManifest.xml:71:17
+	android:name
+		ADDED from AndroidManifest.xml:71:25
+data
+ADDED from AndroidManifest.xml:73:17
+	android:scheme
+		ADDED from AndroidManifest.xml:73:23
+receiver#com.hpush.gcm.GcmBroadcastReceiver
+ADDED from AndroidManifest.xml:78:9
+	android:permission
+		ADDED from AndroidManifest.xml:80:13
+	android:name
+		ADDED from AndroidManifest.xml:79:13
+intent-filter#com.google.android.c2dm.intent.RECEIVE+com.google.android.c2dm.intent.REGISTRATION+com.hpush
+ADDED from AndroidManifest.xml:81:13
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from AndroidManifest.xml:82:17
+	android:name
+		ADDED from AndroidManifest.xml:82:25
+action#com.google.android.c2dm.intent.REGISTRATION
+ADDED from AndroidManifest.xml:83:17
+	android:name
+		ADDED from AndroidManifest.xml:83:25
+category#com.hpush
+ADDED from AndroidManifest.xml:84:17
+	android:name
+		ADDED from AndroidManifest.xml:84:27
+service#com.hpush.gcm.GcmIntentService
+ADDED from AndroidManifest.xml:88:9
+	android:name
+		ADDED from AndroidManifest.xml:88:18
+activity#com.google.android.gms.ads.AdActivity
+ADDED from AndroidManifest.xml:104:9
+	android:configChanges
+		ADDED from AndroidManifest.xml:106:13
+	android:theme
+		ADDED from AndroidManifest.xml:107:13
+	android:name
+		ADDED from AndroidManifest.xml:105:13
+meta-data#com.crashlytics.ApiKey
+ADDED from AndroidManifest.xml:110:9
+	android:name
+		ADDED from AndroidManifest.xml:111:13
+	android:value
+		ADDED from AndroidManifest.xml:112:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from com.android.support:appcompat-v7:21.0.2:15:5
@@ -203,6 +219,8 @@ MERGED from com.android.support:support-v4:21.0.2:15:5
 MERGED from com.github.mrengineer13:snackbar:0.4.0:8:5
 MERGED from com.github.ksoichiro:android-observablescrollview:1.3.0:21:5
 MERGED from com.android.support:recyclerview-v7:21.0.2:15:5
+MERGED from com.android.support:support-v4:21.0.2:15:5
+MERGED from com.facebook.android:facebook-android-sdk:3.22.0:20:5
 MERGED from com.android.support:support-v4:21.0.2:15:5
 	android:targetSdkVersion
 		INJECTED from AndroidManifest.xml:0:0
