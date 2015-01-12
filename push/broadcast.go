@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"strconv"
 )
 
 type TopStoresRes struct {
@@ -204,13 +205,16 @@ func summary(_w http.ResponseWriter, _r *http.Request, _client OtherClient, push
 	if loopCount > SUMMARY_MAX {
 		loopCount = SUMMARY_MAX
 	}
+	msgIds := ""
 	summary := ""
 	for i := 0; i < loopCount; i++ {
 		summary += (pushedDetailList[i].Title + "<tr>")
+		msgIds += (strconv.FormatInt(pushedDetailList[i].Id, 10) + ",")
 	}
-	pushedMsg := fmt.Sprintf(`{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "count": %d, "pushed_time" : "%s"}}`,
+	pushedMsg := fmt.Sprintf(`{"registration_ids" : ["%s"],"data" : {"isSummary" : true, "summary": "%s", "ids": "%s", "count": %d, "pushed_time" : "%s"}}`,
 		_client.PushID,
 		summary,
+		msgIds,
 		_client.MsgCount,
 		pushedTime)
 	pushedMsgBytes := bytes.NewBufferString(pushedMsg)
