@@ -5,7 +5,7 @@ package com.hpush.data;
  *
  * @author Xinyue Zhao
  */
-public final class MessageListItem {
+public   class MessageListItem {
 	/**
 	 * The message to show on list.
 	 */

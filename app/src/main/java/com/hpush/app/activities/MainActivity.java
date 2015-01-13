@@ -2,14 +2,13 @@ package com.hpush.app.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
-import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -33,8 +32,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.chopping.activities.BaseActivity;
-import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookException;
@@ -48,11 +45,11 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.Plus.PlusOptions;
 import com.hpush.R;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
@@ -60,8 +57,6 @@ import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;
 import com.hpush.app.fragments.AppListImpFragment;
 import com.hpush.app.fragments.GPlusFragment;
 import com.hpush.bus.BookmarkAllEvent;
-import com.hpush.bus.ClickMessageCommentsEvent;
-import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.bus.DeleteAccountEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
@@ -72,10 +67,8 @@ import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SelectMessageEvent;
-import com.hpush.bus.ShareMessageEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.FunctionType;
-import com.hpush.data.MessageListItem;
 import com.hpush.data.Status;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
@@ -100,7 +93,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class MainActivity extends BaseActivity implements ConnectionCallbacks, OnConnectionFailedListener,
+public final class MainActivity extends BasicActivity implements  com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks  , com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener  ,
 		ObservableScrollViewCallbacks {
 	/**
 	 * Main layout for this component.
@@ -157,7 +150,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	private View mHeaderView;
 	private SnackBar mSnackBar;
 	private SignInButton mGPlusBtn;
-	private PlusClient mPlusClient;
+	private GoogleApiClient mPlusClient;
 	private ConnectionResult mConnectionResult;
 	private ProgressDialog mProgressDialog;
 	private static int REQUEST_CODE_RESOLVE_ERR = 0x98;
@@ -195,28 +188,8 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		mDrawerLayout.closeDrawers();
 	}
 
-	/**
-	 * Handler for {@link ClickMessageLinkEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link ClickMessageLinkEvent}.
-	 */
-	public void onEvent(ClickMessageLinkEvent e) {
-		WebViewActivity.showInstance(this, e.getMessage().getUrl(), e.getSenderV(), e.getMessage());
-	}
 
-	/**
-	 * Handler for {@link ClickMessageCommentsEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link ClickMessageCommentsEvent}.
-	 */
-	public void onEvent(ClickMessageCommentsEvent e) {
-		long cId = e.getMessage().getId();
-		String url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl();
-		String target = url + cId;
-		WebViewActivity.showInstance(this, target, e.getSenderV(), e.getMessage());
-	}
+
 
 
 	/**
@@ -321,33 +294,20 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	}
 
 
-	/**
-	 * Handler for {@link ShareMessageEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link ShareMessageEvent}.
-	 */
-	public void onEvent(ShareMessageEvent e) {
-		MessageListItem msg = e.getMessage();
-		switch (e.getType()) {
-		case Facebook:
-			Bundle postParams = new Bundle();
-			final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
-					.setName(msg.getTitle()).setDescription(msg.getText()).setLink(msg.getUrl()).build();
-			fbDlg.setOnCompleteListener(new OnCompleteListener() {
-				@Override
-				public void onComplete(Bundle bundle, FacebookException e) {
-					fbDlg.dismiss();
-				}
-			});
-			fbDlg.show();
-			break;
-		case Tweet:
-			break;
-		}
-	}
+
 	//------------------------------------------------
 
+	/**
+	 * Show single instance of {@link}
+	 *
+	 * @param cxt
+	 * 		{@link android.content.Context}.
+	 */
+	public static void showInstance(Context cxt) {
+		Intent intent = new Intent(cxt, MainActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		cxt.startActivity(intent);
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -369,7 +329,8 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		mViewPager = (ViewPager) findViewById(R.id.vp);
 		mPagerAdapter = new MainViewPagerAdapter(this, getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setPadding(0, 2 * calcActionBarHeight(), 0, 0);
+		calcActionBarHeight();
+		mViewPager.setPadding(0, 2 * getActionBarHeight(), 0, 0);
 		// Bind the tabs to the ViewPager
 		mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		mTabs.setViewPager(mViewPager);
@@ -411,7 +372,8 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 		mOpenBtn.setOnClickListener(mOpenListener);
 
 		mSnackBar = new SnackBar(this);
-		mPlusClient = new PlusClient.Builder(this, this, this).build();
+		mPlusClient = new GoogleApiClient.Builder(this, this, this) .addApi(Plus.API, PlusOptions.builder().build())
+				.addScope(Plus.SCOPE_PLUS_LOGIN).build();
 		mGPlusBtn = (SignInButton) findViewById(R.id.sign_in_btn);
 		mGPlusBtn.setSize(SignInButton.SIZE_WIDE);
 		mGPlusBtn.setOnClickListener(new OnViewAnimatedClickedListener3() {
@@ -551,10 +513,6 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	}
 
 
-	@Override
-	protected BasicPrefs getPrefs() {
-		return Prefs.getInstance(getApplication());
-	}
 
 	/**
 	 * Show main float button.
@@ -857,14 +815,17 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 			}).create().show();
 		}
 		EventBus.getDefault().postSticky(new LoginedGPlusEvent(mPlusClient));
-		Prefs.getInstance(getApplication()).setGoogleAccount(mPlusClient.getAccountName());
+		Prefs.getInstance(getApplication()).setGoogleAccount(
+				Plus.AccountApi.getAccountName(mPlusClient));
 		handleGPlusLinkedUI();
 	}
 
 	@Override
-	public void onDisconnected() {
+	public void onConnectionSuspended(int i) {
 		dismissProgressDialog();
 	}
+
+
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
@@ -907,7 +868,6 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	private void logoutGPlus() {
 		if (mPlusClient.isConnected()) {
 			mGPlusBtn.setVisibility(View.VISIBLE);
-			mPlusClient.clearDefaultAccount();
 			mPlusClient.disconnect();
 		}
 		Prefs prefs = Prefs.getInstance(getApplication());
@@ -929,19 +889,7 @@ public final class MainActivity extends BaseActivity implements ConnectionCallba
 	}
 
 
-	/**
-	 * @return The height of actionbar.
-	 */
-	private int calcActionBarHeight() {
-		int[] abSzAttr;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			abSzAttr = new int[] { android.R.attr.actionBarSize };
-		} else {
-			abSzAttr = new int[] { R.attr.actionBarSize };
-		}
-		TypedArray a = obtainStyledAttributes(abSzAttr);
-		return a.getDimensionPixelSize(0, -1);
-	}
+
 
 	private void refreshCurrentTotalMessages() {
 		AsyncTask<Void, int[], int[]> task = new AsyncTask<Void, int[], int[]>() {

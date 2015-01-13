@@ -13,7 +13,8 @@ import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
 import com.chopping.fragments.BaseFragment;
 import com.chopping.net.TaskHelper;
-import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.hpush.R;
 import com.hpush.bus.LoginedGPlusEvent;
@@ -57,10 +58,10 @@ public final class GPlusFragment extends BaseFragment {
 	 * 		Event {@link LoginedGPlusEvent}.
 	 */
 	public void onEvent(LoginedGPlusEvent e) {
-		PlusClient client = e.getPlusClient();
-		Person person = client.getCurrentPerson();
+		GoogleApiClient client = e.getPlusClient();
+		Person person = Plus.PeopleApi.getCurrentPerson(client);
 		mPhotoIv.setImageUrl(person.getImage().getUrl(), TaskHelper.getImageLoader());
-		mNameTv.setText(person.getDisplayName() + "," + client.getAccountName());
+		mNameTv.setText(person.getDisplayName() + "," + person.getDisplayName());
 		mPhotoIv.setVisibility(View.VISIBLE);
 		mNameTv.setVisibility(View.VISIBLE);
 		mLogoutV.setVisibility(View.VISIBLE);

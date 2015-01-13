@@ -18,10 +18,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:minHeight">?attr/actionBarSize</item>
-        <item name="android:theme">@style/AppThemeToolbar</item>
-        <item name="theme">@style/AppThemeToolbar</item>
-        <item name="android:popupTheme">@style/AppThemeToolbar</item>
-        <item name="popupTheme">@style/AppThemeToolbar</item>
+        <item name="android:theme">@style/AppThemeToolBar</item>
+        <item name="theme">@style/AppThemeToolBar</item>
+        <item name="android:popupTheme">@style/AppThemeToolBar</item>
+        <item name="popupTheme">@style/AppThemeToolBar</item>
         <item name="android:background">@color/common_transparent</item>
         <item name="background">@color/common_transparent</item>
     </style>

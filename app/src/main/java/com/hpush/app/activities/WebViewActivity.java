@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -23,14 +22,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.chopping.activities.BaseActivity;
-import com.chopping.application.BasicPrefs;
 import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.github.mrengineer13.snackbar.SnackBar;
 import com.hpush.R;
 import com.hpush.bus.BookmarkMessageEvent;
+import com.hpush.bus.ShareMessageEvent;
+import com.hpush.bus.ShareMessageEvent.Type;
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
 import com.hpush.db.DB;
@@ -47,7 +46,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class WebViewActivity extends BaseActivity implements DownloadListener {
+public final class WebViewActivity extends BasicActivity implements DownloadListener {
 
 	/**
 	 * Main layout for this component.
@@ -117,10 +116,6 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 		//		}
 	}
 
-	@Override
-	protected BasicPrefs getPrefs() {
-		return Prefs.getInstance(getApplication());
-	}
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -301,25 +296,23 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 						R.string.lbl_share_item_title));
 				desc = getString(R.string.lbl_share_app_content);
 				link = getString(R.string.lbl_app_link);
+
+				Bundle postParams = new Bundle();
+				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
+						.setCaption(caption).setName(name).setDescription(desc).setLink(link).build();
+				fbDlg.setOnCompleteListener(new OnCompleteListener() {
+					@Override
+					public void onComplete(Bundle bundle, FacebookException e) {
+						fbDlg.dismiss();
+					}
+				});
+				fbDlg.show();
 			} else {
-				name = "";
-				caption = getString(R.string.lbl_share_item_title);
-				link = msg.getUrl();
-				if (TextUtils.isEmpty(link)) {
-					link = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
+				if (TextUtils.isEmpty(msg.getUrl())) {
+					msg.setUrl( Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId());
 				}
-				desc = getString(R.string.lbl_share_item_content, msg.getTitle(), link);
+				EventBus.getDefault().post(new ShareMessageEvent(new MessageListItem(msg), Type.Facebook));
 			}
-			Bundle postParams = new Bundle();
-			final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
-					.setCaption(caption).setName(name).setDescription(desc).setLink(link).build();
-			fbDlg.setOnCompleteListener(new OnCompleteListener() {
-				@Override
-				public void onComplete(Bundle bundle, FacebookException e) {
-					fbDlg.dismiss();
-				}
-			});
-			fbDlg.show();
 			break;
 		case R.id.action_tweet:
 			break;
@@ -348,19 +341,6 @@ public final class WebViewActivity extends BaseActivity implements DownloadListe
 	}
 
 
-	/**
-	 * Calculate height of actionbar.
-	 */
-	private void calcActionBarHeight() {
-		int[] abSzAttr;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			abSzAttr = new int[] { android.R.attr.actionBarSize };
-		} else {
-			abSzAttr = new int[] { R.attr.actionBarSize };
-		}
-		TypedArray a = obtainStyledAttributes(abSzAttr);
-		mActionBarHeight = a.getDimensionPixelSize(0, -1);
-	}
 
 	@Override
 	public void onBackPressed() {

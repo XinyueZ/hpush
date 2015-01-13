@@ -1,6 +1,6 @@
 package com.hpush.bus;
 
-import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
  * Event after when Google+ has been logined.
@@ -11,7 +11,7 @@ public final class LoginedGPlusEvent {
 	/**
 	 * The validate logined client.
 	 */
-	private PlusClient mPlusClient;
+	private GoogleApiClient mPlusClient;
 
 	/**
 	 * Constructor  {@link LoginedGPlusEvent}
@@ -19,14 +19,14 @@ public final class LoginedGPlusEvent {
 	 * @param plusClient
 	 * 		The validate logined client.
 	 */
-	public LoginedGPlusEvent(PlusClient plusClient) {
+	public LoginedGPlusEvent(GoogleApiClient plusClient) {
 		mPlusClient = plusClient;
 	}
 
 	/**
 	 * @return The validate logined client.
 	 */
-	public PlusClient getPlusClient() {
+	public GoogleApiClient getPlusClient() {
 		return mPlusClient;
 	}
 }

@@ -38,7 +38,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapter.ViewHolder> {
+public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerView.Adapter<MessagesListAdapter.ViewHolder> {
 	/**
 	 * Main layout for this component.
 	 */
@@ -50,7 +50,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	/**
 	 * Data collection.
 	 */
-	private List<MessageListItem> mMessages;
+	private List<T> mMessages;
 	/**
 	 * The overflow for toolbar on items.
 	 */
@@ -61,7 +61,7 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	 * @param messages Data source for the list.
 	 *                 @param menuResId   The overflow for toolbar on items.
 	 */
-	public MessagesListAdapter(List<MessageListItem> messages, @MenuRes int menuResId) {
+	public MessagesListAdapter(List<T> messages, @MenuRes int menuResId) {
 		mMessages = messages;
 		this.menuResId = menuResId;
 	}
@@ -70,14 +70,14 @@ public final class MessagesListAdapter extends RecyclerView.Adapter<MessagesList
 	 * Set data-source.
 	 * @param messages Data source for the list.
 	 */
-	public void setMessages(List<MessageListItem> messages) {
+	public void setMessages(List<T> messages) {
 		mMessages = messages;
 	}
 	/**
 	 * Get data-source.
 	 * @return  Data source for the list.
 	 */
-	public List<MessageListItem> getMessages() {
+	public List<T> getMessages() {
 		return mMessages;
 	}
 

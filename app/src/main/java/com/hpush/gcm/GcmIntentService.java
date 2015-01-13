@@ -18,7 +18,7 @@ import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.hpush.R;
-import com.hpush.app.activities.MainActivity;
+import com.hpush.app.activities.DailiesActivity;
 import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.Message;
@@ -98,7 +98,7 @@ public class GcmIntentService extends IntentService {
 						}
 						final String summaryTitle = getString(R.string.lbl_update_from_hacker_news, count);
 						mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-						Intent intent = new Intent(this, MainActivity.class);
+						Intent intent = new Intent(this, DailiesActivity.class);
 						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						final PendingIntent contentIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
 								intent, PendingIntent.FLAG_ONE_SHOT);
@@ -147,9 +147,12 @@ public class GcmIntentService extends IntentService {
 							db.clearDailies();
 						}
 					}
-					if(ids.length>0) {
+					if(ids.length > 0) {
 						boolean foundInDaily;
-						for (String id : ids) {
+						String id;
+						for (int i = ids.length - 1; i >= 0; i--) {
+							//From 3rd message to 1st one.
+							id = ids[i];
 							if(!TextUtils.isEmpty(id)) {
 								//Tricky to text empty value, server sends a "" for last "," .:(
 								foundInDaily = db.findDaily(id);

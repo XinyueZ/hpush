@@ -103,4 +103,8 @@ public   class Message implements Serializable{
 	public void setCommentsCount(long commentsCount) {
 		mCommentsCount = commentsCount;
 	}
+
+	public void setUrl(String url) {
+		mUrl = url;
+	}
 }

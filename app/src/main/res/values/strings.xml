@@ -114,6 +114,7 @@
     <string name="btn_not_agree">I do not agree.</string>
     <string name="btn_retry">Retry</string>
     <string name="applicationId">1038826132811079</string>
+    <string name="ad_banner_unit_id">ca-app-pub-9133982521997162/3161598133</string>
     <string name="ad_inters_unit_id">ca-app-pub-9133982521997162/9212548933</string>
     <string name="play_service_url">market://details?id=com.google.android.gms</string>
 </resources>

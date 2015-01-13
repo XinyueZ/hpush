@@ -41,7 +41,7 @@
 
     <style name="AppTheme" parent="AppTheme.Base" />
 
-    <style name="AppThemeToolbar" parent="AppTheme.Base">
+    <style name="AppThemeToolBar" parent="AppTheme.Base">
         <item name="android:actionOverflowButtonStyle">@style/ThisActionButton_Overflow_Style</item>
         <item name="actionOverflowButtonStyle">@style/ThisActionButton_Overflow_Style</item>
     </style>
