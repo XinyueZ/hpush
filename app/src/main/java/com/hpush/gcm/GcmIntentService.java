@@ -1,5 +1,7 @@
 package com.hpush.gcm;
 
+import java.util.concurrent.TimeUnit;
+
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -76,6 +78,7 @@ public class GcmIntentService extends IntentService {
 	 * @param msg  Data of messages.
 	 */
 	private void sendNotification(final Bundle msg) {
+		DB db = DB.getInstance(getApplication());
 		Prefs prefs = Prefs.getInstance(getApplication());
 		if(!TextUtils.isEmpty(prefs.getPushRegId()) && !TextUtils.isEmpty(prefs.getGoogleAccount()) ) {
 			final boolean isSummary = Boolean.parseBoolean(msg.getString("isSummary"));
@@ -83,9 +86,11 @@ public class GcmIntentService extends IntentService {
 			//Notify only for the "summary"s.
 			if (isSummary) {
 				final String summary = msg.getString("summary");
+				final String summaryIds = msg.getString("ids");
 				final int count = Integer.valueOf(msg.getString("count"));
 				if (count > 0) {
 					String[] lines = summary.split("<tr>");
+					String[] ids = summaryIds.split(",");
 					if (lines.length > 0) {
 						InboxStyle style = new InboxStyle();
 						for (String line : lines) {
@@ -133,6 +138,30 @@ public class GcmIntentService extends IntentService {
 						//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.
 						EventBus.getDefault().post(new LoadAllEvent());
 					}
+					//http://stackoverflow.com/questions/6980376/convert-from-days-to-milliseconds
+					long cacheHours = TimeUnit.HOURS.toMillis(prefs.getDefaultSummaryCacheHours());
+					long lastSumTime = prefs.getLastSummaryTime();
+					long now = System.currentTimeMillis();
+					if(lastSumTime > 0) {
+						if(now - lastSumTime > cacheHours) {
+							db.clearDailies();
+						}
+					}
+					if(ids.length>0) {
+						boolean foundInDaily;
+						for (String id : ids) {
+							if(!TextUtils.isEmpty(id)) {
+								//Tricky to text empty value, server sends a "" for last "," .:(
+								foundInDaily = db.findDaily(id);
+								if (foundInDaily) {
+									db.updateDaily(id);
+								} else {
+									db.addDaily(id);
+								}
+							}
+						}
+						prefs.setLastSummaryTime(now);
+					}
 				}
 			} else {
 				final String by = msg.getString("by");
@@ -147,7 +176,6 @@ public class GcmIntentService extends IntentService {
 				final long pushedtime = Long.valueOf(pushedTime);
 				prefs.setLastPushedTime(pushedtime);
 
-				DB db = DB.getInstance(getApplication());
 				Message message = new Message(by, id, score, commentsCount, text, time, title, url, pushedtime);
 				boolean foundMsg = db.findMessage(message);
 				boolean foundBookmark = db.findBookmark(message);

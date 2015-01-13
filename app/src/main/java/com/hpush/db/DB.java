@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.hpush.data.Daily;
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
 import com.hpush.utils.Prefs;
@@ -116,14 +117,14 @@ public final class DB {
 		try {
 			long rowId = -1;
 			ContentValues v = new ContentValues();
-			v.put(MessagesTbl.BY, item.getBy());
-			v.put(MessagesTbl.ID, item.getId());
-			v.put(MessagesTbl.SCORE, item.getScore());
-			v.put(MessagesTbl.COMMENTS_COUNT, item.getCommentsCount());
-			v.put(MessagesTbl.TEXT, item.getText());
-			v.put(MessagesTbl.TIME, item.getTime());
-			v.put(MessagesTbl.TITLE, item.getTitle());
-			v.put(MessagesTbl.URL, item.getUrl());
+			v.put(BookmarksTbl.BY, item.getBy());
+			v.put(BookmarksTbl.ID, item.getId());
+			v.put(BookmarksTbl.SCORE, item.getScore());
+			v.put(BookmarksTbl.COMMENTS_COUNT, item.getCommentsCount());
+			v.put(BookmarksTbl.TEXT, item.getText());
+			v.put(BookmarksTbl.TIME, item.getTime());
+			v.put(BookmarksTbl.TITLE, item.getTitle());
+			v.put(BookmarksTbl.URL, item.getUrl());
 
 			rowId = mDB.insert(BookmarksTbl.TABLE_NAME, null, v);
 			item.setDbId(rowId);
@@ -167,15 +168,15 @@ public final class DB {
 		try {
 			long rowId;
 			ContentValues v = new ContentValues();
-			v.put(MessagesTbl.BY, item.getBy());
-			v.put(MessagesTbl.SCORE, item.getScore());
-			v.put(MessagesTbl.COMMENTS_COUNT, item.getCommentsCount());
-			v.put(MessagesTbl.TEXT, item.getText());
-			v.put(MessagesTbl.TIME, item.getTime());
-			v.put(MessagesTbl.TITLE, item.getTitle());
-			v.put(MessagesTbl.URL, item.getUrl());
+			v.put(BookmarksTbl.BY, item.getBy());
+			v.put(BookmarksTbl.SCORE, item.getScore());
+			v.put(BookmarksTbl.COMMENTS_COUNT, item.getCommentsCount());
+			v.put(BookmarksTbl.TEXT, item.getText());
+			v.put(BookmarksTbl.TIME, item.getTime());
+			v.put(BookmarksTbl.TITLE, item.getTitle());
+			v.put(BookmarksTbl.URL, item.getUrl());
 			String[] args = new String[] { item.getId() + "" };
-			rowId = mDB.update(BookmarksTbl.TABLE_NAME, v, MessagesTbl.ID + " = ?", args);
+			rowId = mDB.update(BookmarksTbl.TABLE_NAME, v, BookmarksTbl.ID + " = ?", args);
 			success = rowId != -1;
 		} finally {
 			close();
@@ -232,7 +233,7 @@ public final class DB {
 			}
 			success = rowId > 0;
 			if (success) {
-				Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, null, null, null, null, null);
+				Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { BookmarksTbl.ID }, null, null, null, null, null);
 				rowsRemain = c.getCount();
 			} else {
 				rowsRemain = -1;
@@ -307,16 +308,16 @@ public final class DB {
 		try {
 			while (c.moveToNext()) {
 				item = new Message(
-						c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),
-						c.getString(c.getColumnIndex(MessagesTbl.BY)),
-						c.getLong(c.getColumnIndex(MessagesTbl.ID)),
-						c.getLong(c.getColumnIndex(MessagesTbl.SCORE)),
-						c.getLong(c.getColumnIndex(MessagesTbl.COMMENTS_COUNT)),
-						c.getString(c.getColumnIndex(MessagesTbl.TEXT)),
-						c.getLong(c.getColumnIndex(MessagesTbl.TIME)),
-						c.getString(c.getColumnIndex(MessagesTbl.TITLE)),
-						c.getString(c.getColumnIndex(MessagesTbl.URL)),
-						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
+						c.getLong(c.getColumnIndex(BookmarksTbl.DB_ID)),
+						c.getString(c.getColumnIndex(BookmarksTbl.BY)),
+						c.getLong(c.getColumnIndex(BookmarksTbl.ID)),
+						c.getLong(c.getColumnIndex(BookmarksTbl.SCORE)),
+						c.getLong(c.getColumnIndex(BookmarksTbl.COMMENTS_COUNT)),
+						c.getString(c.getColumnIndex(BookmarksTbl.TEXT)),
+						c.getLong(c.getColumnIndex(BookmarksTbl.TIME)),
+						c.getString(c.getColumnIndex(BookmarksTbl.TITLE)),
+						c.getString(c.getColumnIndex(BookmarksTbl.URL)),
+						c.getLong(c.getColumnIndex(BookmarksTbl.PUSHED_TIME))
 				);
 				list.add(new MessageListItem(item));
 			}
@@ -352,9 +353,9 @@ public final class DB {
 		}
 		boolean success;
 		try {
-			String whereClause =   MessagesTbl.ID + "=?";
+			String whereClause =   BookmarksTbl.ID + "=?";
 			String[] whereArgs = new String[] {   String.valueOf(item.getId()) };
-			Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, whereClause, whereArgs, null, null, null);
+			Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { BookmarksTbl.ID }, whereClause, whereArgs, null, null, null);
 			success = c.getCount() >= 1;
 		} finally {
 			close();
@@ -392,5 +393,159 @@ public final class DB {
 		default:
 			return MessagesTbl.TIME;
 		}
+	}
+
+	public synchronized boolean addDaily(String id) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		boolean success = false;
+		try {
+			long rowId = -1;
+			ContentValues v = new ContentValues();
+			v.put(DailyTbl.ID, Long.valueOf(id));
+			v.put(DailyTbl.EDIT_TIME, System.currentTimeMillis());
+			rowId = mDB.insert(DailyTbl.TABLE_NAME, null, v);
+			success = rowId != -1;
+		} finally {
+			close();
+		}
+		return success;
+	}
+
+
+	public synchronized boolean updateDaily(String id) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		boolean success = false;
+		try {
+			long rowId;
+			ContentValues v = new ContentValues();
+			v.put(DailyTbl.EDIT_TIME, System.currentTimeMillis());
+			String[] args = new String[] { id    };
+			rowId = mDB.update(DailyTbl.TABLE_NAME, v, DailyTbl.ID + " = ?", args);
+			success = rowId != -1;
+		} finally {
+			close();
+		}
+		return success;
+	}
+
+	public synchronized void clearDailies() {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		try {
+			mDB.delete(DailyTbl.TABLE_NAME, null, null);
+		} finally {
+			close();
+		}
+	}
+
+	public synchronized boolean findDaily(String id) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		boolean success;
+		try {
+			String whereClause =   DailyTbl.ID + "=?";
+			String[] whereArgs = new String[] {   id    };
+			Cursor c = mDB.query(DailyTbl.TABLE_NAME, new String[] { DailyTbl.ID }, whereClause, whereArgs, null, null, null);
+			success = c.getCount() >= 1;
+		} finally {
+			close();
+		}
+		return success ;
+	}
+
+	public synchronized List<Daily> getDailies(Sort sort) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		Cursor c = mDB.query(DailyTbl.TABLE_NAME, null, null, null, null, null,
+				DailyTbl.EDIT_TIME + " " + sort.toString());
+		List<Daily>  list = new ArrayList<>();
+		try {
+			long id;
+			Message msg;
+			while (c.moveToNext()) {
+				id = c.getLong(c.getColumnIndex(DailyTbl.ID));
+				msg = getBookmark(id);
+				if(msg != null) {
+					list.add(new Daily(msg, true));
+				}
+				else {
+					msg = getMessage(id);
+					if(msg != null) {
+						list.add(new Daily(msg, false));
+					}
+				}
+			}
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+			close();
+			return list;
+		}
+	}
+
+	public synchronized  Message getMessage(long  id) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		Message msg = null;
+		try {
+			String whereClause =   MessagesTbl.ID + "=?";
+			String[] whereArgs = new String[] {   String.valueOf(id) };
+			Cursor c = mDB.query(MessagesTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, whereClause, whereArgs, null, null, null);
+			while (c.moveToNext()) {
+				msg = new Message(
+						c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),
+						c.getString(c.getColumnIndex(MessagesTbl.BY)),
+						c.getLong(c.getColumnIndex(MessagesTbl.ID)),
+						c.getLong(c.getColumnIndex(MessagesTbl.SCORE)),
+						c.getLong(c.getColumnIndex(MessagesTbl.COMMENTS_COUNT)),
+						c.getString(c.getColumnIndex(MessagesTbl.TEXT)),
+						c.getLong(c.getColumnIndex(MessagesTbl.TIME)),
+						c.getString(c.getColumnIndex(MessagesTbl.TITLE)),
+						c.getString(c.getColumnIndex(MessagesTbl.URL)),
+						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
+				);
+			}
+		} finally {
+			close();
+		}
+		return msg ;
+	}
+
+	public synchronized Message getBookmark(long id) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		Message msg = null;
+		try {
+			String whereClause =   BookmarksTbl.ID + "=?";
+			String[] whereArgs = new String[] {   String.valueOf(id) };
+			Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { BookmarksTbl.ID }, whereClause, whereArgs, null, null, null);
+			while (c.moveToNext()) {
+				msg = new Message(
+						c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),
+						c.getString(c.getColumnIndex(MessagesTbl.BY)),
+						c.getLong(c.getColumnIndex(MessagesTbl.ID)),
+						c.getLong(c.getColumnIndex(MessagesTbl.SCORE)),
+						c.getLong(c.getColumnIndex(MessagesTbl.COMMENTS_COUNT)),
+						c.getString(c.getColumnIndex(MessagesTbl.TEXT)),
+						c.getLong(c.getColumnIndex(MessagesTbl.TIME)),
+						c.getString(c.getColumnIndex(MessagesTbl.TITLE)),
+						c.getString(c.getColumnIndex(MessagesTbl.URL)),
+						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
+				);
+			}
+		} finally {
+			close();
+		}
+		return msg ;
 	}
 }

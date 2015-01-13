@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class Message implements Serializable{
+public   class Message implements Serializable{
 	@SerializedName("dbid")
 	private long mDbId;
 	@SerializedName("By")

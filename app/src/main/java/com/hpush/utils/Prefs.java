@@ -27,6 +27,7 @@ public final class Prefs extends BasicPrefs {
 	private static final String KEY_G_ACCOUNT = "key.g.account";
 	public static final String KEY_SORT_TYPE = "key.sort.type";
 	public static final String KEY_SOUND_TYPE = "key.sound.type";
+	private static final String KEY_LAST_SUMMARY_TIME = "key.last.summary.time";
 
 	/**
 	 * Storage. Whether the "End User License Agreement" has been shown and agreed at application's first start.
@@ -46,6 +47,7 @@ public final class Prefs extends BasicPrefs {
 	private static final String SYNC_RETRY = "sync_retry";
 	private static final String DEFAULT_SORT_VALUE = "default_sort_value";
 	private static final String DEFAULT_MSG_COUNT = "default_msg_count";
+	private static final String DEFAULT_SUMMARY_CACHE_HOURS = "default_summary_cache_hours";
 
 	/**
 	 * Created a DeviceData storage.
@@ -157,6 +159,7 @@ public final class Prefs extends BasicPrefs {
 	public boolean isOnlyFullText() {
 		return getBoolean(KEY_FULL_TEXT, mContext.getResources().getBoolean(R.bool.default_accept_full_text));
 	}
+
 	/**
 	 * @return Message count that are available to receiver, "0-100".
 	 */
@@ -166,10 +169,12 @@ public final class Prefs extends BasicPrefs {
 
 	/**
 	 * Set message count that are available to receiver.
-	 * @param msgCount message count "0-100".
+	 *
+	 * @param msgCount
+	 * 		message count "0-100".
 	 */
 	public void setMsgCount(String msgCount) {
-		  setString(KEY_MSG_COUNT, msgCount);
+		setString(KEY_MSG_COUNT, msgCount);
 	}
 
 	public boolean isOnlySaveLatest() {
@@ -190,14 +195,15 @@ public final class Prefs extends BasicPrefs {
 
 	/**
 	 * Set logined account.
-	 * @param account  logined account.
+	 *
+	 * @param account
+	 * 		logined account.
 	 */
 	public void setGoogleAccount(String account) {
 		setString(KEY_G_ACCOUNT, account);
 	}
 
 	/**
-	 *
 	 * @return Get logined account.
 	 */
 	public String getGoogleAccount() {
@@ -205,15 +211,13 @@ public final class Prefs extends BasicPrefs {
 	}
 
 	/**
-	 *@return  Timeout for retry to sync data on backend.
-	 *
+	 * @return Timeout for retry to sync data on backend.
 	 */
 	public int getSyncRetry() {
 		return getInt(SYNC_RETRY, 60);
 	}
 
 	/**
-	 *
 	 * @return Sort type, by score or time of push, "0-4".
 	 */
 	public String getSortTypeValue() {
@@ -222,25 +226,21 @@ public final class Prefs extends BasicPrefs {
 
 	/**
 	 * Set sort type.
-	 * @param sortTypeValue "0-4".
+	 *
+	 * @param sortTypeValue
+	 * 		"0-4".
 	 */
 	public void setSortTypeValue(String sortTypeValue) {
 		setString(KEY_SORT_TYPE, sortTypeValue);
 	}
 
 
-
-
 	/**
-	 *
 	 * @return sound type, "0-2".
 	 */
 	public String getSoundTypeValue() {
 		return getString(KEY_SOUND_TYPE, "0");
 	}
-
-
-
 
 
 	private int getDefaultDefaultMsgCount() {
@@ -249,5 +249,31 @@ public final class Prefs extends BasicPrefs {
 
 	private int getDefaultSortValue() {
 		return getInt(DEFAULT_SORT_VALUE, 2);
+	}
+
+	/**
+	 * Mark the time of last summary message.
+	 *
+	 * @param time
+	 * 		Time of message coming.
+	 */
+	public void setLastSummaryTime(long time) {
+		setLong(KEY_LAST_SUMMARY_TIME, time);
+	}
+
+	/**
+	 * @return Get the time of last summary message. Default is {@code -1}.
+	 */
+	public long getLastSummaryTime() {
+		return getLong(KEY_LAST_SUMMARY_TIME,
+				-1);
+	}
+
+	/**
+	 *
+	 * @return Max cache hours for all summary data.
+	 */
+	public int getDefaultSummaryCacheHours() {
+		return getInt(DEFAULT_SUMMARY_CACHE_HOURS, 24);
 	}
 }
