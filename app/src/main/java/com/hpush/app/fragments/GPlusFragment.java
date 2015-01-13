@@ -61,7 +61,8 @@ public final class GPlusFragment extends BaseFragment {
 		GoogleApiClient client = e.getPlusClient();
 		Person person = Plus.PeopleApi.getCurrentPerson(client);
 		mPhotoIv.setImageUrl(person.getImage().getUrl(), TaskHelper.getImageLoader());
-		mNameTv.setText(person.getDisplayName() + "," + person.getDisplayName());
+		mNameTv.setText(person.getDisplayName() + "," +
+				Plus.AccountApi.getAccountName(client));
 		mPhotoIv.setVisibility(View.VISIBLE);
 		mNameTv.setVisibility(View.VISIBLE);
 		mLogoutV.setVisibility(View.VISIBLE);

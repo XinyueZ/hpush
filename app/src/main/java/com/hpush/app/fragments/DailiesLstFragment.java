@@ -66,7 +66,20 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 	 * 		Event {@link com.hpush.bus.BookmarkMessageEvent}.
 	 */
 	public void onEvent(BookmarkMessageEvent e) {
-		bookmarkOneItem((DailyListItem) e.getMessageListItem());
+		if(e.getMessageListItem() instanceof DailyListItem) {
+			//Bookmark on the site self.
+			bookmarkOneItem((DailyListItem) e.getMessageListItem());
+		} else {
+			//Bookmark from a webview shows details.
+			List<DailyListItem> list = mAdp.getMessages();
+			for(DailyListItem item : list) {
+				if(item.getId() == e.getMessageListItem().getId()) {
+					bookmarkOneItem(item);
+					EventBus.getDefault().removeAllStickyEvents();
+					break;
+				}
+			}
+		}
 	}
 
 	//------------------------------------------------
@@ -94,6 +107,9 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 		}
 		mRv.setHasFixedSize(false);
 		mRv.setScrollViewCallbacks(this);
+
+
+		loadDailies();
 	}
 
 	@Override
@@ -102,11 +118,6 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 	}
 
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		loadDailies();
-	}
 
 	/**
 	 * Get all data.
@@ -140,31 +151,28 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 	 * 		The item to bookmark.
 	 */
 	private void bookmarkOneItem(final DailyListItem itemToBookmark) {
-		AsyncTask<List<DailyListItem>, Void, Void>
-				task =
-				new AsyncTask<List<DailyListItem>, Void, Void>() {
-					@Override
-					protected Void doInBackground(
-							List<DailyListItem>... params) {
-						List<DailyListItem> data = params[0];
-						for (DailyListItem obj:data) {
-							if (obj.getId() == itemToBookmark.getId()) {
-								mDB.removeMessage(obj == null ? null : obj.getMessage());
-								mDB.addBookmark(obj.getMessage());
-							}
-						}
-						itemToBookmark.setBookmarked(true);
-						return null;
+		AsyncTaskCompat.executeParallel(new AsyncTask<List<DailyListItem>, Void, Void>() {
+			@Override
+			protected Void doInBackground(
+					List<DailyListItem>... params) {
+				List<DailyListItem> data = params[0];
+				for (DailyListItem obj:data) {
+					if (obj.getId() == itemToBookmark.getId()) {
+						mDB.removeMessage(obj == null ? null : obj.getMessage());
+						mDB.addBookmark(obj.getMessage());
 					}
+				}
+				itemToBookmark.setBookmarked(true);
+				return null;
+			}
 
-					@Override
-					protected void onPostExecute(Void aVoid) {
-						super.onPostExecute(aVoid);
-						mAdp.notifyDataSetChanged();
-						EventBus.getDefault().post(new BookmarkedEvent());
-					}
-				};
-		AsyncTaskCompat.executeParallel(task, mAdp.getMessages());
+			@Override
+			protected void onPostExecute(Void aVoid) {
+				super.onPostExecute(aVoid);
+				mAdp.notifyDataSetChanged();
+				EventBus.getDefault().post(new BookmarkedEvent());
+			}
+		}, mAdp.getMessages());
 	}
 
 	@Override

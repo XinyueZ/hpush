@@ -78,10 +78,6 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 	 */
 	private SwipeRefreshLayout mRefreshLayout;
 	/**
-	 * The height of actionbar.
-	 */
-	private int mActionBarHeight;
-	/**
 	 * The message that contains the information that the {@link #mWebView} uses. It might be null.
 	 */
 	private Message msg;
@@ -134,7 +130,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				animToolActionBar(-mActionBarHeight * 4);
+				animToolActionBar(-getActionBarHeight() * 4);
 				mWebView.reload();
 			}
 		});
@@ -148,13 +144,13 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 				if (isUp) {
 					animToolActionBar(0);
 				} else {
-					animToolActionBar(-mActionBarHeight * 4);
+					animToolActionBar(-getActionBarHeight() * 4);
 				}
 			}
 
 			@Override
 			public void onScrolledTop() {
-				animToolActionBar(-mActionBarHeight * 4);
+				animToolActionBar(-getActionBarHeight() * 4);
 			}
 		});
 		mWebView.setDownloadListener(this);
@@ -185,7 +181,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 			}
 		});
 		handleIntent();
-		animToolActionBar(-mActionBarHeight * 4);
+		animToolActionBar(-getActionBarHeight() * 4);
 		mSnackBar = new SnackBar(this);
 	}
 

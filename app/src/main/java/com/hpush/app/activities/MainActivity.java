@@ -298,7 +298,7 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 	//------------------------------------------------
 
 	/**
-	 * Show single instance of {@link}
+	 * Show single instance of {@link com.hpush.app.activities.MainActivity}
 	 *
 	 * @param cxt
 	 * 		{@link android.content.Context}.
@@ -622,6 +622,13 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 				@Override
 				public void onClick(View v) {
 					WebViewActivity.showInstance(MainActivity.this, null, v, null);
+					mDrawerLayout.closeDrawer(Gravity.LEFT);
+				}
+			});
+			findViewById(R.id.open_recent_ll).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					DailiesActivity.showInstance(MainActivity.this);
 					mDrawerLayout.closeDrawer(Gravity.LEFT);
 				}
 			});

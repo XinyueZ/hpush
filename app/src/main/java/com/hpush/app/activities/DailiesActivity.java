@@ -1,5 +1,7 @@
 package com.hpush.app.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,6 +50,17 @@ public final class DailiesActivity extends BasicActivity {
 	}
 
 	//------------------------------------------------
+
+	/**
+	 * Show single instance of {@link com.hpush.app.activities.DailiesActivity}
+	 *
+	 * @param cxt {@link android.content.Context}.
+	 */
+	public static void showInstance(Context cxt) {
+		Intent intent = new Intent(cxt, DailiesActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		cxt.startActivity(intent);
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

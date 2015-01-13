@@ -169,6 +169,37 @@
                     android:background="@drawable/selector_drawer_item_btn" />
             </LinearLayout>
 
+
+
+            <LinearLayout
+                android:id="@+id/open_recent_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/selector_drawer_item_btn">
+
+                <ImageView
+                    android:layout_width="@dimen/float_small_button_size"
+                    android:layout_height="@dimen/float_small_button_size"
+                    android:background="@color/common_transparent"
+                    android:src="@drawable/btn_recent" />
+
+
+                <com.hpush.views.FontTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    font="thin"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center_vertical"
+                    android:textColor="@color/text_common_black"
+                    android:text="@string/lbl_recent"
+                    android:background="@drawable/selector_drawer_item_btn" />
+            </LinearLayout>
+
+
+
+
             <LinearLayout
                 android:id="@+id/open_setting_ll"
                 android:layout_width="match_parent"

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_turn_on_push_info">是否启动推送功能，来获取Hacker News社区的最Top的内容？</string>
-
+    <string name="app_name">骇客推送</string>
+    <string name="application_name">骇客推送</string>
     <string name="lbl_yes">是</string>
     <string name="lbl_no">不</string>
     <string name="lbl_home">首页</string>
@@ -17,6 +18,7 @@
     <string name="lbl_item_open_link">打开</string>
     <string name="lbl_item_share">分享</string>
     <string name="lbl_comments">评论</string>
+    <string name="lbl_share_item_title">骇客推送</string>
     <string name="lbl_login_gplus">登录Google+ …</string>
     <string name="lbl_login_fail">不能登录Google+ …</string>
     <string name="lbl_update_from_hacker_news">Hacker News有%1$s更新。</string>
@@ -82,6 +84,7 @@
     <string name="btn_agree">同意</string>
     <string name="btn_not_agree">拒绝</string>
     <string name="btn_retry">再尝试</string>
+    <string name="lbl_recent">最近</string>
 
 
 </resources>
