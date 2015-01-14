@@ -212,7 +212,6 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		getMenuInflater().inflate(MENU, menu);
 		if (msg == null) {
 			menu.findItem(R.id.action_item_comment).setVisible(false);
-			menu.findItem(R.id.action_item_share).setVisible(false);
 			menu.findItem(R.id.action_item_bookmark).setVisible(false);
 		}
 
@@ -239,11 +238,10 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		MenuItem menuShare = menu.findItem(R.id.action_item_share);
+		android.support.v7.widget.ShareActionProvider provider =
+				(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
 		if (msg != null) {
-			MenuItem menuShare = menu.findItem(R.id.action_item_share);
-			//Getting the actionprovider associated with the menu item whose id is share.
-			android.support.v7.widget.ShareActionProvider provider =
-					(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
 			//Setting a share intent.
 			String url = msg.getUrl();
 			if (TextUtils.isEmpty(url)) {
@@ -251,6 +249,11 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 			}
 			String subject = getString(R.string.lbl_share_item_title);
 			String text = getString(R.string.lbl_share_item_content, msg.getTitle(), url);
+			provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
+		} else {
+			//Setting a share intent.
+			String subject = getString(R.string.lbl_share_app_title, getString(R.string.application_name));
+			String text = getString(R.string.lbl_share_app_content);
 			provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
 		}
 		return super.onPrepareOptionsMenu(menu);

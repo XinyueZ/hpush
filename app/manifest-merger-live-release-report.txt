@@ -53,24 +53,24 @@ ADDED from AndroidManifest.xml:18:5
 		ADDED from AndroidManifest.xml:18:22
 application
 ADDED from AndroidManifest.xml:20:5
-MERGED from com.android.support:appcompat-v7:21.0.2:16:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
-MERGED from com.google.android.gms:play-services:6.1.71:16:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
+MERGED from com.android.support:appcompat-v7:21.0.3:16:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
+MERGED from com.google.android.gms:play-services:6.5.87:20:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
 MERGED from hpush:ChoppingBootstrap:unspecified:11:5
-MERGED from com.android.support:appcompat-v7:21.0.2:16:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
+MERGED from com.android.support:appcompat-v7:21.0.3:16:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
 MERGED from hpush:volley_cz:unspecified:9:5
 MERGED from hpush:volley_cz:unspecified:9:5
-MERGED from com.android.support:cardview-v7:21.0.2:16:5
-MERGED from com.android.support:recyclerview-v7:21.0.2:17:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
+MERGED from com.android.support:cardview-v7:21.0.3:16:5
+MERGED from com.android.support:recyclerview-v7:21.0.3:17:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
 MERGED from com.astuetz:pagerslidingtabstrip:1.0.1:4:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
-MERGED from com.android.support:recyclerview-v7:21.0.2:17:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
+MERGED from com.android.support:recyclerview-v7:21.0.3:17:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
 MERGED from com.facebook.android:facebook-android-sdk:3.22.0:24:5
-MERGED from com.android.support:support-v4:21.0.2:16:5
+MERGED from com.android.support:support-v4:21.0.3:16:5
 	android:label
 		ADDED from AndroidManifest.xml:24:9
 		REJECTED from hpush:ChoppingBootstrap:unspecified:14:9
@@ -86,6 +86,7 @@ MERGED from com.android.support:support-v4:21.0.2:16:5
 		ADDED from AndroidManifest.xml:21:9
 meta-data#com.google.android.gms.version
 ADDED from AndroidManifest.xml:28:77
+MERGED from com.google.android.gms:play-services:6.5.87:21:9
 	android:name
 		ADDED from AndroidManifest.xml:29:9
 	android:value
@@ -108,120 +109,152 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:40:17
 	android:name
 		ADDED from AndroidManifest.xml:40:27
-activity#com.hpush.app.activities.SettingActivity
-ADDED from AndroidManifest.xml:44:9
-	android:screenOrientation
-		ADDED from AndroidManifest.xml:47:13
-	android:label
-		ADDED from AndroidManifest.xml:46:13
-	android:theme
-		ADDED from AndroidManifest.xml:48:13
+meta-data#android.app.default_searchable
+ADDED from AndroidManifest.xml:46:13
 	android:name
-		ADDED from AndroidManifest.xml:45:13
-activity#com.hpush.app.activities.WebViewActivity
-ADDED from AndroidManifest.xml:50:9
-	android:screenOrientation
-		ADDED from AndroidManifest.xml:53:13
-	android:label
-		ADDED from AndroidManifest.xml:52:13
-	android:name
-		ADDED from AndroidManifest.xml:51:13
-activity#com.facebook.LoginActivity
-ADDED from AndroidManifest.xml:54:9
-	android:label
-		ADDED from AndroidManifest.xml:56:13
-	android:theme
-		ADDED from AndroidManifest.xml:57:13
-	android:name
-		ADDED from AndroidManifest.xml:55:13
-meta-data#com.facebook.sdk.ApplicationId
-ADDED from AndroidManifest.xml:59:9
-	android:name
-		ADDED from AndroidManifest.xml:60:13
+		ADDED from AndroidManifest.xml:47:17
 	android:value
+		ADDED from AndroidManifest.xml:48:17
+activity#com.hpush.app.activities.SearchActivity
+ADDED from AndroidManifest.xml:52:9
+	android:name
+		ADDED from AndroidManifest.xml:52:19
+	android:launchMode
+		ADDED from AndroidManifest.xml:52:65
+intent-filter#android.intent.action.SEARCH
+ADDED from AndroidManifest.xml:53:13
+action#android.intent.action.SEARCH
+ADDED from AndroidManifest.xml:54:17
+	android:name
+		ADDED from AndroidManifest.xml:54:25
+meta-data#android.app.searchable
+ADDED from AndroidManifest.xml:56:13
+	android:resource
+		ADDED from AndroidManifest.xml:57:17
+	android:name
+		ADDED from AndroidManifest.xml:56:24
+activity#com.hpush.app.activities.SettingActivity
+ADDED from AndroidManifest.xml:60:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:63:13
+	android:label
+		ADDED from AndroidManifest.xml:62:13
+	android:theme
+		ADDED from AndroidManifest.xml:64:13
+	android:name
 		ADDED from AndroidManifest.xml:61:13
-receiver#com.chopping.application.InstalledAppReceiver
-ADDED from AndroidManifest.xml:65:9
-	android:exported
+activity#com.hpush.app.activities.WebViewActivity
+ADDED from AndroidManifest.xml:66:9
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:69:13
+	android:label
 		ADDED from AndroidManifest.xml:68:13
-	android:enabled
+	android:name
 		ADDED from AndroidManifest.xml:67:13
-	android:name
-		ADDED from AndroidManifest.xml:66:13
-intent-filter#android.intent.action.PACKAGE_ADDED+android.intent.action.PACKAGE_REMOVED
-ADDED from AndroidManifest.xml:69:13
-action#android.intent.action.PACKAGE_ADDED
-ADDED from AndroidManifest.xml:70:17
-	android:name
-		ADDED from AndroidManifest.xml:70:25
-action#android.intent.action.PACKAGE_REMOVED
-ADDED from AndroidManifest.xml:71:17
-	android:name
-		ADDED from AndroidManifest.xml:71:25
-data
-ADDED from AndroidManifest.xml:73:17
-	android:scheme
-		ADDED from AndroidManifest.xml:73:23
-receiver#com.hpush.gcm.GcmBroadcastReceiver
+activity#com.hpush.app.activities.DailiesActivity
 ADDED from AndroidManifest.xml:78:9
-	android:permission
+	android:screenOrientation
+		ADDED from AndroidManifest.xml:81:13
+	android:label
 		ADDED from AndroidManifest.xml:80:13
 	android:name
 		ADDED from AndroidManifest.xml:79:13
-intent-filter#com.google.android.c2dm.intent.RECEIVE+com.google.android.c2dm.intent.REGISTRATION+com.hpush
-ADDED from AndroidManifest.xml:81:13
-action#com.google.android.c2dm.intent.RECEIVE
-ADDED from AndroidManifest.xml:82:17
-	android:name
-		ADDED from AndroidManifest.xml:82:25
-action#com.google.android.c2dm.intent.REGISTRATION
-ADDED from AndroidManifest.xml:83:17
-	android:name
-		ADDED from AndroidManifest.xml:83:25
-category#com.hpush
-ADDED from AndroidManifest.xml:84:17
-	android:name
-		ADDED from AndroidManifest.xml:84:27
-service#com.hpush.gcm.GcmIntentService
+activity#com.facebook.LoginActivity
 ADDED from AndroidManifest.xml:88:9
-	android:name
-		ADDED from AndroidManifest.xml:88:18
-activity#com.google.android.gms.ads.AdActivity
-ADDED from AndroidManifest.xml:104:9
-	android:configChanges
-		ADDED from AndroidManifest.xml:106:13
+	android:label
+		ADDED from AndroidManifest.xml:90:13
 	android:theme
-		ADDED from AndroidManifest.xml:107:13
+		ADDED from AndroidManifest.xml:91:13
 	android:name
-		ADDED from AndroidManifest.xml:105:13
-meta-data#com.crashlytics.ApiKey
-ADDED from AndroidManifest.xml:110:9
+		ADDED from AndroidManifest.xml:89:13
+meta-data#com.facebook.sdk.ApplicationId
+ADDED from AndroidManifest.xml:93:9
 	android:name
-		ADDED from AndroidManifest.xml:111:13
+		ADDED from AndroidManifest.xml:94:13
 	android:value
-		ADDED from AndroidManifest.xml:112:13
+		ADDED from AndroidManifest.xml:95:13
+receiver#com.chopping.application.InstalledAppReceiver
+ADDED from AndroidManifest.xml:99:9
+	android:exported
+		ADDED from AndroidManifest.xml:102:13
+	android:enabled
+		ADDED from AndroidManifest.xml:101:13
+	android:name
+		ADDED from AndroidManifest.xml:100:13
+intent-filter#android.intent.action.PACKAGE_ADDED+android.intent.action.PACKAGE_REMOVED
+ADDED from AndroidManifest.xml:103:13
+action#android.intent.action.PACKAGE_ADDED
+ADDED from AndroidManifest.xml:104:17
+	android:name
+		ADDED from AndroidManifest.xml:104:25
+action#android.intent.action.PACKAGE_REMOVED
+ADDED from AndroidManifest.xml:105:17
+	android:name
+		ADDED from AndroidManifest.xml:105:25
+data
+ADDED from AndroidManifest.xml:107:17
+	android:scheme
+		ADDED from AndroidManifest.xml:107:23
+receiver#com.hpush.gcm.GcmBroadcastReceiver
+ADDED from AndroidManifest.xml:112:9
+	android:permission
+		ADDED from AndroidManifest.xml:114:13
+	android:name
+		ADDED from AndroidManifest.xml:113:13
+intent-filter#com.google.android.c2dm.intent.RECEIVE+com.google.android.c2dm.intent.REGISTRATION+com.hpush
+ADDED from AndroidManifest.xml:115:13
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from AndroidManifest.xml:116:17
+	android:name
+		ADDED from AndroidManifest.xml:116:25
+action#com.google.android.c2dm.intent.REGISTRATION
+ADDED from AndroidManifest.xml:117:17
+	android:name
+		ADDED from AndroidManifest.xml:117:25
+category#com.hpush
+ADDED from AndroidManifest.xml:119:17
+	android:name
+		ADDED from AndroidManifest.xml:119:27
+service#com.hpush.gcm.GcmIntentService
+ADDED from AndroidManifest.xml:123:9
+	android:name
+		ADDED from AndroidManifest.xml:123:18
+activity#com.google.android.gms.ads.AdActivity
+ADDED from AndroidManifest.xml:139:9
+	android:configChanges
+		ADDED from AndroidManifest.xml:141:13
+	android:theme
+		ADDED from AndroidManifest.xml:142:13
+	android:name
+		ADDED from AndroidManifest.xml:140:13
+meta-data#com.crashlytics.ApiKey
+ADDED from AndroidManifest.xml:145:9
+	android:name
+		ADDED from AndroidManifest.xml:146:13
+	android:value
+		ADDED from AndroidManifest.xml:147:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
-MERGED from com.android.support:appcompat-v7:21.0.2:15:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
-MERGED from com.google.android.gms:play-services:6.1.71:15:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
+MERGED from com.android.support:appcompat-v7:21.0.3:15:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
+MERGED from com.google.android.gms:play-services:6.5.87:18:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
 MERGED from hpush:ChoppingBootstrap:unspecified:7:5
-MERGED from com.android.support:appcompat-v7:21.0.2:15:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
+MERGED from com.android.support:appcompat-v7:21.0.3:15:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
 MERGED from hpush:volley_cz:unspecified:7:5
 MERGED from hpush:volley_cz:unspecified:7:5
-MERGED from com.android.support:cardview-v7:21.0.2:15:5
-MERGED from com.android.support:recyclerview-v7:21.0.2:15:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
+MERGED from com.android.support:cardview-v7:21.0.3:15:5
+MERGED from com.android.support:recyclerview-v7:21.0.3:15:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
 MERGED from com.astuetz:pagerslidingtabstrip:1.0.1:2:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
 MERGED from com.github.mrengineer13:snackbar:0.4.0:8:5
 MERGED from com.github.ksoichiro:android-observablescrollview:1.3.0:21:5
-MERGED from com.android.support:recyclerview-v7:21.0.2:15:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
+MERGED from com.android.support:recyclerview-v7:21.0.3:15:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
 MERGED from com.facebook.android:facebook-android-sdk:3.22.0:20:5
-MERGED from com.android.support:support-v4:21.0.2:15:5
+MERGED from com.android.support:support-v4:21.0.3:15:5
 	android:targetSdkVersion
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
@@ -261,9 +294,9 @@ ADDED from hpush:ChoppingBootstrap:unspecified:29:17
 	android:name
 		ADDED from hpush:ChoppingBootstrap:unspecified:29:25
 activity#android.support.v7.widget.TestActivity
-ADDED from com.android.support:recyclerview-v7:21.0.2:18:9
-MERGED from com.android.support:recyclerview-v7:21.0.2:18:9
+ADDED from com.android.support:recyclerview-v7:21.0.3:18:9
+MERGED from com.android.support:recyclerview-v7:21.0.3:18:9
 	android:label
-		ADDED from com.android.support:recyclerview-v7:21.0.2:18:19
+		ADDED from com.android.support:recyclerview-v7:21.0.3:18:19
 	android:name
-		ADDED from com.android.support:recyclerview-v7:21.0.2:18:60
+		ADDED from com.android.support:recyclerview-v7:21.0.3:18:60

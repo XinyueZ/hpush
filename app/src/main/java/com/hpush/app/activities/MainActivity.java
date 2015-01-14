@@ -33,6 +33,8 @@ import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.chopping.bus.CloseDrawerEvent;
+import com.chopping.utils.DeviceUtils;
+import com.chopping.utils.DeviceUtils.ScreenSize;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
@@ -739,8 +741,9 @@ public final class MainActivity extends BasicActivity implements
 				}
 			});
 
+			ScreenSize sz = DeviceUtils.getScreenSize(MainActivity.this);
 			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "translationX", ViewCompat.getTranslationX(
-					mSearchBtn), 480f).setDuration(ANIM_SPEED);
+					mSearchBtn), sz.Width).setDuration(ANIM_SPEED);
 			seaAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
