@@ -373,6 +373,7 @@ public final class MainActivity extends BasicActivity implements
 		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
 		mOpenBtn.setOnClickListener(mOpenListener);
 		mSearchBtn = (ImageButton) findViewById(R.id.float_search_btn);
+		ViewCompat.setTranslationX(mSearchBtn,ViewCompat.getTranslationX(mOpenBtn) );
 		mSearchBtn.setOnClickListener(mSearchListener);
 
 		mSnackBar = new SnackBar(this);
@@ -499,13 +500,13 @@ public final class MainActivity extends BasicActivity implements
 	@Override
 	protected void onAppConfigLoaded() {
 		super.onAppConfigLoaded();
-		//		showAppList();
+		showAppList();
 	}
 
 	@Override
 	protected void onAppConfigIgnored() {
 		super.onAppConfigIgnored();
-		//		showAppList();
+		showAppList();
 	}
 
 	/**
@@ -689,8 +690,7 @@ public final class MainActivity extends BasicActivity implements
 			});
 
 			mSearchBtn.setVisibility(View.VISIBLE);
-			float tx = ViewCompat.getTranslationX(mSearchBtn);
-			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x", tx, 430f).setDuration(ANIM_SPEED);
+			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x",  ViewCompat.getTranslationX(mSearchBtn), ViewCompat.getTranslationX(mOpenBtn)).setDuration(ANIM_SPEED);
 			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), 360 ).setDuration(
 					ANIM_SPEED);
 
@@ -736,7 +736,7 @@ public final class MainActivity extends BasicActivity implements
 			});
 
 			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "translationX", ViewCompat.getTranslationX(
-					mSearchBtn), 430f).setDuration(ANIM_SPEED);
+					mSearchBtn), 480f).setDuration(ANIM_SPEED);
 			seaAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -744,10 +744,10 @@ public final class MainActivity extends BasicActivity implements
 					mSearchBtn.setVisibility(View.GONE);
 				}
 			});
+			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), -360 ).setDuration(
+					ANIM_SPEED);
 
 			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn), -180 ).setDuration(
-					ANIM_SPEED);
-			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), -360 ).setDuration(
 					ANIM_SPEED);
 			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2, iBtnAnim, iBtnAnim2);
 			animatorSet.start();

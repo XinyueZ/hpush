@@ -109,13 +109,13 @@
                 style="@style/FloatButton" />
 
             <FrameLayout
-                android:layout_width="match_parent" android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <ImageButton
                     android:id="@+id/float_search_btn"
                     style="@style/FloatButton"
-                    android:visibility="invisible" android:layout_gravity="center_horizontal"
+                    android:visibility="invisible"
                     android:background="@drawable/circle_grey"
                     android:src="@drawable/ic_search" />
                 <ImageButton
