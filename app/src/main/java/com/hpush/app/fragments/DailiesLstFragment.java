@@ -22,7 +22,7 @@ import com.hpush.app.adapters.DailiesListAdapter;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
 import com.hpush.bus.ShowActionBar;
-import com.hpush.data.DailyListItem;
+import com.hpush.data.RecentListItem;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
 import com.hpush.utils.Prefs;
@@ -30,7 +30,7 @@ import com.hpush.utils.Prefs;
 import de.greenrobot.event.EventBus;
 
 /**
- * Show all {@link com.hpush.data.Daily}s.
+ * Show all {@link com.hpush.data.Recent}s.
  *
  * @author Xinyue Zhao
  */
@@ -66,13 +66,13 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 	 * 		Event {@link com.hpush.bus.BookmarkMessageEvent}.
 	 */
 	public void onEvent(BookmarkMessageEvent e) {
-		if(e.getMessageListItem() instanceof DailyListItem) {
+		if(e.getMessageListItem() instanceof RecentListItem) {
 			//Bookmark on the site self.
-			bookmarkOneItem((DailyListItem) e.getMessageListItem());
+			bookmarkOneItem((RecentListItem) e.getMessageListItem());
 		} else {
 			//Bookmark from a webview shows details.
-			List<DailyListItem> list = mAdp.getMessages();
-			for(DailyListItem item : list) {
+			List<RecentListItem> list = mAdp.getMessages();
+			for(RecentListItem item : list) {
 				if(item.getId() == e.getMessageListItem().getId()) {
 					bookmarkOneItem(item);
 					EventBus.getDefault().removeAllStickyEvents();
@@ -123,14 +123,14 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 	 * Get all data.
 	 */
 	private void loadDailies() {
-		AsyncTask<Void, List<DailyListItem>, List<DailyListItem>> task = new AsyncTask<Void, List<DailyListItem>, List<DailyListItem>>() {
+		AsyncTask<Void, List<RecentListItem>, List<RecentListItem>> task = new AsyncTask<Void, List<RecentListItem>, List<RecentListItem>>() {
 			@Override
-			protected List<DailyListItem> doInBackground(Void... params) {
-				return mDB.getDailies(Sort.DESC);
+			protected List<RecentListItem> doInBackground(Void... params) {
+				return doSearch();
 			}
 
 			@Override
-			protected void onPostExecute(List<DailyListItem> dailies) {
+			protected void onPostExecute(List<RecentListItem> dailies) {
 				super.onPostExecute(dailies);
 				if (mAdp == null) {
 					mAdp = new DailiesListAdapter(dailies );
@@ -145,18 +145,26 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 	}
 
 	/**
+	 *
+	 * @return Data on the view.
+	 */
+	protected List<RecentListItem> doSearch() {
+		return mDB.getDailies(Sort.DESC);
+	}
+
+	/**
 	 * Bookmark one item.
 	 *
 	 * @param itemToBookmark
 	 * 		The item to bookmark.
 	 */
-	private void bookmarkOneItem(final DailyListItem itemToBookmark) {
-		AsyncTaskCompat.executeParallel(new AsyncTask<List<DailyListItem>, Void, Void>() {
+	private void bookmarkOneItem(final RecentListItem itemToBookmark) {
+		AsyncTaskCompat.executeParallel(new AsyncTask<List<RecentListItem>, Void, Void>() {
 			@Override
 			protected Void doInBackground(
-					List<DailyListItem>... params) {
-				List<DailyListItem> data = params[0];
-				for (DailyListItem obj:data) {
+					List<RecentListItem>... params) {
+				List<RecentListItem> data = params[0];
+				for (RecentListItem obj:data) {
 					if (obj.getId() == itemToBookmark.getId()) {
 						mDB.removeMessage(obj == null ? null : obj.getMessage());
 						mDB.addBookmark(obj.getMessage());

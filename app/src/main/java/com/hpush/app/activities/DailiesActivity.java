@@ -15,7 +15,7 @@ import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
 /**
- * Show all {@link com.hpush.data.Daily}s.
+ * Show all {@link com.hpush.data.Recent}s.
  *
  * @author Xinyue Zhao
  */

@@ -93,8 +93,9 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class MainActivity extends BasicActivity implements  com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks  , com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener  ,
-		ObservableScrollViewCallbacks {
+public final class MainActivity extends BasicActivity implements
+		com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks,
+		com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener, ObservableScrollViewCallbacks {
 	/**
 	 * Main layout for this component.
 	 */
@@ -135,6 +136,10 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 	 * Open/Close main float buttons.
 	 */
 	private ImageButton mOpenBtn;
+	/**
+	 * Search   buttons.
+	 */
+	private ImageButton mSearchBtn;
 	/**
 	 * The interstitial ad.
 	 */
@@ -187,9 +192,6 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 	public void onEvent(CloseDrawerEvent e) {
 		mDrawerLayout.closeDrawers();
 	}
-
-
-
 
 
 	/**
@@ -294,7 +296,6 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 	}
 
 
-
 	//------------------------------------------------
 
 	/**
@@ -308,6 +309,7 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		cxt.startActivity(intent);
 	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -370,9 +372,11 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 		});
 		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
 		mOpenBtn.setOnClickListener(mOpenListener);
+		mSearchBtn = (ImageButton) findViewById(R.id.float_search_btn);
+		mSearchBtn.setOnClickListener(mSearchListener);
 
 		mSnackBar = new SnackBar(this);
-		mPlusClient = new GoogleApiClient.Builder(this, this, this) .addApi(Plus.API, PlusOptions.builder().build())
+		mPlusClient = new GoogleApiClient.Builder(this, this, this).addApi(Plus.API, PlusOptions.builder().build())
 				.addScope(Plus.SCOPE_PLUS_LOGIN).build();
 		mGPlusBtn = (SignInButton) findViewById(R.id.sign_in_btn);
 		mGPlusBtn.setSize(SignInButton.SIZE_WIDE);
@@ -495,13 +499,13 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 	@Override
 	protected void onAppConfigLoaded() {
 		super.onAppConfigLoaded();
-		showAppList();
+		//		showAppList();
 	}
 
 	@Override
 	protected void onAppConfigIgnored() {
 		super.onAppConfigIgnored();
-		showAppList();
+		//		showAppList();
 	}
 
 	/**
@@ -511,7 +515,6 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 		getSupportFragmentManager().beginTransaction().replace(R.id.app_list_fl, AppListImpFragment.newInstance(this))
 				.commit();
 	}
-
 
 
 	/**
@@ -643,6 +646,20 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 	}
 
 	/**
+	 * Duration for animation of float buttons.
+	 */
+	private static final int ANIM_SPEED = 250;
+	/**
+	 * Listener for opening all float buttons.
+	 */
+	private OnClickListener mSearchListener = new OnViewAnimatedClickedListener() {
+		@Override
+		public void onClick() {
+			com.chopping.utils.Utils.showShortToast(MainActivity.this, "search");
+		}
+	};
+
+	/**
 	 * Listener for opening all float buttons.
 	 */
 	private OnClickListener mOpenListener = new OnClickListener() {
@@ -653,15 +670,16 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 			}
 			AnimatorSet animatorSet = new AnimatorSet();
 			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(
-					100);
-			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
-				@Override
-				public void onAnimationEnd(Animator animation) {
-					super.onAnimationEnd(animation);
-					mRemoveAllBtn.setVisibility(View.VISIBLE);
-				}
-			});
-			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", 200f, 0).setDuration(200);
+					ANIM_SPEED);
+			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(mBookmarkAllBtn), 360 ).setDuration(
+					ANIM_SPEED);
+
+
+			mRemoveAllBtn.setVisibility(View.VISIBLE);
+			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", 200f, 0).setDuration(
+					ANIM_SPEED);
+			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(mRemoveAllBtn), 360 ).setDuration(
+					ANIM_SPEED);
 			iBtnAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -669,7 +687,17 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 					mOpenBtn.setOnClickListener(mCloseListener);
 				}
 			});
-			animatorSet.playSequentially(iiBtnAnim, iBtnAnim);
+
+			mSearchBtn.setVisibility(View.VISIBLE);
+			float tx = ViewCompat.getTranslationX(mSearchBtn);
+			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x", tx, 430f).setDuration(ANIM_SPEED);
+			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), 360 ).setDuration(
+					ANIM_SPEED);
+
+
+			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn), 90 ).setDuration(
+					ANIM_SPEED);
+			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2,  iBtnAnim, iBtnAnim2);
 			animatorSet.start();
 		}
 	};
@@ -681,8 +709,8 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 		@Override
 		public void onClick(View v) {
 			AnimatorSet animatorSet = new AnimatorSet();
-			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 0, 150f).setDuration(
-					100);
+			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY",
+					ViewCompat.getTranslationY(mBookmarkAllBtn), 150f).setDuration(ANIM_SPEED);
 			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -690,7 +718,13 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 					mBookmarkAllBtn.setVisibility(View.GONE);
 				}
 			});
-			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", 0, 200f).setDuration(200);
+			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(mBookmarkAllBtn), -360 ).setDuration(
+					ANIM_SPEED);
+
+			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", ViewCompat.getTranslationY(
+					mRemoveAllBtn), 200f).setDuration(ANIM_SPEED);
+			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(mRemoveAllBtn), -360 ).setDuration(
+					ANIM_SPEED);
 			iBtnAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -700,7 +734,22 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 
 				}
 			});
-			animatorSet.playSequentially(iiBtnAnim, iBtnAnim);
+
+			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "translationX", ViewCompat.getTranslationX(
+					mSearchBtn), 430f).setDuration(ANIM_SPEED);
+			seaAnim.addListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					super.onAnimationEnd(animation);
+					mSearchBtn.setVisibility(View.GONE);
+				}
+			});
+
+			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn), -180 ).setDuration(
+					ANIM_SPEED);
+			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), -360 ).setDuration(
+					ANIM_SPEED);
+			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2, iBtnAnim, iBtnAnim2);
 			animatorSet.start();
 		}
 	};
@@ -822,8 +871,7 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 			}).create().show();
 		}
 		EventBus.getDefault().postSticky(new LoginedGPlusEvent(mPlusClient));
-		Prefs.getInstance(getApplication()).setGoogleAccount(
-				Plus.AccountApi.getAccountName(mPlusClient));
+		Prefs.getInstance(getApplication()).setGoogleAccount(Plus.AccountApi.getAccountName(mPlusClient));
 		handleGPlusLinkedUI();
 	}
 
@@ -831,7 +879,6 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 	public void onConnectionSuspended(int i) {
 		dismissProgressDialog();
 	}
-
 
 
 	@Override
@@ -894,8 +941,6 @@ public final class MainActivity extends BasicActivity implements  com.google.and
 			mPlusClient.connect();
 		}
 	}
-
-
 
 
 	private void refreshCurrentTotalMessages() {

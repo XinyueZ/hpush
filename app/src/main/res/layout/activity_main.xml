@@ -89,7 +89,7 @@
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:orientation="vertical"
@@ -97,27 +97,36 @@
 
 
             <ImageButton
-                android:id="@+id/remove_all_btn"
+                android:id="@+id/remove_all_btn" android:layout_gravity="right"
                 android:background="@drawable/circle_pink"
                 android:src="@drawable/ic_remove_all"
                 style="@style/FloatButton" />
 
             <ImageButton
-                android:id="@+id/bookmark_all_btn"
+                android:id="@+id/bookmark_all_btn" android:layout_gravity="right"
                 android:background="@drawable/circle_red"
                 android:src="@drawable/ic_bookmarks_all"
                 style="@style/FloatButton" />
 
+            <FrameLayout
+                android:layout_width="match_parent" android:orientation="horizontal"
+                android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/float_main_btn"
-                style="@style/FloatButton"
-                android:visibility="invisible"
-                android:background="@drawable/circle_orange"
-                android:src="@drawable/ic_float_button_main" />
+                <ImageButton
+                    android:id="@+id/float_search_btn"
+                    style="@style/FloatButton"
+                    android:visibility="invisible" android:layout_gravity="center_horizontal"
+                    android:background="@drawable/circle_grey"
+                    android:src="@drawable/ic_search" />
+                <ImageButton
+                    android:id="@+id/float_main_btn"
+                    style="@style/FloatButton"
+                    android:visibility="invisible" android:layout_gravity="right"
+                    android:background="@drawable/circle_orange"
+                    android:src="@drawable/ic_float_button_main" />
+
+            </FrameLayout>
         </LinearLayout>
-
-
     </FrameLayout>
 
     <com.chopping.utils.views.OneDirectionScrollView
@@ -182,7 +191,7 @@
                     android:layout_width="@dimen/float_small_button_size"
                     android:layout_height="@dimen/float_small_button_size"
                     android:background="@color/common_transparent"
-                    android:src="@drawable/btn_recent" />
+                    android:src="@drawable/ic_recent" />
 
 
                 <com.hpush.views.FontTextView

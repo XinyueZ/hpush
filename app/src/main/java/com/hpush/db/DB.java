@@ -9,8 +9,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.hpush.data.Daily;
-import com.hpush.data.DailyListItem;
+import com.hpush.data.Recent;
+import com.hpush.data.RecentListItem;
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
 import com.hpush.utils.Prefs;
@@ -460,13 +460,13 @@ public final class DB {
 		return success ;
 	}
 
-	public synchronized List<DailyListItem> getDailies(Sort sort) {
+	public synchronized List<RecentListItem> getDailies(Sort sort) {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
 		Cursor c = mDB.query(DailyTbl.TABLE_NAME, null, null, null, null, null,
 				DailyTbl.EDIT_TIME + " " + sort.toString());
-		List<DailyListItem>  list = new ArrayList<>();
+		List<RecentListItem>  list = new ArrayList<>();
 		try {
 			long id;
 			Message msg;
@@ -474,12 +474,12 @@ public final class DB {
 				id = c.getLong(c.getColumnIndex(DailyTbl.ID));
 				msg = getBookmark(id);
 				if(msg != null) {
-					list.add(new DailyListItem(new Daily(msg, true)));
+					list.add(new RecentListItem(new Recent(msg, true)));
 				}
 				else {
 					msg = getMessage(id);
 					if(msg != null) {
-						list.add(new DailyListItem(new Daily(msg, false)));
+						list.add(new RecentListItem(new Recent(msg, false)));
 					}
 				}
 			}

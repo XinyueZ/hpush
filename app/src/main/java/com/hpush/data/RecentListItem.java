@@ -5,78 +5,78 @@ package com.hpush.data;
  *
  * @author Xinyue Zhao
  */
-public final class DailyListItem extends MessageListItem {
+public final class RecentListItem extends MessageListItem {
 	/**
 	 * The daily to show on list.
 	 */
-	private Daily mDaily;
+	private Recent mRecent;
 
-	public DailyListItem(Daily daily) {
-		super(daily);
-		mDaily = daily;
+	public RecentListItem(Recent recent) {
+		super(recent);
+		mRecent = recent;
 	}
 
 	public boolean isBookmarked() {
-		return mDaily.isBookmarked();
+		return mRecent.isBookmarked();
 	}
 
 	@Override
 	public String getText() {
-		return mDaily.getText();
+		return mRecent.getText();
 	}
 
 	@Override
 	public void setPushedTime(long pushedTime) {
-		mDaily.setPushedTime(pushedTime);
+		mRecent.setPushedTime(pushedTime);
 	}
 
 	@Override
 	public long getScore() {
-		return mDaily.getScore();
+		return mRecent.getScore();
 	}
 
 	@Override
 	public String getUrl() {
-		return mDaily.getUrl();
+		return mRecent.getUrl();
 	}
 
 	@Override
 	public long getId() {
-		return mDaily.getId();
+		return mRecent.getId();
 	}
 
 	@Override
 	public long getDbId() {
-		return mDaily.getDbId();
+		return mRecent.getDbId();
 	}
 
 	@Override
 	public long getPushedTime() {
-		return mDaily.getPushedTime();
+		return mRecent.getPushedTime();
 	}
 
 	@Override
 	public long getTime() {
-		return mDaily.getTime();
+		return mRecent.getTime();
 	}
 
 	@Override
 	public void setDbId(long dbId) {
-		mDaily.setDbId(dbId);
+		mRecent.setDbId(dbId);
 	}
 
 	@Override
 	public String getTitle() {
-		return mDaily.getTitle();
+		return mRecent.getTitle();
 	}
 
 	@Override
 	public String getBy() {
-		return mDaily.getBy();
+		return mRecent.getBy();
 	}
 
 
 	public void setBookmarked( boolean bookmarked) {
-		mDaily.setBookmarked(bookmarked);
+		mRecent.setBookmarked(bookmarked);
 	}
 }
