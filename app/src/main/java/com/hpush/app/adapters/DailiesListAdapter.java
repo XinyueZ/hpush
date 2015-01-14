@@ -23,5 +23,6 @@ public final class DailiesListAdapter extends MessagesListAdapter<RecentListItem
 		super.onBindViewHolder(viewHolder, i);
 		final RecentListItem recentListItem = getMessages().get(i);
 		viewHolder.mToolbar.getMenu().findItem(R.id.action_item_bookmark).setVisible(!recentListItem.isBookmarked());
+		viewHolder.mFloatTv.setOnClickListener(null);
 	}
 }

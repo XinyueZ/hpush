@@ -470,6 +470,9 @@ public final class MainActivity extends BasicActivity implements
 		}
 		int id = item.getItemId();
 		switch (id) {
+		case R.id.action_search:
+			onSearchRequested();
+			break;
 		case R.id.action_about:
 			showDialogFragment(AboutDialogFragment.newInstance(this), null);
 			break;
@@ -656,7 +659,7 @@ public final class MainActivity extends BasicActivity implements
 	private OnClickListener mSearchListener = new OnViewAnimatedClickedListener() {
 		@Override
 		public void onClick() {
-			com.chopping.utils.Utils.showShortToast(MainActivity.this, "search");
+			onSearchRequested();
 		}
 	};
 
@@ -690,7 +693,8 @@ public final class MainActivity extends BasicActivity implements
 			});
 
 			mSearchBtn.setVisibility(View.VISIBLE);
-			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x",  ViewCompat.getTranslationX(mSearchBtn), ViewCompat.getTranslationX(mOpenBtn)).setDuration(ANIM_SPEED);
+			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x",  ViewCompat.getTranslationX(mSearchBtn), ViewCompat.getTranslationX(
+					mOpenBtn)).setDuration(ANIM_SPEED);
 			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), 360 ).setDuration(
 					ANIM_SPEED);
 

@@ -39,6 +39,22 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- This activity enables the search dialog to initiate searches
+                in the SearchableActivity, enable the search dialog to send searches to SearchableActivity.
+            -->
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".app.activities.SearchActivity" />
+        </activity>
+
+        <!-- SearchActivity is the searchable activity; it performs searches. -->
+        <activity android:name=".app.activities.SearchActivity" android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
 
         <activity
@@ -50,7 +66,14 @@
         <activity
             android:name=".app.activities.WebViewActivity"
             android:label="@string/application_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <!-- This activity enables the search dialog to initiate searches
+                in the SearchableActivity, enable the search dialog to send searches to SearchableActivity.
+            -->
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".app.activities.SearchActivity" />
+        </activity>
 
         <activity
             android:name=".app.activities.DailiesActivity"

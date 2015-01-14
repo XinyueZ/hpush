@@ -17,6 +17,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/action_search"
+        android:title="@string/lbl_search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_facebook"
         android:icon="@drawable/ic_action_facebook"
         android:title="@string/lbl_facebook"

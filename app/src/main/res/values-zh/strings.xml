@@ -85,6 +85,7 @@
     <string name="btn_not_agree">拒绝</string>
     <string name="btn_retry">再尝试</string>
     <string name="lbl_recent">最近</string>
+    <string name="lbl_search">搜索</string>
 
 
 </resources>

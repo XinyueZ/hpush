@@ -549,4 +549,56 @@ public final class DB {
 		}
 		return msg ;
 	}
+
+	public List<RecentListItem> search(String keyword) {
+		if (mDB == null || !mDB.isOpen()) {
+			open();
+		}
+		String whereClause =   MessagesTbl.TITLE + " LIKE '%" + keyword + "%'" + " OR " +  MessagesTbl.TEXT + " LIKE '%" + keyword + "%'";
+		Cursor c = null;
+		List<RecentListItem>  list = new ArrayList<>();
+		try {
+			c = mDB.query(MessagesTbl.TABLE_NAME, null, whereClause, null, null, null, getSortBy(mContext) + " " +
+					Sort.DESC.toString());
+			Message item;
+			while (c.moveToNext()) {
+				item = new Message(
+						c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),
+						c.getString(c.getColumnIndex(MessagesTbl.BY)),
+						c.getLong(c.getColumnIndex(MessagesTbl.ID)),
+						c.getLong(c.getColumnIndex(MessagesTbl.SCORE)),
+						c.getLong(c.getColumnIndex(MessagesTbl.COMMENTS_COUNT)),
+						c.getString(c.getColumnIndex(MessagesTbl.TEXT)),
+						c.getLong(c.getColumnIndex(MessagesTbl.TIME)),
+						c.getString(c.getColumnIndex(MessagesTbl.TITLE)),
+						c.getString(c.getColumnIndex(MessagesTbl.URL)),
+						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
+				);
+				list.add(new RecentListItem(new Recent(item, false)));
+			}
+			c = mDB.query(BookmarksTbl.TABLE_NAME, null, whereClause, null, null, null, getSortBy(mContext) + " " +
+					Sort.DESC.toString());
+			while (c.moveToNext()) {
+				item = new Message(
+						c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),
+						c.getString(c.getColumnIndex(MessagesTbl.BY)),
+						c.getLong(c.getColumnIndex(MessagesTbl.ID)),
+						c.getLong(c.getColumnIndex(MessagesTbl.SCORE)),
+						c.getLong(c.getColumnIndex(MessagesTbl.COMMENTS_COUNT)),
+						c.getString(c.getColumnIndex(MessagesTbl.TEXT)),
+						c.getLong(c.getColumnIndex(MessagesTbl.TIME)),
+						c.getString(c.getColumnIndex(MessagesTbl.TITLE)),
+						c.getString(c.getColumnIndex(MessagesTbl.URL)),
+						c.getLong(c.getColumnIndex(MessagesTbl.PUSHED_TIME))
+				);
+				list.add(new RecentListItem(new Recent(item, true)));
+			}
+		} finally {
+			if (c != null) {
+				c.close();
+			}
+			close();
+		}
+		return list;
+	}
 }

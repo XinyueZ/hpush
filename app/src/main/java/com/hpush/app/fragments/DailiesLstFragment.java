@@ -34,13 +34,12 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class DailiesLstFragment extends BaseFragment implements ObservableScrollViewCallbacks {
+public   class DailiesLstFragment extends BaseFragment implements ObservableScrollViewCallbacks {
 
 	/**
 	 * Main layout for this component.
 	 */
 	private static final int LAYOUT = R.layout.fragment_dailies_list;
-
 
 	/**
 	 * Database.
@@ -200,5 +199,15 @@ public final class DailiesLstFragment extends BaseFragment implements Observable
 		} else if (scrollState == ScrollState.DOWN) {
 			EventBus.getDefault().post(new ShowActionBar(true));
 		}
+	}
+
+
+
+	/**
+	 *
+	 * @return The database.
+	 */
+	protected DB getDB() {
+		return mDB;
 	}
 }

@@ -3,6 +3,7 @@
 
     <string name="app_name">Hacker Push</string>
     <string name="application_name">Hacker Push</string>
+    <string name="suggestion_auth">com.hpush</string>
 
     <string name="lbl_turn_on_push_info">Do you want receiver push-messages to get Top-News from Hack-News?</string>
     <string name="lbl_yes">Yes</string>
@@ -11,6 +12,7 @@
     <string name="lbl_recent">Recent</string>
     <string name="lbl_setting">Setting</string>
     <string name="lbl_share">Share</string>
+    <string name="lbl_search">Search</string>
     <string name="lbl_about">About</string>
     <string name="lbl_forward">Forward</string>
     <string name="lbl_backward">Backward</string>

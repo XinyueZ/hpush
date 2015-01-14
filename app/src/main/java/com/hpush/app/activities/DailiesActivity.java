@@ -5,25 +5,19 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.hpush.R;
 import com.hpush.bus.ShowActionBar;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 
 /**
  * Show all {@link com.hpush.data.Recent}s.
  *
  * @author Xinyue Zhao
  */
-public final class DailiesActivity extends BasicActivity {
-	/**
-	 * Main layout for this component.
-	 */
-	private static final int LAYOUT = R.layout.activity_dailies;
+public class DailiesActivity extends BasicActivity {
 	/**
 	 * For action-bar.
 	 */
@@ -40,12 +34,15 @@ public final class DailiesActivity extends BasicActivity {
 	 * 		Event {@link com.hpush.bus.ShowActionBar}.
 	 */
 	public void onEvent(ShowActionBar e) {
+		ActionBar ab = getSupportActionBar();
 		if (!e.isShow()) {
-//			animHideMainUI();
-			getSupportActionBar().hide();
+			if (ab.isShowing()) {
+				ab.hide();
+			}
 		} else {
-//			animShowMainUI();
-			getSupportActionBar().show();
+			if (!ab.isShowing()) {
+				ab.show();
+			}
 		}
 	}
 
@@ -54,17 +51,19 @@ public final class DailiesActivity extends BasicActivity {
 	/**
 	 * Show single instance of {@link com.hpush.app.activities.DailiesActivity}
 	 *
-	 * @param cxt {@link android.content.Context}.
+	 * @param cxt
+	 * 		{@link android.content.Context}.
 	 */
 	public static void showInstance(Context cxt) {
 		Intent intent = new Intent(cxt, DailiesActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		cxt.startActivity(intent);
 	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(LAYOUT);
+		setContentView(getLayoutResId());
 
 		if (getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -99,39 +98,12 @@ public final class DailiesActivity extends BasicActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	/**
-	 * Dismiss actionbar, and add-new-btn.
-	 */
-	private void animHideMainUI() {
-		animToolActionBar(-getActionBarHeight() * 4);
-	}
+
 
 	/**
-	 * Show actionbar, and add-new-btn.
+	 * @return Layout id.
 	 */
-	private void animShowMainUI() {
-		animToolActionBar(0);
+	protected int getLayoutResId() {
+		return R.layout.activity_dailies;
 	}
-
-	/**
-	 * Animation and moving actionbar(toolbar).
-	 *
-	 * @param value
-	 * 		The property value of animation.
-	 */
-	private void animToolActionBar(final float value) {
-		ViewPropertyAnimator animator = ViewPropertyAnimator.animate(mToolbar);
-		animator.translationY(value).setDuration(400).setListener(new AnimatorListenerAdapter() {
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				super.onAnimationEnd(animation);
-				if (value == 0) {
-					getSupportActionBar().show();
-				} else {
-					getSupportActionBar().hide();
-				}
-			}
-		});
-	}
-
 }

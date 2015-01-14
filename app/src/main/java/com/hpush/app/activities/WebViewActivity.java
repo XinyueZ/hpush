@@ -267,6 +267,9 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 				finish();
 			}
 			break;
+		case R.id.action_search:
+			onSearchRequested();
+			break;
 		case R.id.action_forward:
 			if (mWebView.canGoForward()) {
 				mWebView.goForward();
