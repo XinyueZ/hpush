@@ -185,7 +185,7 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, sche
 
 		//Check how many clients needs PUSH.
 		totalDispatch := len(_clients)
-		dispatchCh := make(chan int)
+		dispatchCh := make(chan int, totalDispatch)
 
 		//Dispatch PUSHs to clients.
 		for _, client := range _clients {

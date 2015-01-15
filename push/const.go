@@ -4,10 +4,10 @@ package pushmessager
 const (
   //command: /Users/czhao/google-cloud-sdk/platform/google_appengine/appcfg.py update push/
   //Release,live
-  //API_KEY="AIzaSyAIC_FMDkMAkj6xsaolwCkgAqUcfQ7Qg7I" //Dec 5, 2014, 3:24:00 AM
+  API_KEY="AIzaSyAIC_FMDkMAkj6xsaolwCkgAqUcfQ7Qg7I" //Dec 5, 2014, 3:24:00 AM
   //API_KEY="AIzaSyBqw5aLHEdVjRzPl3BtE33NEkdDAz-yfpU" //Jan 8, 2015, 6:31:00 AM
   //Dev,stage
-  API_KEY="AIzaSyCTBktsn__VC5VzD93ccj-Jps3FDZcV4f0"
+  //API_KEY="AIzaSyCTBktsn__VC5VzD93ccj-Jps3FDZcV4f0"
 
   API_HOST = "https://hacker-news.firebaseio.com"
   API_VERSION = "/v0"
