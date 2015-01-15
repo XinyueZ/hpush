@@ -209,7 +209,7 @@ func status(_w http.ResponseWriter, ok bool, funcName string) {
 	if ok {
 		status = "true"
 	}
-	s := fmt.Sprintf(`{"status":%s, "function":%s }`, status, funcName)
+	s := fmt.Sprintf(`{"status":%s, "function":"%s" }`, status, funcName)
 	_w.Header().Set("Content-Type", API_RESTYPE)
 	fmt.Fprintf(_w, s)
 }
