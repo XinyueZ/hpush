@@ -111,28 +111,26 @@ public class GcmIntentService extends IntentService {
 
 						AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 						if (audioManager.getRingerMode() != RINGER_MODE_SILENT) {
-							mNotifyBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000 });
 							String soundType = prefs.getSoundTypeValue();
-							int rawResId;
-							switch (soundType) {
-							case "0":
-								rawResId = R.raw.horn;
-								break;
-							case "1":
-								rawResId = R.raw.signal;
-								break;
-							case "2":
-								rawResId = R.raw.sos;
-								break;
-							default:
-								rawResId = R.raw.horn;
-								break;
+							if( !TextUtils.equals(soundType, "0")) {
+								mNotifyBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000 });
+								int rawResId = R.raw.horn;
+								switch (soundType) {
+								case "1":
+									rawResId = R.raw.horn;
+									break;
+								case "2":
+									rawResId = R.raw.signal;
+									break;
+								case "3":
+									rawResId = R.raw.sos;
+									break;
+								}
+								mNotifyBuilder.setSound(Uri.parse(String.format("android.resource://%s/%s",
+										getPackageName(), rawResId)));
 							}
-							mNotifyBuilder.setSound(Uri.parse(String.format("android.resource://%s/%s", getPackageName(), rawResId)));
 						}
 						mNotifyBuilder.setLights(getResources().getColor(R.color.primary_color), 1000, 1000);
-
-
 						mNotificationManager.notify(0x98, mNotifyBuilder.build());
 						EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 						//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.

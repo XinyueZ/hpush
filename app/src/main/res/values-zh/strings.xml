@@ -61,6 +61,12 @@
         <item>创建帖子的时间</item>
         <item>评论人数</item>
     </string-array>
+    <string-array name="setting_sound_types">
+        <item>静音</item>
+        <item>Horn</item>
+        <item>Signal</item>
+        <item>S.O.S</item>
+    </string-array>
     <string name="setting_sort_scores">帖子热度</string>
     <string name="setting_sort_arrival">取到帖子的时间</string>
     <string name="setting_sort_creation">创建帖子的时间</string>

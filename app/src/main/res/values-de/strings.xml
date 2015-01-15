@@ -61,6 +61,12 @@
         <item>Erstellungszeit</item>
         <item>Kommentare</item>
     </string-array>
+    <string-array name="setting_sound_types">
+        <item>Ruhe</item>
+        <item>Horn</item>
+        <item>Signal</item>
+        <item>S.O.S</item>
+    </string-array>
     <string name="setting_sort_scores">Ergebnis</string>
     <string name="setting_sort_arrival">Ankunftszeit</string>
     <string name="setting_sort_creation">Erstellungszeit</string>
