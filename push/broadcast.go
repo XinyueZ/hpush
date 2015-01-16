@@ -147,7 +147,7 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
 	return
 }
 
-func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool, dispatchCh chan int, syncType bool) {
+func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool,   syncType bool) {
 	var roundTotal int = 0
 	if !syncType {
 		ch := make(chan int)
@@ -174,7 +174,6 @@ func dispatchOnClients(_w http.ResponseWriter, _r *http.Request, _itemDetailsLis
 	} else {
 		summary(_w, _r, client, _itemDetailsList, pushedTime, scheduledTask, nil)
 	}
-	dispatchCh <- 0
 }
 
 func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, scheduledTask bool) {
@@ -189,7 +188,10 @@ func push(_w http.ResponseWriter, _r *http.Request, _clients []OtherClient, sche
 
 		//Dispatch PUSHs to clients.
 		for _, client := range _clients {
-			go dispatchOnClients(_w, _r, _itemDetailsList, client, pushedTime, scheduledTask, dispatchCh, true)
+			go func(w http.ResponseWriter, r *http.Request, itemDetailsList []*ItemDetails, client OtherClient, pushedTime string, scheduledTask bool,  syncType bool, dispatchCh chan int) {
+				dispatchOnClients(w, r, itemDetailsList, client, pushedTime, scheduledTask, syncType)
+				dispatchCh <- 0
+			}(_w, _r, _itemDetailsList, client, pushedTime, scheduledTask, true, dispatchCh)
 		}
 
 		//Wait for all pushed clients.
