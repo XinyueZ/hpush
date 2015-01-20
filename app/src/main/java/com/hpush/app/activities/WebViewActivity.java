@@ -33,11 +33,13 @@ import com.hpush.bus.ShareMessageEvent.Type;
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
 import com.hpush.db.DB;
+import com.hpush.utils.ActionProviderTinyUrl4JListener;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 import com.hpush.views.WebViewEx;
 import com.hpush.views.WebViewEx.OnWebViewExScrolledListener;
 import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.tinyurl4j.Api;
 
 import de.greenrobot.event.EventBus;
 
@@ -247,9 +249,9 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 			if (TextUtils.isEmpty(url)) {
 				url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
 			}
-			String subject = getString(R.string.lbl_share_item_title);
-			String text = getString(R.string.lbl_share_item_content, msg.getTitle(), url);
-			provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
+			Api.call(url, new ActionProviderTinyUrl4JListener(this, provider,
+					R.string.lbl_share_item_title, R.string.lbl_share_item_content,
+					msg));
 		} else {
 			//Setting a share intent.
 			String subject = getString(R.string.lbl_share_app_title, getString(R.string.application_name));

@@ -26,10 +26,12 @@ import com.hpush.bus.SelectMessageEvent;
 import com.hpush.bus.ShareMessageEvent;
 import com.hpush.bus.ShareMessageEvent.Type;
 import com.hpush.data.MessageListItem;
+import com.hpush.utils.ActionProviderTinyUrl4JListener;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
 import com.hpush.views.OnViewAnimatedClickedListener2;
+import com.tinyurl4j.Api;
 
 import de.greenrobot.event.EventBus;
 
@@ -144,9 +146,7 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 						url = Prefs.getInstance(cxt.getApplicationContext()).getHackerNewsCommentsUrl() + msg.getId();
 					}
 					//Setting a share intent.
-					String subject = cxt.getString(R.string.lbl_share_item_title);
-					String text = cxt.getString(R.string.lbl_share_item_content, msg.getTitle(), url);
-					provider.setShareIntent(Utils.getDefaultShareIntent(provider, subject, text));
+					Api.call(url, new ActionProviderTinyUrl4JListener(cxt, provider, R.string.lbl_share_item_title, R.string.lbl_share_item_content, msg.getMessage() ));
 					break;
 				case R.id.action_item_comment:
 					EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.itemView));
