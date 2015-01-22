@@ -61,6 +61,6 @@ public final class SearchActivity extends DailiesActivity {
 
 	@Override
 	protected void toggleUI() {
-		//Do nothing to remove search results.
+		//Do nothing to remove search results, or other UIs.
 	}
 }

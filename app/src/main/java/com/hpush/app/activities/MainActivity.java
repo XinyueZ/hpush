@@ -654,7 +654,7 @@ public final class MainActivity extends BasicActivity implements
 	/**
 	 * Duration for animation of float buttons.
 	 */
-	private static final int ANIM_SPEED = 250;
+	public static final int ANIM_SPEED = 250;
 	/**
 	 * Listener for opening all float buttons.
 	 */
