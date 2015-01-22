@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.chopping.utils.DeviceUtils;
+import com.chopping.utils.Utils;
 import com.hpush.R;
 import com.hpush.bus.DeleteAllDailiesEvent;
 import com.hpush.bus.LoadedAllDailiesEvent;
@@ -70,6 +71,8 @@ public class DailiesActivity extends BasicActivity {
 	public void onEvent(LoadedAllDailiesEvent e) {
 		if (e.getCount() > 0) {
 			toggleUI();
+		} else {
+			Utils.showLongToast(getApplication(), R.string.msg_no_data);
 		}
 		mPbV.setVisibility(View.GONE);
 	}

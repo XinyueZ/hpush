@@ -43,6 +43,7 @@
     <string name="msg_saved_settings_successfully">成功保存设置。</string>
     <string name="msg_saved_account_successfully">成功保存推送账号。</string>
     <string name="msg_deleted_account_successfully">成功删除推送账号。</string>
+    <string name="msg_no_data">无数据！</string>
 
     <string name="setting_push_cat">推送</string>
     <string name="setting_push_off">关闭</string>

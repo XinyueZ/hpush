@@ -43,6 +43,7 @@
     <string name="msg_saved_settings_successfully">Speicherte die Einstellungen.</string>
     <string name="msg_saved_account_successfully">Speicherte Push-Account auf Server.</string>
     <string name="msg_deleted_account_successfully">Entfernte Push-Account auf Server.</string>
+    <string name="msg_no_data">Keine Daten!</string>
 
     <string name="setting_push_cat">Benachrichtigungen</string>
     <string name="setting_push_off">Aus</string>
