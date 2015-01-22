@@ -268,11 +268,12 @@ public final class DB {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
-		Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
-				 getSortBy(mContext) + " " + sort.toString());
-		Message item    ;
+		Cursor c = null;
 		List<MessageListItem>  list = new ArrayList<>();
 		try {
+			c = mDB.query(MessagesTbl.TABLE_NAME, null, null, null, null, null,
+					getSortBy(mContext) + " " + sort.toString());
+			Message item    ;
 			while (c.moveToNext()) {
 				item = new Message(
 						c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),
@@ -302,11 +303,12 @@ public final class DB {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
-		Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, null, null, null, null, null,
-				 getSortBy(mContext) + " " + sort.toString());
+		Cursor c = null;
 		Message item   ;
 		List<MessageListItem>  list = new ArrayList<>();
 		try {
+			c = mDB.query(BookmarksTbl.TABLE_NAME, null, null, null, null, null,
+					getSortBy(mContext) + " " + sort.toString());
 			while (c.moveToNext()) {
 				item = new Message(
 						c.getLong(c.getColumnIndex(BookmarksTbl.DB_ID)),
@@ -464,10 +466,11 @@ public final class DB {
 		if (mDB == null || !mDB.isOpen()) {
 			open();
 		}
-		Cursor c = mDB.query(DailyTbl.TABLE_NAME, null, null, null, null, null,
-				DailyTbl.EDIT_TIME + " " + sort.toString());
+		Cursor c = null;
 		List<RecentListItem>  list = new ArrayList<>();
 		try {
+			c =    mDB.query(DailyTbl.TABLE_NAME, null, null, null, null, null,
+					DailyTbl.EDIT_TIME + " " + sort.toString());
 			long id;
 			Message msg;
 			while (c.moveToNext()) {
