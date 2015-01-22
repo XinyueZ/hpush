@@ -1,7 +1,9 @@
 package com.hpush.app.activities;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -796,21 +798,30 @@ public final class MainActivity extends BasicActivity implements
 	 */
 	private void checkPlayService() {
 		final int isFound = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-		if (isFound == ConnectionResult.SUCCESS ||
-				isFound == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {//Ignore update.
+		if (isFound == ConnectionResult.SUCCESS ) {//Ignore update.
 			//The "End User License Agreement" must be confirmed before you use this application.
 			if (!Prefs.getInstance(getApplication()).isEULAOnceConfirmed()) {
 				showDialogFragment(new EulaConfirmationDialog(), null);
 			}
 		} else {
-			new AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_play_service)
+			new Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_play_service)
 					.setCancelable(false).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					dialog.dismiss();
 					Intent intent = new Intent(Intent.ACTION_VIEW);
 					intent.setData(Uri.parse(getString(R.string.play_service_url)));
-					startActivity(intent);
-					finish();
+					try {
+						startActivity(intent);
+					} catch (ActivityNotFoundException e0) {
+						intent.setData(Uri.parse(getString(R.string.play_service_web)));
+						try {
+							startActivity(intent);
+						} catch (Exception e1) {
+							//Ignore now.
+						}
+					} finally {
+						finish();
+					}
 				}
 			}).create().show();
 		}
