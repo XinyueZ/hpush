@@ -1,7 +1,5 @@
 package com.hpush.gcm;
 
-import java.util.concurrent.TimeUnit;
-
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -136,15 +134,8 @@ public class GcmIntentService extends IntentService {
 						//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.
 						EventBus.getDefault().post(new LoadAllEvent());
 					}
-					//http://stackoverflow.com/questions/6980376/convert-from-days-to-milliseconds
-					long cacheHours = TimeUnit.HOURS.toMillis(prefs.getDefaultSummaryCacheHours());
-					long lastSumTime = prefs.getLastSummaryTime();
-					long now = System.currentTimeMillis();
-					if(lastSumTime > 0) {
-						if(now - lastSumTime > cacheHours) {
-							db.clearDailies();
-						}
-					}
+
+
 					if(ids.length > 0) {
 						boolean foundInDaily;
 						String id;
@@ -161,7 +152,6 @@ public class GcmIntentService extends IntentService {
 								}
 							}
 						}
-						prefs.setLastSummaryTime(now);
 					}
 				}
 			} else {

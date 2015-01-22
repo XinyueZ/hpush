@@ -8,9 +8,14 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.hpush.R;
+import com.hpush.bus.DeleteAllDailiesEvent;
 import com.hpush.bus.ShowActionBar;
+import com.hpush.views.OnViewAnimatedClickedListener;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Show all {@link com.hpush.data.Recent}s.
@@ -64,7 +69,14 @@ public class DailiesActivity extends BasicActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResId());
-
+		View rmAllV = findViewById(R.id.remove_all_btn);
+		rmAllV.setVisibility(View.VISIBLE);
+		rmAllV.setOnClickListener(new OnViewAnimatedClickedListener() {
+			@Override
+			public void onClick() {
+				EventBus.getDefault().post(new DeleteAllDailiesEvent());
+			}
+		});
 		if (getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}

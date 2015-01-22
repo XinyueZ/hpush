@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -21,6 +22,7 @@ import com.hpush.R;
 import com.hpush.app.adapters.DailiesListAdapter;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
+import com.hpush.bus.DeleteAllDailiesEvent;
 import com.hpush.bus.ShowActionBar;
 import com.hpush.data.RecentListItem;
 import com.hpush.db.DB;
@@ -79,6 +81,34 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 				}
 			}
 		}
+	}
+
+	/**
+	 * Handler for {@link com.hpush.bus.DeleteAllDailiesEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.hpush.bus.DeleteAllDailiesEvent}.
+	 */
+	public void onEvent(DeleteAllDailiesEvent e) {
+		AsyncTaskCompat.executeParallel(new AsyncTask<Object, Object, Object>() {
+			@Override
+			protected Object doInBackground(Object... params) {
+				if(mAdp != null ) {
+					mAdp.getMessages().clear();
+				}
+				mDB.clearDailies();
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Object o) {
+				super.onPostExecute(o);
+				if(mAdp != null) {
+					mAdp.notifyDataSetChanged();
+					ActivityCompat.finishAfterTransition(getActivity());
+				}
+			}
+		});
 	}
 
 	//------------------------------------------------
