@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.hpush.R;
 import com.hpush.bus.DeleteAllDailiesEvent;
+import com.hpush.bus.LoadedAllDailiesEvent;
 import com.hpush.bus.ShowActionBar;
 import com.hpush.views.OnViewAnimatedClickedListener;
 
@@ -51,6 +52,19 @@ public class DailiesActivity extends BasicActivity {
 		}
 	}
 
+	/**
+	 * Handler for {@link LoadedAllDailiesEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link LoadedAllDailiesEvent}.
+	 */
+	public void onEvent(LoadedAllDailiesEvent e) {
+		if (e.getCount() > 0) {
+			toggleUI();
+		}
+	}
+
+
 	//------------------------------------------------
 
 	/**
@@ -69,14 +83,7 @@ public class DailiesActivity extends BasicActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResId());
-		View rmAllV = findViewById(R.id.remove_all_btn);
-		rmAllV.setVisibility(View.VISIBLE);
-		rmAllV.setOnClickListener(new OnViewAnimatedClickedListener() {
-			@Override
-			public void onClick() {
-				EventBus.getDefault().post(new DeleteAllDailiesEvent());
-			}
-		});
+
 		if (getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
@@ -117,5 +124,19 @@ public class DailiesActivity extends BasicActivity {
 	 */
 	protected int getLayoutResId() {
 		return R.layout.activity_dailies;
+	}
+
+	/**
+	 * Show some UIs after loading all data.
+	 */
+	protected void toggleUI() {
+		View rmAllV = findViewById(R.id.remove_all_btn);
+		rmAllV.setVisibility(View.VISIBLE);
+		rmAllV.setOnClickListener(new OnViewAnimatedClickedListener() {
+			@Override
+			public void onClick() {
+				EventBus.getDefault().post(new DeleteAllDailiesEvent());
+			}
+		});
 	}
 }

@@ -23,6 +23,7 @@ import com.hpush.app.adapters.DailiesListAdapter;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
 import com.hpush.bus.DeleteAllDailiesEvent;
+import com.hpush.bus.LoadedAllDailiesEvent;
 import com.hpush.bus.ShowActionBar;
 import com.hpush.data.RecentListItem;
 import com.hpush.db.DB;
@@ -152,25 +153,25 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 	 * Get all data.
 	 */
 	private void loadDailies() {
-		AsyncTask<Void, List<RecentListItem>, List<RecentListItem>> task = new AsyncTask<Void, List<RecentListItem>, List<RecentListItem>>() {
+		AsyncTaskCompat.executeParallel(new AsyncTask<Void, List<RecentListItem>, List<RecentListItem>>() {
 			@Override
 			protected List<RecentListItem> doInBackground(Void... params) {
 				return doSearch();
 			}
 
 			@Override
-			protected void onPostExecute(List<RecentListItem> dailies) {
-				super.onPostExecute(dailies);
+			protected void onPostExecute(List<RecentListItem> items) {
+				super.onPostExecute(items);
 				if (mAdp == null) {
-					mAdp = new DailiesListAdapter(dailies );
+					mAdp = new DailiesListAdapter(items );
 					mRv.setAdapter(mAdp);
 				} else {
-					mAdp.setMessages(dailies);
+					mAdp.setMessages(items);
 					mAdp.notifyDataSetChanged();
 				}
+				EventBus.getDefault().post(new LoadedAllDailiesEvent(items.size()));
 			}
-		};
-		AsyncTaskCompat.executeParallel(task);
+		});
 	}
 
 	/**

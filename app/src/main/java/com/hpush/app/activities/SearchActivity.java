@@ -58,4 +58,9 @@ public final class SearchActivity extends DailiesActivity {
 	protected int getLayoutResId() {
 		return R.layout.activity_search;
 	}
+
+	@Override
+	protected void toggleUI() {
+		//Do nothing to remove search results.
+	}
 }
