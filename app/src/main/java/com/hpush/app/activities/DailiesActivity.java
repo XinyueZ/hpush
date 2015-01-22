@@ -33,6 +33,10 @@ public class DailiesActivity extends BasicActivity {
 	 * For action-bar.
 	 */
 	private Toolbar mToolbar;
+	/**
+	 * Progress indicator.
+	 */
+	private View mPbV;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
@@ -67,6 +71,7 @@ public class DailiesActivity extends BasicActivity {
 		if (e.getCount() > 0) {
 			toggleUI();
 		}
+		mPbV.setVisibility(View.GONE);
 	}
 
 
@@ -88,6 +93,7 @@ public class DailiesActivity extends BasicActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResId());
+		mPbV = findViewById(R.id.progressBar);
 
 		if (getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -136,13 +142,12 @@ public class DailiesActivity extends BasicActivity {
 	 */
 	protected void toggleUI() {
 		final View rmAllV = findViewById(R.id.remove_all_btn);
-		final float r = ViewHelper.getRotation(rmAllV);
 
 		int screenWidth = DeviceUtils.getScreenSize(getApplication()).Width;
 		ViewHelper.setTranslationX(rmAllV, -screenWidth);
 		ViewHelper.setRotation(rmAllV, 360f * 4);
 		ViewPropertyAnimator animator = ViewPropertyAnimator.animate(rmAllV);
-		animator.x(screenWidth - getResources().getDimensionPixelSize(R.dimen.float_button_rmv_all_dailies)).rotation(r).setDuration(MainActivity.ANIM_SPEED * 2).setListener(
+		animator.x(screenWidth - getResources().getDimensionPixelSize(R.dimen.float_button_rmv_all_dailies)).rotation(0).setDuration(MainActivity.ANIM_SPEED * 2).setListener(
 				new AnimatorListenerAdapter() {
 					@Override
 					public void onAnimationStart(Animator animation) {
