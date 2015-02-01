@@ -125,9 +125,13 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
 			} else if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0 {
 				ch <- 0
 			} else {
-				(*roundTotal)++
-				broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
-				ch <- 0
+				if itemDetail != nil {
+					(*roundTotal)++
+					broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
+					ch <- 0
+				} else {
+					ch <- 0
+				}
 			}
 		} else {
 			ch <- 0
@@ -137,8 +141,10 @@ func dispatch(_w http.ResponseWriter, _r *http.Request, roundTotal *int,
 			if client.FullText && len(strings.TrimSpace(itemDetail.Text)) == 0 {
 			} else if !client.AllowEmptyUrl && len(strings.TrimSpace(itemDetail.Url)) == 0 {
 			} else {
-				(*roundTotal)++
-				broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
+				if itemDetail != nil {
+					(*roundTotal)++
+					broadcast(_w, _r, client.PushID, itemDetail, pushedTime, scheduledTask)
+				}
 			}
 		} else {
 			brk = true
