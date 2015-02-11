@@ -194,6 +194,7 @@ public final class DB {
 		}
 		int rowsRemain = -1;
 		boolean success;
+		Cursor c = null;
 		try {
 			long rowId;
 			if(item != null) {
@@ -205,12 +206,15 @@ public final class DB {
 			}
 			success = rowId > 0;
 			if (success) {
-				Cursor c = mDB.query(MessagesTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, null, null, null, null, null);
+				 c = mDB.query(MessagesTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, null, null, null, null, null);
 				rowsRemain = c.getCount();
 			} else {
 				rowsRemain = -1;
 			}
 		} finally {
+			if( c != null && !c.isClosed()) {
+				c.close();
+			}
 			close();
 		}
 		return rowsRemain;
@@ -223,6 +227,7 @@ public final class DB {
 		}
 		int rowsRemain = -1;
 		boolean success;
+		Cursor c = null;
 		try {
 			long rowId;
 			if(item != null) {
@@ -234,12 +239,15 @@ public final class DB {
 			}
 			success = rowId > 0;
 			if (success) {
-				Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { BookmarksTbl.ID }, null, null, null, null, null);
+				 c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { BookmarksTbl.ID }, null, null, null, null, null);
 				rowsRemain = c.getCount();
 			} else {
 				rowsRemain = -1;
 			}
 		} finally {
+			if( c != null && !c.isClosed()) {
+				c.close();
+			}
 			close();
 		}
 		return rowsRemain;
@@ -290,12 +298,12 @@ public final class DB {
 				list.add(new MessageListItem(item));
 			}
 		} finally {
-			if (c != null) {
+			if( c != null && !c.isClosed()) {
 				c.close();
 			}
 			close();
-			return list;
 		}
+		return list;
 	}
 
 
@@ -325,12 +333,12 @@ public final class DB {
 				list.add(new MessageListItem(item));
 			}
 		} finally {
-			if (c != null) {
+			if( c != null && !c.isClosed()) {
 				c.close();
 			}
 			close();
-			return list;
 		}
+		return list;
 	}
 
 
@@ -339,12 +347,16 @@ public final class DB {
 			open();
 		}
 		boolean success;
+		Cursor c = null;
 		try {
 			String whereClause =   MessagesTbl.ID + "=?";
 			String[] whereArgs = new String[] {   String.valueOf(item.getId()) };
-			Cursor c = mDB.query(MessagesTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, whereClause, whereArgs, null, null, null);
+			c = mDB.query(MessagesTbl.TABLE_NAME, new String[] { MessagesTbl.ID }, whereClause, whereArgs, null, null, null);
 			success = c.getCount() >= 1;
 		} finally {
+			if( c != null && !c.isClosed()) {
+				c.close();
+			}
 			close();
 		}
 		return success ;
@@ -355,12 +367,16 @@ public final class DB {
 			open();
 		}
 		boolean success;
+		Cursor c = null;
 		try {
 			String whereClause =   BookmarksTbl.ID + "=?";
 			String[] whereArgs = new String[] {   String.valueOf(item.getId()) };
-			Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { BookmarksTbl.ID }, whereClause, whereArgs, null, null, null);
+			c = mDB.query(BookmarksTbl.TABLE_NAME, new String[] { BookmarksTbl.ID }, whereClause, whereArgs, null, null, null);
 			success = c.getCount() >= 1;
 		} finally {
+			if( c != null && !c.isClosed()) {
+				c.close();
+			}
 			close();
 		}
 		return success ;
@@ -451,12 +467,16 @@ public final class DB {
 			open();
 		}
 		boolean success;
+		Cursor c = null;
 		try {
 			String whereClause =   DailyTbl.ID + "=?";
 			String[] whereArgs = new String[] {   id    };
-			Cursor c = mDB.query(DailyTbl.TABLE_NAME, new String[] { DailyTbl.ID }, whereClause, whereArgs, null, null, null);
+			c = mDB.query(DailyTbl.TABLE_NAME, new String[] { DailyTbl.ID }, whereClause, whereArgs, null, null, null);
 			success = c.getCount() >= 1;
 		} finally {
+			if( c != null && !c.isClosed()) {
+				c.close();
+			}
 			close();
 		}
 		return success ;
@@ -469,7 +489,7 @@ public final class DB {
 		Cursor c = null;
 		List<RecentListItem>  list = new ArrayList<>();
 		try {
-			c =    mDB.query(DailyTbl.TABLE_NAME, null, null, null, null, null,
+			c = mDB.query(DailyTbl.TABLE_NAME, null, null, null, null, null,
 					DailyTbl.EDIT_TIME + " " + sort.toString());
 			long id;
 			Message msg;
@@ -487,7 +507,7 @@ public final class DB {
 				}
 			}
 		} finally {
-			if (c != null) {
+			if( c != null && !c.isClosed()) {
 				c.close();
 			}
 			close();
@@ -500,10 +520,11 @@ public final class DB {
 			open();
 		}
 		Message msg = null;
+		Cursor c = null;
 		try {
 			String whereClause =   MessagesTbl.ID + "=?";
 			String[] whereArgs = new String[] {   String.valueOf(id) };
-			Cursor c = mDB.query(MessagesTbl.TABLE_NAME, null, whereClause, whereArgs, null, null, null);
+			c = mDB.query(MessagesTbl.TABLE_NAME, null, whereClause, whereArgs, null, null, null);
 			while (c.moveToNext()) {
 				msg = new Message(
 						c.getLong(c.getColumnIndex(MessagesTbl.DB_ID)),
@@ -519,6 +540,9 @@ public final class DB {
 				);
 			}
 		} finally {
+			if( c != null && !c.isClosed()) {
+				c.close();
+			}
 			close();
 		}
 		return msg ;
@@ -529,10 +553,11 @@ public final class DB {
 			open();
 		}
 		Message msg = null;
+		Cursor c = null;
 		try {
 			String whereClause =   BookmarksTbl.ID + "=?";
 			String[] whereArgs = new String[] {   String.valueOf(id) };
-			Cursor c = mDB.query(BookmarksTbl.TABLE_NAME, null, whereClause, whereArgs, null, null, null);
+			c = mDB.query(BookmarksTbl.TABLE_NAME, null, whereClause, whereArgs, null, null, null);
 			while (c.moveToNext()) {
 				msg = new Message(
 						c.getLong(c.getColumnIndex(BookmarksTbl.DB_ID)),
@@ -548,6 +573,9 @@ public final class DB {
 				);
 			}
 		} finally {
+			if( c != null && !c.isClosed()) {
+				c.close();
+			}
 			close();
 		}
 		return msg ;
@@ -597,7 +625,7 @@ public final class DB {
 				list.add(new RecentListItem(new Recent(item, true)));
 			}
 		} finally {
-			if (c != null) {
+			if( c != null && !c.isClosed()) {
 				c.close();
 			}
 			close();

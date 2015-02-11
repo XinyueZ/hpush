@@ -188,10 +188,10 @@ public final class MainActivity extends BasicActivity implements
 	}
 
 	/**
-	 * Handler for {@link }.
+	 * Handler for {@link CloseDrawerEvent}.
 	 *
 	 * @param e
-	 * 		Event {@link}.
+	 * 		Event {@link CloseDrawerEvent}.
 	 */
 	public void onEvent(CloseDrawerEvent e) {
 		mDrawerLayout.closeDrawers();
