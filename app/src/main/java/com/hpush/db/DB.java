@@ -100,6 +100,7 @@ public final class DB {
 			v.put(MessagesTbl.TIME, item.getTime());
 			v.put(MessagesTbl.TITLE, item.getTitle());
 			v.put(MessagesTbl.URL, item.getUrl());
+			v.put(MessagesTbl.PUSHED_TIME, item.getPushedTime());
 
 			rowId = mDB.insert(MessagesTbl.TABLE_NAME, null, v);
 			item.setDbId(rowId);
@@ -126,6 +127,7 @@ public final class DB {
 			v.put(BookmarksTbl.TIME, item.getTime());
 			v.put(BookmarksTbl.TITLE, item.getTitle());
 			v.put(BookmarksTbl.URL, item.getUrl());
+			v.put(BookmarksTbl.PUSHED_TIME, item.getPushedTime());
 
 			rowId = mDB.insert(BookmarksTbl.TABLE_NAME, null, v);
 			item.setDbId(rowId);
@@ -151,6 +153,7 @@ public final class DB {
 			v.put(MessagesTbl.TIME, item.getTime());
 			v.put(MessagesTbl.TITLE, item.getTitle());
 			v.put(MessagesTbl.URL, item.getUrl());
+			v.put(MessagesTbl.PUSHED_TIME, item.getPushedTime());
 			String[] args = new String[] { item.getId() + "" };
 			rowId = mDB.update(MessagesTbl.TABLE_NAME, v, MessagesTbl.ID + " = ?", args);
 			success = rowId != -1;
@@ -176,6 +179,7 @@ public final class DB {
 			v.put(BookmarksTbl.TIME, item.getTime());
 			v.put(BookmarksTbl.TITLE, item.getTitle());
 			v.put(BookmarksTbl.URL, item.getUrl());
+			v.put(BookmarksTbl.PUSHED_TIME, item.getPushedTime());
 			String[] args = new String[] { item.getId() + "" };
 			rowId = mDB.update(BookmarksTbl.TABLE_NAME, v, BookmarksTbl.ID + " = ?", args);
 			success = rowId != -1;
