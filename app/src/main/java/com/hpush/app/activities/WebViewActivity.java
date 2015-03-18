@@ -44,7 +44,7 @@ import com.tinyurl4j.Api;
 import de.greenrobot.event.EventBus;
 
 /**
- * A WebView to the homepage of SchautUp.
+ * A WebView  .
  *
  * @author Xinyue Zhao
  */
