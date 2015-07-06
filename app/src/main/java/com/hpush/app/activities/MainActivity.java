@@ -4,17 +4,21 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
@@ -44,7 +48,6 @@ import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.Scrollable;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -61,24 +64,18 @@ import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;
 import com.hpush.app.fragments.AppListImpFragment;
 import com.hpush.app.fragments.GPlusFragment;
 import com.hpush.bus.BookmarkAllEvent;
-import com.hpush.bus.DeleteAccountEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
-import com.hpush.bus.EditSettingsEvent;
-import com.hpush.bus.InsertAccountEvent;
 import com.hpush.bus.LoginedGPlusEvent;
 import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SelectMessageEvent;
 import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
-import com.hpush.data.FunctionType;
-import com.hpush.data.Status;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
-import com.hpush.gcm.ChangeSettingsTask;
-import com.hpush.gcm.RegGCMTask;
-import com.hpush.gcm.UnregGCMTask;
+import com.hpush.gcm.RegistrationIntentService;
+import com.hpush.gcm.UnregistrationIntentService;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
@@ -157,7 +154,6 @@ public final class MainActivity extends BasicActivity implements
 	 * Container for toolbar and viewpager.
 	 */
 	private View mHeaderView;
-	private SnackBar mSnackBar;
 	private SignInButton mGPlusBtn;
 	private GoogleApiClient mPlusClient;
 	private ConnectionResult mConnectionResult;
@@ -228,77 +224,6 @@ public final class MainActivity extends BasicActivity implements
 		this.refreshCurrentTotalMessages();
 	}
 
-	/**
-	 * Handler for {@link EditSettingsEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link EditSettingsEvent}.
-	 */
-	public void onEvent(EditSettingsEvent e) {
-		saveSettings();
-	}
-
-	/**
-	 * Handler for {@link InsertAccountEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link InsertAccountEvent}.
-	 */
-	public void onEvent(InsertAccountEvent e) {
-		new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendRegUrl()).execute();
-	}
-
-
-	/**
-	 * Handler for {@link DeleteAccountEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link DeleteAccountEvent}.
-	 */
-	public void onEvent(DeleteAccountEvent e) {
-		new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl())
-				.execute();
-	}
-
-	/**
-	 * Handler for {@link Status}.
-	 *
-	 * @param e
-	 * 		Event {@link Status}.
-	 */
-	public void onEvent(Status e) {
-		dismissProgressDialog();
-		switch (FunctionType.fromName(e.getFunction())) {
-		case Edit:
-			if (e.status()) {
-				EventBus.getDefault().removeStickyEvent(EditSettingsEvent.class);
-				mSnackBar.show(getString(R.string.msg_saved_settings_successfully));
-			} else {
-				saveSettings();
-			}
-			break;
-		case Insert:
-			if (e.status()) {
-				EventBus.getDefault().removeStickyEvent(InsertAccountEvent.class);
-				mSnackBar.show(getString(R.string.msg_saved_account_successfully));
-				makeAds();
-			} else {
-				new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendRegUrl())
-						.execute();
-			}
-			break;
-		case Delete:
-			if (e.status()) {
-				EventBus.getDefault().removeStickyEvent(DeleteAccountEvent.class);
-				mSnackBar.show(getString(R.string.msg_deleted_account_successfully));
-			} else {
-				new ChangeSettingsTask(getApplication(), Prefs.getInstance(getApplication()).getPushBackendUnregUrl())
-						.execute();
-			}
-			break;
-		}
-	}
-
 
 	//------------------------------------------------
 
@@ -319,6 +244,29 @@ public final class MainActivity extends BasicActivity implements
 		super.onCreate(savedInstanceState);
 		Crashlytics.start(this);
 		setContentView(LAYOUT);
+
+		mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				if (!TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
+					dismissProgressDialog();
+					SubscribeTopicsActivity.showInstance(MainActivity.this);
+				} else {
+					dismissProgressDialog();
+					Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
+							.setAction(R.string.btn_retry, new OnClickListener() {
+								@Override
+								public void onClick(View v) {
+									mProgressDialog = ProgressDialog.show(MainActivity.this, null, getString(
+											R.string.msg_push_registering));
+									Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+									startService(intent);
+								}
+							}).show();
+				}
+			}
+		};
+
 
 		if (getResources().getBoolean(R.bool.landscape)) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -377,10 +325,9 @@ public final class MainActivity extends BasicActivity implements
 		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
 		mOpenBtn.setOnClickListener(mOpenListener);
 		mSearchBtn = (ImageButton) findViewById(R.id.float_search_btn);
-		ViewCompat.setTranslationX(mSearchBtn,ViewCompat.getTranslationX(mOpenBtn) );
+		ViewCompat.setTranslationX(mSearchBtn, ViewCompat.getTranslationX(mOpenBtn));
 		mSearchBtn.setOnClickListener(mSearchListener);
 
-		mSnackBar = new SnackBar(this);
 		mPlusClient = new GoogleApiClient.Builder(this, this, this).addApi(Plus.API, PlusOptions.builder().build())
 				.addScope(Plus.SCOPE_PLUS_LOGIN).build();
 		mGPlusBtn = (SignInButton) findViewById(R.id.sign_in_btn);
@@ -428,6 +375,11 @@ public final class MainActivity extends BasicActivity implements
 	}
 
 
+	/**
+	 * Listener while registering push-feature.
+	 */
+	private BroadcastReceiver mRegistrationBroadcastReceiver;
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -436,8 +388,15 @@ public final class MainActivity extends BasicActivity implements
 		}
 		checkPlayService();
 		handleGPlusLinkedUI();
+		LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(
+				RegistrationIntentService.REGISTRATION_COMPLETE));
 	}
 
+	@Override
+	protected void onPause() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+		super.onPause();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -679,15 +638,15 @@ public final class MainActivity extends BasicActivity implements
 			AnimatorSet animatorSet = new AnimatorSet();
 			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(
 					ANIM_SPEED);
-			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(mBookmarkAllBtn), 360 ).setDuration(
-					ANIM_SPEED);
+			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(
+					mBookmarkAllBtn), 360).setDuration(ANIM_SPEED);
 
 
 			mRemoveAllBtn.setVisibility(View.VISIBLE);
 			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", 200f, 0).setDuration(
 					ANIM_SPEED);
-			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(mRemoveAllBtn), 360 ).setDuration(
-					ANIM_SPEED);
+			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(
+					mRemoveAllBtn), 360).setDuration(ANIM_SPEED);
 			iBtnAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -697,15 +656,15 @@ public final class MainActivity extends BasicActivity implements
 			});
 
 			mSearchBtn.setVisibility(View.VISIBLE);
-			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x",  ViewCompat.getTranslationX(mSearchBtn), ViewCompat.getTranslationX(
-					mOpenBtn)).setDuration(ANIM_SPEED);
-			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), 360 ).setDuration(
-					ANIM_SPEED);
+			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x", ViewCompat.getTranslationX(mSearchBtn),
+					ViewCompat.getTranslationX(mOpenBtn)).setDuration(ANIM_SPEED);
+			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn),
+					360).setDuration(ANIM_SPEED);
 
 
-			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn), 90 ).setDuration(
-					ANIM_SPEED);
-			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2,  iBtnAnim, iBtnAnim2);
+			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn),
+					90).setDuration(ANIM_SPEED);
+			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2, iBtnAnim, iBtnAnim2);
 			animatorSet.start();
 		}
 	};
@@ -726,13 +685,13 @@ public final class MainActivity extends BasicActivity implements
 					mBookmarkAllBtn.setVisibility(View.GONE);
 				}
 			});
-			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(mBookmarkAllBtn), -360 ).setDuration(
-					ANIM_SPEED);
+			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(
+					mBookmarkAllBtn), -360).setDuration(ANIM_SPEED);
 
 			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", ViewCompat.getTranslationY(
 					mRemoveAllBtn), 200f).setDuration(ANIM_SPEED);
-			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(mRemoveAllBtn), -360 ).setDuration(
-					ANIM_SPEED);
+			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(
+					mRemoveAllBtn), -360).setDuration(ANIM_SPEED);
 			iBtnAnim.addListener(new AnimatorListenerAdapter() {
 				@Override
 				public void onAnimationEnd(Animator animation) {
@@ -753,11 +712,11 @@ public final class MainActivity extends BasicActivity implements
 					mSearchBtn.setVisibility(View.GONE);
 				}
 			});
-			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn), -360 ).setDuration(
-					ANIM_SPEED);
+			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn),
+					-360).setDuration(ANIM_SPEED);
 
-			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn), -180 ).setDuration(
-					ANIM_SPEED);
+			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn),
+					-180).setDuration(ANIM_SPEED);
 			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2, iBtnAnim, iBtnAnim2);
 			animatorSet.start();
 		}
@@ -798,14 +757,14 @@ public final class MainActivity extends BasicActivity implements
 	 */
 	private void checkPlayService() {
 		final int isFound = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-		if (isFound == ConnectionResult.SUCCESS ) {//Ignore update.
+		if (isFound == ConnectionResult.SUCCESS) {//Ignore update.
 			//The "End User License Agreement" must be confirmed before you use this application.
 			if (!Prefs.getInstance(getApplication()).isEULAOnceConfirmed()) {
 				showDialogFragment(new EulaConfirmationDialog(), null);
 			}
 		} else {
-			new Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_play_service)
-					.setCancelable(false).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+			new Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_play_service).setCancelable(
+					false).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					dialog.dismiss();
 					Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -871,17 +830,12 @@ public final class MainActivity extends BasicActivity implements
 					.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					AsyncTaskCompat.executeParallel(new RegGCMTask(getApplication()) {
-						@Override
-						protected void onPreExecute() {
-							super.onPreExecute();
-							mProgressDialog = ProgressDialog.show(MainActivity.this, null, getString(
-									R.string.msg_push_registering));
-						}
-					});
-					mSnackBar.show(getString(R.string.msg_wait_new_messages));
+					mProgressDialog = ProgressDialog.show(MainActivity.this, null, getString(
+							R.string.msg_push_registering));
+					Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+					startService(intent);
 				}
-			}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
+			}).setNegativeButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 
@@ -910,8 +864,6 @@ public final class MainActivity extends BasicActivity implements
 			} catch (SendIntentException e) {
 				mPlusClient.connect();
 			}
-		} else {
-			mSnackBar.show(getString(R.string.lbl_login_fail));
 		}
 	}
 
@@ -944,11 +896,11 @@ public final class MainActivity extends BasicActivity implements
 		}
 		Prefs prefs = Prefs.getInstance(getApplication());
 		if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
-			AsyncTaskCompat.executeParallel(new UnregGCMTask(getApplication()));
+			Intent intent = new Intent(this, UnregistrationIntentService.class);
+			startService(intent);
 			prefs.setGoogleAccount(null);
 			handleGPlusLinkedUI();
 		}
-		mSnackBar.show(getString(R.string.lbl_logout_gplus_cause));
 	}
 
 
@@ -979,19 +931,6 @@ public final class MainActivity extends BasicActivity implements
 		AsyncTaskCompat.executeParallel(task);
 	}
 
-	/**
-	 * Save settings on server.
-	 */
-	private void saveSettings() {
-		dismissProgressDialog();
-		Prefs prefs = Prefs.getInstance(getApplication());
-		final String regId = prefs.getPushRegId();
-		if (!TextUtils.isEmpty(regId)) {
-			mProgressDialog = ProgressDialog.show(this, null, getString(R.string.msg_save_data));
-			mProgressDialog.setCancelable(true);
-			new ChangeSettingsTask(getApplication(), prefs.getPushBackendEditUrl()).execute();
-		}
-	}
 
 	/**
 	 * Close progress indicator.

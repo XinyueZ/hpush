@@ -18,7 +18,6 @@
     <string name="lbl_comments">Kommentar</string>
     <string name="lbl_login_gplus">Google+ anmelden…</string>
     <string name="lbl_login_fail">Ich kann nicht auf Google+ anmelden…</string>
-    <string name="lbl_logout_gplus_cause">Push-Benachrichtigung würde durch Logout von Google+ auch abgemeldet …</string>
     <string name="lbl_update_from_hacker_news">%1$s Updates aus Hacker News.</string>
     <string name="lbl_logout_gplus">Abmelden</string>
     <string name="lbl_has_been_bookmarked">Dieser Artikel ist in das Lesezeichen gespeichert worden.</string>
@@ -33,12 +32,13 @@
     <string name="lbl_total_messages_tail">Meldung(en).</string>
     <string name="lbl_no_data">Es gibt keine Nachrichten im Augenblick, aber Du kannst unterziehen, Daten zu synchronisieren.</string>
     <string name="lbl_no_push_set">Du hast Push-Benachrichtigung noch nicht eingeschaltet, bitte bei der Einstellung einschalten, aber Du kannst unterziehen, Daten zu synchronisieren.</string>
+    <string name="lbl_no_push_for_subscribe">Push-Benachrichtigung eingschalten, dann Abo.</string>
+
 
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>
     <string name="msg_app_init">Initialisierung…</string>
     <string name="msg_save_data">Daten werden gespeichert…</string>
-    <string name="msg_wait_new_messages">Bitte warten Sie, so schnell wie möglich neuesten Nachrichten von Gemeinschaft zu erhalten.</string>
     <string name="msg_remove_all">Möchtest Du alle Meldungen entfernen?</string>
     <string name="msg_saved_settings_successfully">Speicherte die Einstellungen.</string>
     <string name="msg_saved_account_successfully">Speicherte Push-Account auf Server.</string>
@@ -49,13 +49,27 @@
     <string name="setting_push_off">Aus</string>
     <string name="setting_push_on">Ein</string>
     <string name="setting_push_properties_cat">Eigenschaften </string>
-    <string name="setting_only_full_text">Nur Push-Benachrichtigung als Volltext zu empfangen? Das bedeutet, dass solche Meldungen mit Einzeltitel ignoriert werden müssen.</string>
-    <string name="setting_count">Wie viele Top-Stories(Top 100) möchten Sie empfangen?</string>
-    <string name="setting_messages_count">%1$s Push-Benachrichtigung</string>
     <string name="setting_only_save_latest">Nur die letzten empfangenen Benachrichtigung zu speichern?</string>
     <string name="setting_allow_empty_url">Zulassen und enthalten Nachrichten, die ohne externen Link ankommen.</string>
     <string name="setting_view">Ansicht</string>
     <string name="setting_sort">Sortierung nach</string>
+
+    <string name="setting_subscribe_top_stories">Abonniere Tops.</string>
+    <string name="setting_subscribe_new_stories">Abonniere Neues.</string>
+    <string name="setting_subscribe_ask_stories">Abonniere Fragen.</string>
+    <string name="setting_subscribe_show_stories">Abonniere Show-HN.</string>
+    <string name="setting_subscribe_job_stories">Abonniere Jobs.</string>
+    <string name="setting_subscribe_summary">Abonniere Zusammenfassung.</string>
+
+    <string name="subscribing_title">Themen abonnieren</string>
+    <string name="subscribing_top_stories">Abonniere Tops…</string>
+    <string name="subscribing_new_stories">Abonniere Neues…</string>
+    <string name="subscribing_ask_stories">Abonniere Fragen…</string>
+    <string name="subscribing_show_stories">Abonniere Show-HN…</string>
+    <string name="subscribing_job_stories">Abonniere Jobs…</string>
+    <string name="subscribing_summary">Abonniere Zusammenfassung…</string>
+
+
     <string-array name="setting_sort_types">
         <item>Ergebnis</item>
         <item>Ankunftszeit</item>

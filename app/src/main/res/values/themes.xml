@@ -2,9 +2,7 @@
 <resources>
 
 
-    <style name="AppTheme.Base" parent="@style/Theme.AppCompat.Light">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBarOverlay">false</item>
+    <style name="AppTheme.Base"  parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorPrimary">@color/primary_color</item>
         <item name="android:colorPrimaryDark">@color/primary_dark_color</item>
         <item name="android:windowBackground">@color/common_white</item>
@@ -20,8 +18,6 @@
         <item name="android:dropDownListViewStyle">@style/OverflowDropDown</item>
 
         <!--##########Support library compatibility##########-->
-        <item name="windowActionBar">false</item>
-        <item name="windowActionBarOverlay">false</item>
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
         <item name="colorAccent">@color/common_white</item>

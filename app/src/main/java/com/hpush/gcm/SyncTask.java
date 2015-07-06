@@ -36,10 +36,6 @@ public final class SyncTask {
 					headers = new HashMap<>();
 				}
 				Utils.makeHttpHeaders(headers);
-				headers.put("Cookie",
-						"Account=" + prefs.getGoogleAccount() + ";pushID=" + prefs.getPushRegId() +
-								";isFullText=" + prefs.isOnlyFullText() + ";msgCount=" +
-								prefs.getMsgCount() + ";allowEmptyLink=" + prefs.allowEmptyUrl());
 				return headers;
 			}
 		};

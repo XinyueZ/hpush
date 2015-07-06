@@ -15,4 +15,6 @@
 
     <dimen name="toolbar_elevation">4dp</dimen>
     <dimen name="float_button_rmv_all_dailies">100dp</dimen>
+
+    <dimen name="pb_height">3dp</dimen>
 </resources>

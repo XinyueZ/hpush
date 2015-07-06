@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest package="com.hpush"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.hpush"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -31,8 +31,8 @@
 
         <activity
             android:name=".app.activities.MainActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/application_name">
+            android:label="@string/application_name"
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,13 +48,23 @@
                 android:value=".app.activities.SearchActivity" />
         </activity>
 
+
+        <activity
+            android:name=".app.activities.SubscribeTopicsActivity"
+            android:label="@string/subscribing_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+
         <!-- SearchActivity is the searchable activity; it performs searches. -->
-        <activity android:name=".app.activities.SearchActivity" android:launchMode="singleTop">
+        <activity
+            android:name=".app.activities.SearchActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
 
         <activity
@@ -79,10 +89,7 @@
             android:name=".app.activities.DailiesActivity"
             android:label="@string/lbl_recent"
             android:screenOrientation="portrait">
-            <!--android:parentActivityName=".app.activities.MainActivity">-->
-             <!--<meta-data-->
-                <!--android:name="android.support.PARENT_ACTIVITY"-->
-                <!--android:value=".app.activities.MainActivity" />-->
+            <!--android:parentActivityName=".app.activities.MainActivity">--><!--<meta-data--><!--android:name="android.support.PARENT_ACTIVITY"--><!--android:value=".app.activities.MainActivity" />-->
         </activity>
 
         <activity
@@ -110,7 +117,8 @@
 
         <!-- GCM needs receiver and service. -->
         <receiver
-            android:name=".gcm.GcmBroadcastReceiver"
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -120,13 +128,41 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".gcm.GcmIntentService" />
+        <!-- [START gcm_listener] -->
+        <service
+            android:name=".gcm.MyGcmListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <!-- [END gcm_listener] --><!-- [START instanceId_listener] -->
+        <service
+            android:name=".gcm.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <!-- [END instanceId_listener] -->
+        <service
+            android:name=".gcm.RegistrationIntentService"
+            android:exported="false" />
+        <service
+            android:name=".gcm.UnregistrationIntentService"
+            android:exported="false" />
+        <service
+            android:name=".gcm.SubscribeIntentService"
+            android:exported="false" />
+        <service
+            android:name=".gcm.UnsubscribeIntentService"
+            android:exported="false" />
 
         <!--Event handler for changing system packages, for external links-->
         <receiver
             android:name="com.chopping.application.InstalledAppReceiver"
-            android:exported="false"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />

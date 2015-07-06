@@ -22,7 +22,6 @@
     <string name="lbl_login_gplus">登录Google+ …</string>
     <string name="lbl_login_fail">不能登录Google+ …</string>
     <string name="lbl_update_from_hacker_news">Hacker News有%1$s更新。</string>
-    <string name="lbl_logout_gplus_cause">退出Google+将退订推送 …</string>
     <string name="lbl_logout_gplus">退出</string>
     <string name="lbl_has_been_bookmarked">已经编入收藏夹。</string>
     <string name="lbl_share_app_title">一个不错的应用: %s</string>
@@ -33,12 +32,13 @@
     <string name="lbl_total_messages_tail">消息。</string>
     <string name="lbl_no_data">当前没有消息，但是你可以通过下拉来同步数据。</string>
     <string name="lbl_no_push_set">你还没打开推送功能，请在“设置”中打开，不过你可以通过下拉这里来同步数据。</string>
+    <string name="lbl_no_push_for_subscribe">打开推送功能，然后订阅。</string>
+
 
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>
     <string name="msg_app_init">初始化…</string>
     <string name="msg_save_data">保存数据…</string>
-    <string name="msg_wait_new_messages">请等待，你将会获得最近和最新的社区消息。</string>
     <string name="msg_remove_all">是否要删除这里所有的消息？</string>
     <string name="msg_saved_settings_successfully">成功保存设置。</string>
     <string name="msg_saved_account_successfully">成功保存推送账号。</string>
@@ -49,9 +49,6 @@
     <string name="setting_push_off">关闭</string>
     <string name="setting_push_on">打开</string>
     <string name="setting_push_properties_cat">属性</string>
-    <string name="setting_only_full_text">只接受全文短信？这意味着那些仅单一标题的消息必须被忽略。</string>
-    <string name="setting_count">有多少热门的消息（Top 100）你想接受吗？</string>
-    <string name="setting_messages_count">%1$s 条推送消息</string>
     <string name="setting_only_save_latest">只保留最近推送的信息？</string>
     <string name="setting_allow_empty_url">允许没有外部链接的推送消息。</string>
     <string name="setting_view">显示</string>
@@ -74,6 +71,20 @@
     <string name="setting_sort_comments">评论人数</string>
     <string name="setting_others">其他</string>
     <string name="setting_sound">消息铃声</string>
+    <string name="setting_subscribe_top_stories">订阅Top消息。</string>
+    <string name="setting_subscribe_new_stories">订阅最新的消息。</string>
+    <string name="setting_subscribe_ask_stories">订阅提问帖子。</string>
+    <string name="setting_subscribe_show_stories">订阅Show-HN</string>
+    <string name="setting_subscribe_job_stories">订阅招工消息。</string>
+    <string name="setting_subscribe_summary">订阅总揽。</string>
+
+    <string name="subscribing_title">订阅主题</string>
+    <string name="subscribing_top_stories">正在订阅Top消息…</string>
+    <string name="subscribing_new_stories">正在订阅最新的消息…</string>
+    <string name="subscribing_ask_stories">正在订阅提问帖子…</string>
+    <string name="subscribing_show_stories">正在订阅Show HN…</string>
+    <string name="subscribing_job_stories">正在订阅招工消息…</string>
+    <string name="subscribing_summary">正在订阅总揽…</string>
 
     <!-- Shown in the 'About' window of the app. -->
     <string name="about_body">&lt;b&gt;%1$s &lt;/b&gt;&lt;br&gt;版本%2$s &lt;br&gt;</string>

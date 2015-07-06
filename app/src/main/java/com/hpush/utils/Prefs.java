@@ -19,9 +19,6 @@ public final class Prefs extends BasicPrefs {
 
 	public static final String KEY_PUSH_REG_ID = "key.push.regid";
 	public static final String KEY_PUSH_SETTING = "key.push.setting";
-	public static final String KEY_FULL_TEXT = "key.only.full.text";
-	public static final String KEY_MSG_COUNT = "key.msg.count";
-	public static final String KEY_SAVE_LATEST_ONLY = "key.save.latest.only";
 	public static final String KEY_ALLOW_EMPTY_URL = "key.allow.empty.url";
 	private static final String KEY_LAST_PUSHED_TIME = "key.last.pushed.time";
 	private static final String KEY_G_ACCOUNT = "key.g.account";
@@ -46,6 +43,17 @@ public final class Prefs extends BasicPrefs {
 	private static final String SYNC_RETRY = "sync_retry";
 	private static final String DEFAULT_SORT_VALUE = "default_sort_value";
 	private static final String DEFAULT_MSG_COUNT = "default_msg_count";
+
+
+	//--------------
+	//Different push-newsletters
+	public static final String KEY_PUSH_TOPSTORIES = "key.push.topstories";
+	public static final String KEY_PUSH_NEWSTORIES = "key.push.newstories";
+	public static final String KEY_PUSH_ASKSTORIES = "key.push.askstories";
+	public static final String KEY_PUSH_SHOWSTORIES = "key.push.showstories";
+	public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
+	public static final String KEY_PUSH_SUMMARY = "key.push.summary";
+	//--------------
 
 	/**
 	 * Created a DeviceData storage.
@@ -136,48 +144,13 @@ public final class Prefs extends BasicPrefs {
 		return getString(HACKER_NEWS_COMMENTS_URL, null);
 	}
 
-	public void turnOnPush() {
-		setBoolean(KEY_PUSH_SETTING, true);
-	}
-
-	public void turnOffPush() {
-		setBoolean(KEY_PUSH_SETTING, false);
-	}
-
-
-	public boolean isPushTurnedOn() {
-		return getBoolean(KEY_PUSH_SETTING, false);
-	}
 
 
 	public int getShownDetailsAdsTimes() {
 		return getInt(KEY_SHOWN_DETAILS_ADS_TIMES, 5);
 	}
 
-	public boolean isOnlyFullText() {
-		return getBoolean(KEY_FULL_TEXT, mContext.getResources().getBoolean(R.bool.default_accept_full_text));
-	}
 
-	/**
-	 * @return Message count that are available to receiver, "0-100".
-	 */
-	public String getMsgCount() {
-		return getString(KEY_MSG_COUNT, getDefaultDefaultMsgCount() + "");
-	}
-
-	/**
-	 * Set message count that are available to receiver.
-	 *
-	 * @param msgCount
-	 * 		message count "0-100".
-	 */
-	public void setMsgCount(String msgCount) {
-		setString(KEY_MSG_COUNT, msgCount);
-	}
-
-	public boolean isOnlySaveLatest() {
-		return getBoolean(KEY_SAVE_LATEST_ONLY, mContext.getResources().getBoolean(R.bool.default_only_save_latest));
-	}
 
 	public boolean allowEmptyUrl() {
 		return getBoolean(KEY_ALLOW_EMPTY_URL, mContext.getResources().getBoolean(R.bool.default_allow_empty_url));
@@ -249,5 +222,44 @@ public final class Prefs extends BasicPrefs {
 		return getInt(DEFAULT_SORT_VALUE, 2);
 	}
 
+	/**
+	 * To check whether the push which is named by {@code keyName} has been subscribed or not.
+	 *
+	 * @param keyName
+	 * 		See.
+	 * 		<pre>
+	 * 												<code>
+	 * 		public static final String KEY_PUSH_TOPSTORIES = "key.push.topstories";
+	 * 		public static final String KEY_PUSH_NEWSTORIES = "key.push.newstories";
+	 * 		public static final String KEY_PUSH_ASKSTORIES = "key.push.askstories";
+	 * 		public static final String KEY_PUSH_SHOWSTORIES = "key.push.showstories";
+	 * 		public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
+	 * 												</code>
+	 * 										</pre>
+	 *
+	 * @return {@code true} if the push named by {@code keyName}  is subscribed.
+	 */
+	public boolean getPush(String keyName) {
+		return getBoolean(keyName, false);
+	}
 
+
+	/**
+	 * To set whether the push which is named by {@code keyName} has been subscribed or not.
+	 *
+	 * @param keyName
+	 * 		See.
+	 * 		<pre>
+	 * 												<code>
+	 * 		public static final String KEY_PUSH_TOPSTORIES = "key.push.topstories";
+	 * 		public static final String KEY_PUSH_NEWSTORIES = "key.push.newstories";
+	 * 		public static final String KEY_PUSH_ASKSTORIES = "key.push.askstories";
+	 * 		public static final String KEY_PUSH_SHOWSTORIES = "key.push.showstories";
+	 * 		public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
+	 * 												</code>
+	 * 										</pre>
+	 */
+	public void setPush(String keyName, boolean value) {
+		setBoolean(keyName, value);
+	}
 }

@@ -32,7 +32,6 @@ import com.hpush.app.adapters.MessagesListAdapter;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
-import com.hpush.bus.GCMRegistedEvent;
 import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
@@ -93,16 +92,7 @@ public class MessagesListFragment extends BaseFragment {
 	//Subscribes, event-handlers
 	//------------------------------------------------
 
-	/**
-	 * Handler for {@link  GCMRegistedEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link GCMRegistedEvent}.
-	 */
-	public void onEvent(GCMRegistedEvent e) {
-		testEmpty();
-
-	}
+	 
 
 	/**
 	 * Handler for {@link SortAllEvent}.

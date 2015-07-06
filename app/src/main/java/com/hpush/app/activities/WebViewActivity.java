@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,7 +26,6 @@ import android.webkit.WebViewClient;
 import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
-import com.github.mrengineer13.snackbar.SnackBar;
 import com.hpush.R;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.ShareMessageEvent;
@@ -83,10 +83,6 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 	 * The message that contains the information that the {@link #mWebView} uses. It might be null.
 	 */
 	private Message msg;
-	/**
-	 * Information after adding item to bookmark.
-	 */
-	private SnackBar mSnackBar;
 
 	/**
 	 * Show single instance of {@link WebViewActivity}.
@@ -184,7 +180,6 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		});
 		handleIntent();
 		animToolActionBar(-getActionBarHeight() * 4);
-		mSnackBar = new SnackBar(this);
 	}
 
 	@Override
@@ -249,9 +244,8 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 			if (TextUtils.isEmpty(url)) {
 				url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
 			}
-			Api.call(url, new ActionProviderTinyUrl4JListener(this, provider,
-					R.string.lbl_share_item_title, R.string.lbl_share_item_content,
-					msg));
+			Api.call(url, new ActionProviderTinyUrl4JListener(this, provider, R.string.lbl_share_item_title,
+					R.string.lbl_share_item_content, msg));
 		} else {
 			//Setting a share intent.
 			String subject = getString(R.string.lbl_share_app_title, getString(R.string.application_name));
@@ -290,7 +284,8 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 			break;
 		case R.id.action_item_bookmark:
 			EventBus.getDefault().postSticky(new BookmarkMessageEvent(new MessageListItem(msg)));
-			mSnackBar.show(getString(R.string.lbl_has_been_bookmarked));
+			Snackbar.make(findViewById(android.R.id.list), R.string.lbl_has_been_bookmarked, Snackbar.LENGTH_LONG)
+					.show();
 			item.setVisible(false);
 			break;
 		case R.id.action_facebook:
@@ -302,8 +297,8 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 				link = getString(R.string.lbl_app_link);
 
 				Bundle postParams = new Bundle();
-				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
-						.setCaption(caption).setName(name).setDescription(desc).setLink(link).build();
+				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId),
+						postParams).setCaption(caption).setName(name).setDescription(desc).setLink(link).build();
 				fbDlg.setOnCompleteListener(new OnCompleteListener() {
 					@Override
 					public void onComplete(Bundle bundle, FacebookException e) {
@@ -313,7 +308,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 				fbDlg.show();
 			} else {
 				if (TextUtils.isEmpty(msg.getUrl())) {
-					msg.setUrl( Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId());
+					msg.setUrl(Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId());
 				}
 				EventBus.getDefault().post(new ShareMessageEvent(new MessageListItem(msg), Type.Facebook));
 			}
@@ -343,7 +338,6 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		ViewPropertyAnimator animator = ViewPropertyAnimator.animate(mToolbar);
 		animator.translationY(value).setDuration(400);
 	}
-
 
 
 	@Override

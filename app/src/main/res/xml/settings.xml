@@ -12,25 +12,46 @@
             android:layout="@layout/setting_item"
             android:defaultValue="false" />
 
-        <!--<CheckBoxPreference-->
-            <!--android:key="key.save.latest.only"-->
-            <!--android:title="@string/setting_only_save_latest"-->
-            <!--android:summaryOn="@string/lbl_yes"-->
-            <!--android:summaryOff="@string/lbl_no"-->
-            <!--android:layout="@layout/setting_item"-->
-            <!--android:defaultValue="@bool/default_only_save_latest" />-->
+
+        <CheckBoxPreference
+            android:key="key.push.topstories"
+            android:title="@string/setting_subscribe_top_stories"
+            android:layout="@layout/setting_item"
+            android:defaultValue="false" />
+
+
+        <CheckBoxPreference
+            android:key="key.push.newstories"
+            android:title="@string/setting_subscribe_new_stories"
+            android:layout="@layout/setting_item"
+            android:defaultValue="false" />
+
+
+        <CheckBoxPreference
+            android:key="key.push.askstories"
+            android:title="@string/setting_subscribe_ask_stories"
+            android:layout="@layout/setting_item"
+            android:defaultValue="false" />
+
+
+        <CheckBoxPreference
+            android:key="key.push.showstories"
+            android:title="@string/setting_subscribe_show_stories"
+            android:layout="@layout/setting_item"
+            android:defaultValue="false" />
+
+        <CheckBoxPreference
+            android:key="key.push.jobstories"
+            android:title="@string/setting_subscribe_job_stories"
+            android:layout="@layout/setting_item"
+            android:defaultValue="false" />
+
+
     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/setting_push_properties_cat"
         android:layout="@layout/setting_entry">
-        <CheckBoxPreference
-            android:key="key.only.full.text"
-            android:title="@string/setting_only_full_text"
-            android:summaryOn="@string/lbl_yes"
-            android:summaryOff="@string/lbl_no"
-            android:layout="@layout/setting_item"
-            android:defaultValue="@bool/default_accept_full_text" />
         <CheckBoxPreference
             android:key="key.allow.empty.url"
             android:title="@string/setting_allow_empty_url"
@@ -38,12 +59,6 @@
             android:summaryOff="@string/lbl_no"
             android:layout="@layout/setting_item"
             android:defaultValue="@bool/default_allow_empty_url" />
-        <EditTextPreference
-            android:key="key.msg.count"
-            android:title="@string/setting_count"
-            android:summary="@string/setting_messages_count"
-            android:layout="@layout/setting_item"
-            android:inputType="number"/>
     </PreferenceCategory>
 
     <PreferenceCategory

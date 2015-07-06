@@ -26,7 +26,6 @@
     <string name="lbl_tweet">Tweet</string>
     <string name="lbl_login_gplus">Google+ login…</string>
     <string name="lbl_login_fail">I can not login Google+ …</string>
-    <string name="lbl_logout_gplus_cause">Logout Google+ would case unsubscribing PUSH from Hack News …</string>
     <string name="lbl_logout_gplus">Logout</string>
     <string name="lbl_update_from_hacker_news">%1$s updates from Hacker News.</string>
     <string name="lbl_has_been_bookmarked">This article has been bookmarked.</string>
@@ -41,13 +40,15 @@
     <string name="lbl_total_messages_tail">message(s).</string>
     <string name="lbl_no_data">There\'re no messages at moment, however you can synchronize by pulling down.</string>
     <string name="lbl_no_push_set">You have not open your PUSH option, start Setting to open PUSH, however you can synchronize by pulling down.</string>
+    <string name="lbl_no_push_for_subscribe">Open PUSH then subscribe.</string>
     <string name="lbl_app_link">http://tinyurl.com/pcopzdh</string>
+    <string name="lbl_finished">✔</string>
+    <string name="lbl_failed">✘</string>
 
     <string name="msg_push_registering">Signing in push…</string>
     <string name="msg_push_unregistering">Signing out push…</string>
     <string name="msg_app_init">Initialization…</string>
     <string name="msg_save_data">Saving data…</string>
-    <string name="msg_wait_new_messages">Please wait and you\'ll get latest news from community as soon as possible.</string>
     <string name="msg_remove_all">Remove all messages here?</string>
     <string name="msg_saved_settings_successfully">Saved setting successfully.</string>
     <string name="msg_saved_account_successfully">Saved the push-account on server successfully.</string>
@@ -59,9 +60,6 @@
     <string name="setting_push_on">On</string>
     <string name="setting_push_off">Off</string>
     <string name="setting_push_properties_cat">Properties</string>
-    <string name="setting_only_full_text">Only accept full-text messages? That means these messages only with single title must be ignored.</string>
-    <string name="setting_count">How many top-stories(Top 100) would you like to accept?</string>
-    <string name="setting_messages_count">%1$s push-messages</string>
     <string name="setting_only_save_latest">Only save the latest messages and remove old ones before saving?</string>
     <string name="setting_allow_empty_url">Allow messages that don\'t have external links.</string>
     <string name="setting_view">View</string>
@@ -97,6 +95,20 @@
     <string name="setting_sort_arrival">Arrival</string>
     <string name="setting_sort_creation">Creation</string>
     <string name="setting_sort_comments">Comments</string>
+    <string name="setting_subscribe_top_stories">Subscribe top stories.</string>
+    <string name="setting_subscribe_new_stories">Subscribe new stories.</string>
+    <string name="setting_subscribe_ask_stories">Subscribe ask stories.</string>
+    <string name="setting_subscribe_show_stories">Subscribe Show-HN.</string>
+    <string name="setting_subscribe_job_stories">Subscribe job stories.</string>
+    <string name="setting_subscribe_summary">Subscribe summary.</string>
+
+    <string name="subscribing_title">Subscribe topics</string>
+    <string name="subscribing_top_stories">Subscribing top stories…</string>
+    <string name="subscribing_new_stories">Subscribing new stories…</string>
+    <string name="subscribing_ask_stories">Subscribing ask stories…</string>
+    <string name="subscribing_show_stories">Subscribing show stories…</string>
+    <string name="subscribing_job_stories">Subscribing job stories…</string>
+    <string name="subscribing_summary">Subscribing summary…</string>
 
     <!-- Shown in the 'About' window of the app. -->
     <string name="about_body">&lt;b&gt;%1$s &lt;/b&gt;&lt;br&gt;Version %2$s &lt;br&gt;</string>
