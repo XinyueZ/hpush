@@ -27,13 +27,11 @@
     </style>
 
 
-
-
     <style name="List_Item_TextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:singleLine">false</item>
-        <item name="android:gravity">center_vertical</item> 
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="Headline_Messages_List_Item_TextView" parent="@style/List_Item_TextView">
@@ -74,12 +72,19 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:foreground">@color/common_transparent</item>
         <item name="android:background">@color/common_transparent</item>
-        <item name="contentPadding">10dp</item>
         <item name="cardElevation">4dp</item>
         <item name="cardMaxElevation">8dp</item>
         <item name="cardCornerRadius">0dp</item>
     </style>
 
+    <style name="MaterialRippleLayout">
+
+        <item name="mrl_rippleAlpha">0.2</item>
+        <item name="mrl_rippleColor">@color/primary_dark_color</item>
+        <item name="mrl_rippleDelayClick">true</item>
+        <item name="mrl_rippleHover">true</item>
+        <item name="mrl_rippleOverlay">true</item>
+    </style>
 
 
     <style name="CardView" parent="@style/ListItemCardView">
@@ -103,7 +108,6 @@
         <item name="android:gravity">center</item>
         <item name="android:visibility">gone</item>
     </style>
-
 
 
 </resources>

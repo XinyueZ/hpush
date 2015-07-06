@@ -151,9 +151,6 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 				case R.id.action_item_comment:
 					EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.itemView));
 					break;
-				case R.id.action_item_link:
-					EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.itemView));
-					break;
 				case R.id.action_item_bookmark:
 					EventBus.getDefault().post(new BookmarkMessageEvent(msg));
 					break;
@@ -192,6 +189,13 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 				EventBus.getDefault().post(new SelectMessageEvent());
 			}
 		});
+
+		viewHolder.mContentV.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				EventBus.getDefault().post(new ClickMessageLinkEvent(msg.getMessage(), viewHolder.itemView));
+			}
+		});
 	}
 
 	@Override
@@ -209,6 +213,7 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 		TextView mTimeTv;
 		Toolbar mToolbar;
 		Toolbar mToolbar3;
+		View mContentV;
 
 		private ViewHolder(View convertView, int menuResId, boolean landscape) {
 			super(convertView);
@@ -219,6 +224,7 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 			mCommentsCountTv = (TextView) convertView.findViewById(R.id.comments_count_tv);
 			mEditorTv = (TextView) convertView.findViewById(R.id.editor_tv);
 			mTimeTv = (TextView) convertView.findViewById(R.id.time_tv);
+			mContentV = convertView.findViewById(R.id.content_v);
 			mToolbar = (Toolbar) convertView.findViewById(R.id.toolbar);
 			mToolbar.inflateMenu(menuResId);
 			mToolbar3 = (Toolbar) convertView.findViewById(R.id.toolbar_3);
