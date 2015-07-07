@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@drawable/bg_gplus"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_gplus"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -22,27 +22,38 @@
             android:layout_gravity="center_vertical|left" />
 
 
-        <Button
+        <com.hpush.views.MaterialRippleLayout
             android:id="@+id/logout_btn"
+            style="@style/MaterialRippleLayout"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"  android:textColor="@color/common_white"
-            android:gravity="center"
-            android:visibility="invisible"
+            android:layout_height="40dp"
             android:layout_gravity="center_vertical|right"
-            android:background="#dd4b39"
-            android:text="@string/lbl_logout_gplus" />
+            android:layout_marginTop="5dp"
+            android:background="@color/primary_color"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:visibility="invisible">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/common_transparent"
+                android:gravity="center"
+                android:text="@string/lbl_logout_gplus"
+                android:textColor="@color/common_white" />
+        </com.hpush.views.MaterialRippleLayout>
     </FrameLayout>
 
     <com.hpush.views.FontTextView
-        android:textColor="@color/common_black"
-        app:font="light"
-        android:visibility="invisible"
         android:id="@+id/people_name_tv"
         font="bold"
-        android:gravity="center_vertical|right"
-        android:layout_gravity="center_vertical|right"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|right"
+        android:gravity="center_vertical|right"
+        android:textColor="@color/common_black"
+        android:visibility="invisible"
+        app:font="light" />
 </LinearLayout>

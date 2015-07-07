@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -20,7 +21,6 @@ import com.hpush.R;
 import com.hpush.bus.LoginedGPlusEvent;
 import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.utils.Prefs;
-import com.hpush.views.OnViewAnimatedClickedListener2;
 
 import de.greenrobot.event.EventBus;
 
@@ -94,9 +94,9 @@ public final class GPlusFragment extends BaseFragment {
 		mPhotoIv = (NetworkImageView) view.findViewById(R.id.people_photo_iv);
 		mNameTv = (TextView) view.findViewById(R.id.people_name_tv);
 		mLogoutV = view.findViewById(R.id.logout_btn);
-		mLogoutV.setOnClickListener(new OnViewAnimatedClickedListener2() {
+		mLogoutV.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick() {
+			public void onClick(View v) {
 				mPhotoIv.setVisibility(View.INVISIBLE);
 				mNameTv.setVisibility(View.INVISIBLE);
 				mLogoutV.setVisibility(View.INVISIBLE);
