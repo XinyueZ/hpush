@@ -2,7 +2,7 @@
 <resources>
 
 
-    <style name="AppTheme.Base"  parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorPrimary">@color/primary_color</item>
         <item name="android:colorPrimaryDark">@color/primary_dark_color</item>
         <item name="android:windowBackground">@color/common_white</item>
@@ -36,6 +36,8 @@
     </style>
 
     <style name="AppTheme" parent="AppTheme.Base" />
+
+    <style name="AppTheme.FirstPage"/>
 
     <style name="AppThemeToolBar" parent="AppTheme.Base">
         <item name="android:actionOverflowButtonStyle">@style/ThisActionButton_Overflow_Style</item>

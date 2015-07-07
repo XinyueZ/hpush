@@ -103,4 +103,7 @@
 
     <string name="lbl_recent">Letzte Meldungen </string>
     <string name="lbl_search">Suchen</string>
+
+
+    <string name="action_more_apps">Weitere Apps</string>
 </resources>

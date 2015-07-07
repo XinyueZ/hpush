@@ -123,6 +123,11 @@
         <item name="android:visibility">gone</item>
     </style>
 
-    <style name="AppTheme.FirstPage"  >
+
+
+
+    <style name="NavDrawerItem" parent="@style/Theme.AppCompat.Light">
+        <item name="android:textColor">@color/primary_accent</item>
+        <item name="android:textColorSecondary">@color/primary_accent</item>
     </style>
 </resources>

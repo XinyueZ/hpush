@@ -12,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -489,11 +490,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	}
 
 
-
-
-
-
-
 	/**
 	 * Initialize the navigation drawer.
 	 */
@@ -511,29 +507,40 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 					showToolbar();
 				}
 			};
+
+
 			mDrawerLayout.setDrawerListener(mDrawerToggle);
-			findViewById(R.id.open_hack_news_home_ll).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					WebViewActivity.showInstance(MainActivity.this, null, v, null);
-					mDrawerLayout.closeDrawer(Gravity.LEFT);
-				}
-			});
-			findViewById(R.id.open_recent_ll).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					DailiesActivity.showInstance(MainActivity.this);
-					mDrawerLayout.closeDrawer(Gravity.LEFT);
-				}
-			});
-			findViewById(R.id.open_setting_ll).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					SettingActivity.showInstance(MainActivity.this, v);
-					mDrawerLayout.closeDrawer(Gravity.LEFT);
-				}
-			});
+			setupDrawerContent((NavigationView) findViewById(R.id.nav_view));
 		}
+	}
+
+	/**
+	 * Set-up of navi-bar left.
+	 */
+	private void setupDrawerContent(NavigationView navigationView) {
+		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+			@Override
+			public boolean onNavigationItemSelected(MenuItem menuItem) {
+				menuItem.setChecked(true);
+				mDrawerLayout.closeDrawer(Gravity.LEFT);
+
+				switch (menuItem.getItemId()) {
+				case R.id.action_home:
+					WebViewActivity.showInstance(MainActivity.this, null, null, null);
+					break;
+				case R.id.action_recent:
+					DailiesActivity.showInstance(MainActivity.this);
+					break;
+				case R.id.action_more_apps:
+					mDrawerLayout.openDrawer(Gravity.RIGHT);
+					break;
+				case R.id.action_settings:
+					SettingActivity.showInstance(MainActivity.this, null);
+					break;
+				}
+				return true;
+			}
+		});
 	}
 
 	/**
@@ -706,6 +713,14 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		}
 	}
 
+	@Override
+	public void onBackPressed() {
+		if (mDrawerLayout.isDrawerOpen(Gravity.LEFT) || mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+			mDrawerLayout.closeDrawers();
+		} else {
+			super.onBackPressed();
+		}
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//UI effect:
