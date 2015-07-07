@@ -66,6 +66,20 @@
         <item name="android:background">@color/common_transparent</item>
     </style>
 
+    <style name="FAB">
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/fab_margin</item>
+        <item name="android:layout_marginBottom">@dimen/fab_margin</item>
+    </style>
+
+    <style name="FAB_SMALL">
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>
 
     <style name="ListItemCardView">
         <item name="android:layout_width">match_parent</item>

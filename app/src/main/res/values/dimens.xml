@@ -17,4 +17,7 @@
     <dimen name="float_button_rmv_all_dailies">100dp</dimen>
 
     <dimen name="pb_height">3dp</dimen>
+
+    <dimen name="common_elevation">5dp</dimen>
+    <dimen name="common_high_elevation">10dp</dimen>
 </resources>

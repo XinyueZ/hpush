@@ -10,19 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.chopping.utils.DeviceUtils;
 import com.chopping.utils.Utils;
 import com.hpush.R;
-import com.hpush.bus.DeleteAllDailiesEvent;
 import com.hpush.bus.LoadedAllDailiesEvent;
 import com.hpush.bus.ShowActionBar;
-import com.hpush.views.OnViewAnimatedClickedListener;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
-
-import de.greenrobot.event.EventBus;
+import com.software.shell.fab.ActionButton;
 
 /**
  * Show all {@link com.hpush.data.Recent}s.
@@ -144,26 +136,7 @@ public class DailiesActivity extends BasicActivity {
 	 * Show some UIs after loading all data.
 	 */
 	protected void toggleUI() {
-		final View rmAllV = findViewById(R.id.remove_all_btn);
-
-		int screenWidth = DeviceUtils.getScreenSize(getApplication()).Width;
-		ViewHelper.setTranslationX(rmAllV, -screenWidth);
-		ViewHelper.setRotation(rmAllV, 360f * 4);
-		ViewPropertyAnimator animator = ViewPropertyAnimator.animate(rmAllV);
-		animator.x(screenWidth - getResources().getDimensionPixelSize(R.dimen.float_button_rmv_all_dailies)).rotation(0).setDuration(MainActivity.ANIM_SPEED * 2).setListener(
-				new AnimatorListenerAdapter() {
-					@Override
-					public void onAnimationStart(Animator animation) {
-						super.onAnimationStart(animation);
-						rmAllV.setVisibility(View.VISIBLE);
-					}
-				}).start();
-
-		rmAllV.setOnClickListener(new OnViewAnimatedClickedListener() {
-			@Override
-			public void onClick() {
-				EventBus.getDefault().post(new DeleteAllDailiesEvent());
-			}
-		});
+		final ActionButton rmAllV = (ActionButton) findViewById(R.id.remove_all_btn);
+		rmAllV.show();
 	}
 }

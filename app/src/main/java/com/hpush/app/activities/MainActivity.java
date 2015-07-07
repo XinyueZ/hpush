@@ -34,13 +34,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.chopping.bus.CloseDrawerEvent;
-import com.chopping.utils.DeviceUtils;
-import com.chopping.utils.DeviceUtils.ScreenSize;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
@@ -78,14 +75,11 @@ import com.hpush.gcm.RegistrationIntentService;
 import com.hpush.gcm.UnregistrationIntentService;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
-import com.hpush.views.OnViewAnimatedClickedListener;
 import com.hpush.views.OnViewAnimatedClickedListener3;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorListenerAdapter;
-import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
+import com.software.shell.fab.ActionButton;
 
 import de.greenrobot.event.EventBus;
 
@@ -128,19 +122,19 @@ public final class MainActivity extends BasicActivity implements
 	/**
 	 * Click to remove all selected items.
 	 */
-	private ImageButton mRemoveAllBtn;
+	private ActionButton mRemoveAllBtn;
 	/**
 	 * Click to bookmark all selected items.
 	 */
-	private ImageButton mBookmarkAllBtn;
+	private ActionButton mBookmarkAllBtn;
 	/**
 	 * Open/Close main float buttons.
 	 */
-	private ImageButton mOpenBtn;
+	private ActionButton mOpenBtn;
 	/**
 	 * Search   buttons.
 	 */
-	private ImageButton mSearchBtn;
+	private ActionButton mSearchBtn;
 	/**
 	 * The interstitial ad.
 	 */
@@ -307,24 +301,24 @@ public final class MainActivity extends BasicActivity implements
 		});
 		propagateToolbarState(toolbarIsShown());
 
-		mRemoveAllBtn = (ImageButton) findViewById(R.id.remove_all_btn);
-		mRemoveAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
+		mRemoveAllBtn = (ActionButton) findViewById(R.id.remove_all_btn);
+		mRemoveAllBtn.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick() {
+			public void onClick(View v) {
 				EventBus.getDefault().post(new RemoveAllEvent(
 						mViewPager.getCurrentItem() == 0 ? WhichPage.Messages : WhichPage.Bookmarks));
 			}
 		});
-		mBookmarkAllBtn = (ImageButton) findViewById(R.id.bookmark_all_btn);
-		mBookmarkAllBtn.setOnClickListener(new OnViewAnimatedClickedListener() {
+		mBookmarkAllBtn = (ActionButton) findViewById(R.id.bookmark_all_btn);
+		mBookmarkAllBtn.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick() {
+			public void onClick(View v) {
 				EventBus.getDefault().post(new BookmarkAllEvent());
 			}
 		});
-		mOpenBtn = (ImageButton) findViewById(R.id.float_main_btn);
+		mOpenBtn = (ActionButton) findViewById(R.id.float_main_btn);
 		mOpenBtn.setOnClickListener(mOpenListener);
-		mSearchBtn = (ImageButton) findViewById(R.id.float_search_btn);
+		mSearchBtn = (ActionButton) findViewById(R.id.float_search_btn);
 		ViewCompat.setTranslationX(mSearchBtn, ViewCompat.getTranslationX(mOpenBtn));
 		mSearchBtn.setOnClickListener(mSearchListener);
 
@@ -488,14 +482,14 @@ public final class MainActivity extends BasicActivity implements
 	 * Show main float button.
 	 */
 	private void showOpenFloatButton() {
-		mOpenBtn.setVisibility(View.VISIBLE);
+		mOpenBtn.show();
 	}
 
 	/**
 	 * Dismiss main float button.
 	 */
 	private void hideOpenFloatButton() {
-		mOpenBtn.setVisibility(View.INVISIBLE);
+		mOpenBtn.hide();
 	}
 
 	/**
@@ -613,15 +607,11 @@ public final class MainActivity extends BasicActivity implements
 	}
 
 	/**
-	 * Duration for animation of float buttons.
-	 */
-	public static final int ANIM_SPEED = 250;
-	/**
 	 * Listener for opening all float buttons.
 	 */
-	private OnClickListener mSearchListener = new OnViewAnimatedClickedListener() {
+	private OnClickListener mSearchListener = new OnClickListener() {
 		@Override
-		public void onClick() {
+		public void onClick(View v) {
 			onSearchRequested();
 		}
 	};
@@ -633,39 +623,11 @@ public final class MainActivity extends BasicActivity implements
 		@Override
 		public void onClick(View v) {
 			if (mViewPager.getCurrentItem() == 0) {
-				mBookmarkAllBtn.setVisibility(View.VISIBLE);
+				mBookmarkAllBtn.show();
 			}
-			AnimatorSet animatorSet = new AnimatorSet();
-			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY", 150f, 0).setDuration(
-					ANIM_SPEED);
-			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(
-					mBookmarkAllBtn), 360).setDuration(ANIM_SPEED);
-
-
-			mRemoveAllBtn.setVisibility(View.VISIBLE);
-			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", 200f, 0).setDuration(
-					ANIM_SPEED);
-			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(
-					mRemoveAllBtn), 360).setDuration(ANIM_SPEED);
-			iBtnAnim.addListener(new AnimatorListenerAdapter() {
-				@Override
-				public void onAnimationEnd(Animator animation) {
-					super.onAnimationEnd(animation);
-					mOpenBtn.setOnClickListener(mCloseListener);
-				}
-			});
-
-			mSearchBtn.setVisibility(View.VISIBLE);
-			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "x", ViewCompat.getTranslationX(mSearchBtn),
-					ViewCompat.getTranslationX(mOpenBtn)).setDuration(ANIM_SPEED);
-			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn),
-					360).setDuration(ANIM_SPEED);
-
-
-			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn),
-					90).setDuration(ANIM_SPEED);
-			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2, iBtnAnim, iBtnAnim2);
-			animatorSet.start();
+			mRemoveAllBtn.show();
+			mSearchBtn.show();
+			mOpenBtn.setOnClickListener(mCloseListener);
 		}
 	};
 
@@ -675,50 +637,10 @@ public final class MainActivity extends BasicActivity implements
 	private OnClickListener mCloseListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			AnimatorSet animatorSet = new AnimatorSet();
-			ObjectAnimator iiBtnAnim = ObjectAnimator.ofFloat(mBookmarkAllBtn, "translationY",
-					ViewCompat.getTranslationY(mBookmarkAllBtn), 150f).setDuration(ANIM_SPEED);
-			iiBtnAnim.addListener(new AnimatorListenerAdapter() {
-				@Override
-				public void onAnimationEnd(Animator animation) {
-					super.onAnimationEnd(animation);
-					mBookmarkAllBtn.setVisibility(View.GONE);
-				}
-			});
-			ObjectAnimator iiBtnAnim2 = ObjectAnimator.ofFloat(mBookmarkAllBtn, "rotation", ViewCompat.getRotation(
-					mBookmarkAllBtn), -360).setDuration(ANIM_SPEED);
-
-			ObjectAnimator iBtnAnim = ObjectAnimator.ofFloat(mRemoveAllBtn, "translationY", ViewCompat.getTranslationY(
-					mRemoveAllBtn), 200f).setDuration(ANIM_SPEED);
-			ObjectAnimator iBtnAnim2 = ObjectAnimator.ofFloat(mRemoveAllBtn, "rotation", ViewCompat.getRotation(
-					mRemoveAllBtn), -360).setDuration(ANIM_SPEED);
-			iBtnAnim.addListener(new AnimatorListenerAdapter() {
-				@Override
-				public void onAnimationEnd(Animator animation) {
-					super.onAnimationEnd(animation);
-					mRemoveAllBtn.setVisibility(View.GONE);
-					mOpenBtn.setOnClickListener(mOpenListener);
-
-				}
-			});
-
-			ScreenSize sz = DeviceUtils.getScreenSize(MainActivity.this);
-			ObjectAnimator seaAnim = ObjectAnimator.ofFloat(mSearchBtn, "translationX", ViewCompat.getTranslationX(
-					mSearchBtn), sz.Width).setDuration(ANIM_SPEED);
-			seaAnim.addListener(new AnimatorListenerAdapter() {
-				@Override
-				public void onAnimationEnd(Animator animation) {
-					super.onAnimationEnd(animation);
-					mSearchBtn.setVisibility(View.GONE);
-				}
-			});
-			ObjectAnimator seaAnim2 = ObjectAnimator.ofFloat(mSearchBtn, "rotation", ViewCompat.getRotation(mSearchBtn),
-					-360).setDuration(ANIM_SPEED);
-
-			ObjectAnimator openBtnAnim = ObjectAnimator.ofFloat(mOpenBtn, "rotation", ViewCompat.getRotation(mOpenBtn),
-					-180).setDuration(ANIM_SPEED);
-			animatorSet.playTogether(openBtnAnim, seaAnim, seaAnim2, iiBtnAnim, iiBtnAnim2, iBtnAnim, iBtnAnim2);
-			animatorSet.start();
+			mBookmarkAllBtn.hide();
+			mRemoveAllBtn.hide();
+			mSearchBtn.hide();
+			mOpenBtn.setOnClickListener(mOpenListener);
 		}
 	};
 
