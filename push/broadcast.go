@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+	"strings" 
 )
 
 type TopStoresRes struct {
@@ -251,6 +252,9 @@ func sync(w http.ResponseWriter, r *http.Request) {
 	pushedTime := t.Format("20060102150405")
 	for _, itemDetail := range itemDetailsList {
 		//Same logical like dispatch, but I don't use routine.
+		itemDetail.Title = strings.Replace(itemDetail.Title, "\"", "'", -1)
+		itemDetail.Title = strings.Replace(itemDetail.Title, "%", "％", -1)
+		itemDetail.Title = strings.Replace(itemDetail.Title, "\\", ",", -1)
 		syncItem := SyncItemDetails{
 			By:          itemDetail.By,
 			Id:          itemDetail.Id,
@@ -265,8 +269,10 @@ func sync(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(syncItems) > 0 {
 		if json, err := json.Marshal(SyncItemDetailsList{syncItems}); err == nil {
+			result := string(json)
+			result = strings.Replace(result, "(MISSING)","", -1)
 			w.Header().Set("Content-Type", API_RESTYPE)
-			fmt.Fprintf(w, string(json))
+			fmt.Fprintf(w, result)
 		} else {
 			cxt.Errorf("sync marshal: %v", err)
 		}

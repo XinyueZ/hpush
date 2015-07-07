@@ -13,6 +13,7 @@ func init() {
 	http.HandleFunc("/askstories", handleAskstories)
 	http.HandleFunc("/showstories", handleShowstories)
 	http.HandleFunc("/jobstories", handleJobstories)
+	http.HandleFunc("/sync", handleSync)
 }
 
 func handleTopstories(w http.ResponseWriter, r *http.Request) {
