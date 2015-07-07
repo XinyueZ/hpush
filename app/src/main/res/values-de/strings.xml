@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="lbl_hello">Hallo %1$s!</string>
     <string name="lbl_turn_on_push_info">Möchtest Du Push-Benachrichtigungen empfangen, um die Top-Stories aus Hacker-News zu bekommen?</string>
-
     <string name="lbl_yes">Ja</string>
     <string name="lbl_no">Nein</string>
     <string name="lbl_home">Home</string>
@@ -33,6 +33,8 @@
     <string name="lbl_no_data">Es gibt keine Nachrichten im Augenblick, aber Du kannst unterziehen, Daten zu synchronisieren.</string>
     <string name="lbl_no_push_set">Du hast Push-Benachrichtigung noch nicht eingeschaltet, bitte bei der Einstellung einschalten, aber Du kannst unterziehen, Daten zu synchronisieren.</string>
     <string name="lbl_no_push_for_subscribe">Push-Benachrichtigung eingschalten, dann Abo.</string>
+    <string name="lbl_welcome">Willkommen bei %1$s!</string>
+    <string name="lbl_connect_google">Verbindung an Google…</string>
 
 
     <string name="msg_push_registering">Anmeldung…</string>
@@ -96,6 +98,9 @@
     <string name="btn_not_agree">Stimmt nicht zu.</string>
     <string name="btn_agree">Stimmt zu</string>
     <string name="btn_retry">Wiederholen</string>
+    <string name="btn_begin">Fangen wir an</string>
+    <string name="btn_close_app">App beenden</string>
+
     <string name="lbl_recent">Letzte Meldungen </string>
     <string name="lbl_search">Suchen</string>
 </resources>

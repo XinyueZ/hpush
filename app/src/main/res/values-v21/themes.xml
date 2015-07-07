@@ -11,5 +11,9 @@
     </style>
 
 
+    <style name="AppTheme.FirstPage"  >
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/primary_dark_color</item>
+    </style>
 
 </resources>

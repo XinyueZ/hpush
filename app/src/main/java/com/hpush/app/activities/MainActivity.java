@@ -1,6 +1,5 @@
 package com.hpush.app.activities;
 
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -9,12 +8,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -50,11 +49,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.Plus.PlusOptions;
 import com.hpush.R;
+import com.hpush.app.App;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
 import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;
@@ -63,8 +59,6 @@ import com.hpush.app.fragments.GPlusFragment;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
-import com.hpush.bus.LoginedGPlusEvent;
-import com.hpush.bus.LogoutGPlusEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SelectMessageEvent;
@@ -72,11 +66,8 @@ import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
 import com.hpush.gcm.RegistrationIntentService;
-import com.hpush.gcm.UnregistrationIntentService;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
-import com.hpush.views.OnViewAnimatedClickedListener3;
-import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
 import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
@@ -88,9 +79,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class MainActivity extends BasicActivity implements
-		com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks,
-		com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener, ObservableScrollViewCallbacks {
+public final class MainActivity extends BasicActivity implements ObservableScrollViewCallbacks {
 	/**
 	 * Main layout for this component.
 	 */
@@ -148,11 +137,10 @@ public final class MainActivity extends BasicActivity implements
 	 * Container for toolbar and viewpager.
 	 */
 	private View mHeaderView;
-	private SignInButton mGPlusBtn;
-	private GoogleApiClient mPlusClient;
-	private ConnectionResult mConnectionResult;
+	/**
+	 * Action progress indicator.
+	 */
 	private ProgressDialog mProgressDialog;
-	private static int REQUEST_CODE_RESOLVE_ERR = 0x98;
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
@@ -164,7 +152,7 @@ public final class MainActivity extends BasicActivity implements
 	 * 		Event {@link  EULARejectEvent}.
 	 */
 	public void onEvent(EULARejectEvent e) {
-		finish();
+		ActivityCompat.finishAfterTransition(this);
 	}
 
 	/**
@@ -174,7 +162,7 @@ public final class MainActivity extends BasicActivity implements
 	 * 		Event {@link  EULAConfirmedEvent}.
 	 */
 	public void onEvent(EULAConfirmedEvent e) {
-
+		ConnectGoogleActivity.showInstance(this);
 	}
 
 	/**
@@ -198,15 +186,6 @@ public final class MainActivity extends BasicActivity implements
 		openFloatButtons();
 	}
 
-	/**
-	 * Handler for {@link com.hpush.bus.LogoutGPlusEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link com.hpush.bus.LogoutGPlusEvent}.
-	 */
-	public void onEvent(LogoutGPlusEvent e) {
-		logoutGPlus();
-	}
 
 	/**
 	 * Handler for {@link UpdateCurrentTotalMessagesEvent}.
@@ -322,21 +301,16 @@ public final class MainActivity extends BasicActivity implements
 		ViewCompat.setTranslationX(mSearchBtn, ViewCompat.getTranslationX(mOpenBtn));
 		mSearchBtn.setOnClickListener(mSearchListener);
 
-		mPlusClient = new GoogleApiClient.Builder(this, this, this).addApi(Plus.API, PlusOptions.builder().build())
-				.addScope(Plus.SCOPE_PLUS_LOGIN).build();
-		mGPlusBtn = (SignInButton) findViewById(R.id.sign_in_btn);
-		mGPlusBtn.setSize(SignInButton.SIZE_WIDE);
-		mGPlusBtn.setOnClickListener(new OnViewAnimatedClickedListener3() {
-			@Override
-			public void onClick() {
-				loginGPlus();
-			}
-		});
-		if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
-			mPlusClient.connect();
-		}
+
 		mTotalTv = (TextView) findViewById(R.id.total_tv);
 		this.refreshCurrentTotalMessages();
+
+		Prefs prefs = Prefs.getInstance(App.Instance);
+		if (prefs.isEULAOnceConfirmed() && TextUtils.isEmpty(prefs.getGoogleAccount())) {
+			ConnectGoogleActivity.showInstance(this);
+		} else if (prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty(prefs.getGoogleAccount())) {
+			//Should do something.....
+		}
 	}
 
 
@@ -381,9 +355,13 @@ public final class MainActivity extends BasicActivity implements
 			mDrawerToggle.syncState();
 		}
 		checkPlayService();
-		handleGPlusLinkedUI();
 		LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(
 				RegistrationIntentService.REGISTRATION_COMPLETE));
+
+		Prefs prefs = Prefs.getInstance(App.Instance);
+		if (prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty(prefs.getGoogleAccount())) {
+			checkPushSetting();
+		}
 	}
 
 	@Override
@@ -395,12 +373,6 @@ public final class MainActivity extends BasicActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-
-
-		menu.findItem(R.id.action_setting).setVisible(mPlusClient != null && mPlusClient.isConnected());
-		if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
-			menu.findItem(R.id.action_setting).setVisible(true);
-		}
 		return true;
 	}
 
@@ -463,10 +435,34 @@ public final class MainActivity extends BasicActivity implements
 		showAppList();
 	}
 
+
 	@Override
 	protected void onAppConfigIgnored() {
 		super.onAppConfigIgnored();
 		showAppList();
+	}
+
+	/**
+	 * To ask whether open push-option.
+	 */
+	private void checkPushSetting() {
+		if (TextUtils.isEmpty(Prefs.getInstance(getApplication()).getPushRegId())) {
+			new Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
+					.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					mProgressDialog = ProgressDialog.show(MainActivity.this, null, getString(
+							R.string.msg_push_registering));
+					Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+					startService(intent);
+				}
+			}).setNegativeButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			}).create().show();
+		}
 	}
 
 	/**
@@ -478,91 +474,10 @@ public final class MainActivity extends BasicActivity implements
 	}
 
 
-	/**
-	 * Show main float button.
-	 */
-	private void showOpenFloatButton() {
-		mOpenBtn.show();
-	}
 
-	/**
-	 * Dismiss main float button.
-	 */
-	private void hideOpenFloatButton() {
-		mOpenBtn.hide();
-	}
 
-	/**
-	 * Show pagers.
-	 */
-	private void showViewPager() {
-		mViewPager.setVisibility(View.VISIBLE);
-	}
 
-	/**
-	 * Dismiss pagers.
-	 */
-	private void hideViewPager() {
-		mViewPager.setVisibility(View.INVISIBLE);
-	}
 
-	/**
-	 * Show tabs.
-	 */
-	private void showTabs() {
-		mTabs.setVisibility(View.VISIBLE);
-	}
-
-	/**
-	 * Dismiss tabs.
-	 */
-	private void hideTabs() {
-		mTabs.setVisibility(View.INVISIBLE);
-	}
-
-	/**
-	 * Show button for gplus.
-	 */
-	private void showGPlusButton() {
-		float initAplha = ViewHelper.getAlpha(mGPlusBtn);
-		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 1).setDuration(0).start();
-	}
-
-	/**
-	 * Dismiss button for gplus.
-	 */
-	private void hideGPlusButton() {
-		float initAplha = ViewHelper.getAlpha(mGPlusBtn);
-		ObjectAnimator.ofFloat(mGPlusBtn, Utils.ALPHA, initAplha, 0.5f, 0).setDuration(0).start();
-	}
-
-	private void handleGPlusLinkedUI() {
-		if (mPlusClient != null && mPlusClient.isConnected()) {
-			showTabs();
-			showViewPager();
-			showOpenFloatButton();
-			hideGPlusButton();
-			findViewById(R.id.open_hack_news_home_ll).setVisibility(View.VISIBLE);
-			findViewById(R.id.open_setting_ll).setVisibility(View.VISIBLE);
-		} else {
-			if (!TextUtils.isEmpty(Prefs.getInstance(getApplication()).getGoogleAccount())) {
-				showTabs();
-				showViewPager();
-				showOpenFloatButton();
-				hideGPlusButton();
-				findViewById(R.id.open_hack_news_home_ll).setVisibility(View.VISIBLE);
-				findViewById(R.id.open_setting_ll).setVisibility(View.VISIBLE);
-			} else {
-				hideTabs();
-				hideViewPager();
-				hideOpenFloatButton();
-				showGPlusButton();
-				findViewById(R.id.open_hack_news_home_ll).setVisibility(View.GONE);
-				findViewById(R.id.open_setting_ll).setVisibility(View.GONE);
-			}
-		}
-		supportInvalidateOptionsMenu();
-	}
 
 	/**
 	 * Initialize the navigation drawer.
@@ -738,99 +653,6 @@ public final class MainActivity extends BasicActivity implements
 				}
 			}
 		} catch (Exception _e) {
-		}
-	}
-
-	@Override
-	public void onConnected(Bundle bundle) {
-		if (mProgressDialog != null && mProgressDialog.isShowing()) {
-			mProgressDialog.dismiss();
-			mGPlusBtn.setVisibility(View.GONE);
-		}
-		if (TextUtils.isEmpty(Prefs.getInstance(getApplication()).getPushRegId())) {
-			new AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
-					.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					mProgressDialog = ProgressDialog.show(MainActivity.this, null, getString(
-							R.string.msg_push_registering));
-					Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
-					startService(intent);
-				}
-			}).setNegativeButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-
-				}
-			}).create().show();
-		}
-		EventBus.getDefault().postSticky(new LoginedGPlusEvent(mPlusClient));
-		Prefs.getInstance(getApplication()).setGoogleAccount(Plus.AccountApi.getAccountName(mPlusClient));
-		handleGPlusLinkedUI();
-	}
-
-	@Override
-	public void onConnectionSuspended(int i) {
-		dismissProgressDialog();
-	}
-
-
-	@Override
-	public void onConnectionFailed(ConnectionResult connectionResult) {
-		dismissProgressDialog();
-		mGPlusBtn.setVisibility(View.VISIBLE);
-
-		if (connectionResult.hasResolution()) {
-			try {
-				connectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
-			} catch (SendIntentException e) {
-				mPlusClient.connect();
-			}
-		}
-	}
-
-	/**
-	 * Login Google+
-	 */
-	private void loginGPlus() {
-		if (mConnectionResult == null) {
-			mProgressDialog = ProgressDialog.show(this, null, getString(R.string.lbl_login_gplus));
-			mProgressDialog.setCancelable(true);
-			mPlusClient.connect();
-		} else {
-			try {
-				mConnectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
-			} catch (SendIntentException e) {
-				mConnectionResult = null;
-				mPlusClient.connect();
-			}
-		}
-	}
-
-
-	/**
-	 * Logout Google+
-	 */
-	private void logoutGPlus() {
-		if (mPlusClient.isConnected()) {
-			mGPlusBtn.setVisibility(View.VISIBLE);
-			mPlusClient.disconnect();
-		}
-		Prefs prefs = Prefs.getInstance(getApplication());
-		if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
-			Intent intent = new Intent(this, UnregistrationIntentService.class);
-			startService(intent);
-			prefs.setGoogleAccount(null);
-			handleGPlusLinkedUI();
-		}
-	}
-
-
-	@Override
-	protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
-		if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
-			mConnectionResult = null;
-			mPlusClient.connect();
 		}
 	}
 

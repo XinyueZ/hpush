@@ -22,6 +22,15 @@ public final class Prefs extends BasicPrefs {
 	public static final String KEY_ALLOW_EMPTY_URL = "key.allow.empty.url";
 	private static final String KEY_LAST_PUSHED_TIME = "key.last.pushed.time";
 	private static final String KEY_G_ACCOUNT = "key.g.account";
+	/**
+	 * The display-name of Google's user.
+	 */
+	private static final String KEY_GOOGLE_DISPLAY_NAME = "key.google.display.name";
+	/**
+	 * Url to user's profile-image.
+	 */
+	private static final String KEY_GOOGLE_THUMB_URL = "key.google.thumb.url";
+
 	public static final String KEY_SORT_TYPE = "key.sort.type";
 	public static final String KEY_SOUND_TYPE = "key.sound.type";
 
@@ -261,5 +270,34 @@ public final class Prefs extends BasicPrefs {
 	 */
 	public void setPush(String keyName, boolean value) {
 		setBoolean(keyName, value);
+	}
+
+
+	/**
+	 * The display-name of Google's user.
+	 */
+	public void setGoogleDisplyName(String displayName) {
+		setString(KEY_GOOGLE_DISPLAY_NAME, displayName);
+	}
+
+	/**
+	 * The display-name of Google's user.
+	 */
+	public String getGoogleDisplyName() {
+		return getString(KEY_GOOGLE_DISPLAY_NAME, null);
+	}
+
+	/**
+	 * The display-name of Google's user.
+	 */
+	public void setGoogleThumbUrl(String thumbUrl) {
+		setString(KEY_GOOGLE_THUMB_URL, thumbUrl);
+	}
+
+	/**
+	 * Url to user's profile-image.
+	 */
+	public String getGoogleThumbUrl() {
+		return getString(KEY_GOOGLE_THUMB_URL, null);
 	}
 }

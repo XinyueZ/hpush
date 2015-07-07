@@ -46,10 +46,14 @@ import com.squareup.okhttp.OkHttpClient;
  * @author Xinyue Zhao
  */
 public final class App extends Application {
-
+    /**
+     * Singleton.
+     */
+    public static App Instance;
 	@Override
 	public void onCreate() {
 		super.onCreate();
+        Instance = this;
 		TaskHelper.init(getApplicationContext());
 
 		boolean isDev = getResources().getBoolean(R.bool.dev);

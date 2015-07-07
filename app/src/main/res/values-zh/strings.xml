@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="lbl_hello">你好 %1$s!</string>
     <string name="lbl_turn_on_push_info">是否启动推送功能，来获取Hacker News社区的最Top的内容？</string>
     <string name="app_name">骇客推送</string>
     <string name="application_name">骇客推送</string>
@@ -33,7 +34,8 @@
     <string name="lbl_no_data">当前没有消息，但是你可以通过下拉来同步数据。</string>
     <string name="lbl_no_push_set">你还没打开推送功能，请在“设置”中打开，不过你可以通过下拉这里来同步数据。</string>
     <string name="lbl_no_push_for_subscribe">打开推送功能，然后订阅。</string>
-
+    <string name="lbl_welcome">欢迎使用 %1$s，独立，轻量级消息推送工具!</string>
+    <string name="lbl_connect_google">正在连接谷歌后台…</string>
 
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>
@@ -102,6 +104,10 @@
     <string name="btn_agree">同意</string>
     <string name="btn_not_agree">拒绝</string>
     <string name="btn_retry">再尝试</string>
+    <string name="btn_begin">开始使用</string>
+    <string name="btn_close_app">退出App</string>
+
+
     <string name="lbl_recent">最近</string>
     <string name="lbl_search">搜索</string>
 

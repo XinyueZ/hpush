@@ -123,5 +123,6 @@
         <item name="android:visibility">gone</item>
     </style>
 
-
+    <style name="AppTheme.FirstPage"  >
+    </style>
 </resources>

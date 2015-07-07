@@ -1,26 +1,29 @@
 package com.hpush.app.fragments;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.chopping.application.BasicPrefs;
 import com.chopping.bus.CloseDrawerEvent;
 import com.chopping.fragments.BaseFragment;
-import com.chopping.net.TaskHelper;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
+import com.chopping.utils.Utils;
 import com.hpush.R;
-import com.hpush.bus.LoginedGPlusEvent;
-import com.hpush.bus.LogoutGPlusEvent;
+import com.hpush.app.App;
+import com.hpush.app.activities.ConnectGoogleActivity;
+import com.hpush.gcm.UnregistrationIntentService;
 import com.hpush.utils.Prefs;
+import com.squareup.picasso.Picasso;
 
 import de.greenrobot.event.EventBus;
 
@@ -38,7 +41,7 @@ public final class GPlusFragment extends BaseFragment {
 	/**
 	 * Photo.
 	 */
-	private NetworkImageView mPhotoIv;
+	private ImageView mPhotoIv;
 	/**
 	 * Name.
 	 */
@@ -47,28 +50,7 @@ public final class GPlusFragment extends BaseFragment {
 	 * Logout.
 	 */
 	private View mLogoutV;
-	//------------------------------------------------
-	//Subscribes, event-handlers
-	//------------------------------------------------
 
-	/**
-	 * Handler for {@link LoginedGPlusEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link LoginedGPlusEvent}.
-	 */
-	public void onEvent(LoginedGPlusEvent e) {
-		GoogleApiClient client = e.getPlusClient();
-		Person person = Plus.PeopleApi.getCurrentPerson(client);
-		mPhotoIv.setImageUrl(person.getImage().getUrl(), TaskHelper.getImageLoader());
-		mNameTv.setText(person.getDisplayName() + "," +
-				Plus.AccountApi.getAccountName(client));
-		mPhotoIv.setVisibility(View.VISIBLE);
-		mNameTv.setVisibility(View.VISIBLE);
-		mLogoutV.setVisibility(View.VISIBLE);
-	}
-
-	//------------------------------------------------
 
 	/**
 	 * New an instance of {@link com.hpush.app.fragments.GPlusFragment}.
@@ -91,21 +73,46 @@ public final class GPlusFragment extends BaseFragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		mPhotoIv = (NetworkImageView) view.findViewById(R.id.people_photo_iv);
+		mPhotoIv = (ImageView) view.findViewById(R.id.people_photo_iv);
 		mNameTv = (TextView) view.findViewById(R.id.people_name_tv);
 		mLogoutV = view.findViewById(R.id.logout_btn);
 		mLogoutV.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mPhotoIv.setVisibility(View.INVISIBLE);
-				mNameTv.setVisibility(View.INVISIBLE);
-				mLogoutV.setVisibility(View.INVISIBLE);
-				EventBus.getDefault().post(new LogoutGPlusEvent());
 				EventBus.getDefault().post(new CloseDrawerEvent());
+
+				//Logout and delete all userdata.
+				Prefs prefs = Prefs.getInstance(App.Instance);
+				if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
+					Intent intent = new Intent(App.Instance, UnregistrationIntentService.class);
+					App.Instance.startService(intent);
+					prefs.setGoogleAccount(null);
+					prefs.setGoogleDisplyName(null);
+					prefs.setGoogleThumbUrl(null);
+				}
+				Activity activity = getActivity();
+				if (activity != null) {
+					ActivityCompat.finishAfterTransition(activity);
+					ConnectGoogleActivity.showInstance(getActivity());
+				}
 			}
 		});
+
+
+
 	}
 
+	@Override
+	public void onResume() {
+		Prefs prefs = Prefs.getInstance(App.Instance);
+		Picasso picasso = Picasso.with(App.Instance);
+		if (!TextUtils.isEmpty(prefs.getGoogleThumbUrl())) {
+			picasso.load(Utils.uriStr2URI(prefs.getGoogleThumbUrl())
+					.toASCIIString()).into(mPhotoIv);
+		}
+		mNameTv.setText(getString(R.string.lbl_hello, prefs.getGoogleDisplyName()));
+		super.onResume();
+	}
 
 	/**
 	 * App that use this Chopping should know the preference-storage.
