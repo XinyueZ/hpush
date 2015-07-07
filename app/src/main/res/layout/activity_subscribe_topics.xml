@@ -300,14 +300,30 @@
 
             </LinearLayout>
 
-            <Button
+
+            <com.hpush.views.MaterialRippleLayout
                 android:id="@+id/close_btn"
+                style="@style/MaterialRippleLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/summary_vg"
                 android:text="@string/btn_close"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:background="@color/primary_color"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/btn_close"
+                    android:textColor="@color/common_white" />
+
+            </com.hpush.views.MaterialRippleLayout>
         </RelativeLayout>
     </ScrollView>
 
