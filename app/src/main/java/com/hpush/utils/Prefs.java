@@ -3,7 +3,6 @@ package com.hpush.utils;
 import android.content.Context;
 
 import com.chopping.application.BasicPrefs;
-import com.hpush.R;
 
 /**
  * Application's preferences.
@@ -19,7 +18,6 @@ public final class Prefs extends BasicPrefs {
 
 	public static final String KEY_PUSH_REG_ID = "key.push.regid";
 	public static final String KEY_PUSH_SETTING = "key.push.setting";
-	public static final String KEY_ALLOW_EMPTY_URL = "key.allow.empty.url";
 	private static final String KEY_LAST_PUSHED_TIME = "key.last.pushed.time";
 	private static final String KEY_G_ACCOUNT = "key.g.account";
 	/**
@@ -129,17 +127,6 @@ public final class Prefs extends BasicPrefs {
 		return getLong(PUSH_SENDER_ID, -1);
 	}
 
-	public String getPushBackendRegUrl() {
-		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_REG, null);
-	}
-
-	public String getPushBackendUnregUrl() {
-		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_UNREG, null);
-	}
-
-	public String getPushBackendEditUrl() {
-		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_EDIT, null);
-	}
 
 	public String getPushBackendSyncUrl() {
 		return getPushHost() + getString(PUSH_URL_INFO_BACKEND_SYNC, null);
@@ -161,9 +148,6 @@ public final class Prefs extends BasicPrefs {
 
 
 
-	public boolean allowEmptyUrl() {
-		return getBoolean(KEY_ALLOW_EMPTY_URL, mContext.getResources().getBoolean(R.bool.default_allow_empty_url));
-	}
 
 	public void setLastPushedTime(long pushedTime) {
 		setLong(KEY_LAST_PUSHED_TIME, pushedTime);

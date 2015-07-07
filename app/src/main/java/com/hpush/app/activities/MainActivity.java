@@ -212,6 +212,24 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		cxt.startActivity(intent);
 	}
 
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case ConnectGoogleActivity.REQ:
+			if (resultCode == RESULT_OK) {
+				Prefs prefs = Prefs.getInstance(App.Instance);
+				if (prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty(prefs.getGoogleAccount())) {
+					checkPushSetting();
+				}
+			} else {
+				ActivityCompat.finishAffinity(this);
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -357,11 +375,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		checkPlayService();
 		LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(
 				RegistrationIntentService.REGISTRATION_COMPLETE));
-
-		Prefs prefs = Prefs.getInstance(App.Instance);
-		if (prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty(prefs.getGoogleAccount())) {
-			checkPushSetting();
-		}
 	}
 
 	@Override
@@ -433,6 +446,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	protected void onAppConfigLoaded() {
 		super.onAppConfigLoaded();
 		showAppList();
+		makeAds();
 	}
 
 
@@ -440,6 +454,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	protected void onAppConfigIgnored() {
 		super.onAppConfigIgnored();
 		showAppList();
+		makeAds();
 	}
 
 	/**
@@ -563,20 +578,26 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	 * Make an Admob.
 	 */
 	private void makeAds() {
-		// Create an ad.
-		mInterstitialAd = new InterstitialAd(this);
-		mInterstitialAd.setAdUnitId(getString(R.string.ad_inters_unit_id));
-		// Create ad request.
-		AdRequest adRequest = new AdRequest.Builder().build();
-		// Begin loading your interstitial.
-		mInterstitialAd.setAdListener(new AdListener() {
-			@Override
-			public void onAdLoaded() {
-				super.onAdLoaded();
-				displayInterstitial();
-			}
-		});
-		mInterstitialAd.loadAd(adRequest);
+		int curTime = App.Instance.getAdsShownTimes();
+		int adsTimes = Prefs.getInstance(App.Instance).getShownDetailsAdsTimes();
+		if (curTime % adsTimes == 0) {
+			// Create an ad.
+			mInterstitialAd = new InterstitialAd(this);
+			mInterstitialAd.setAdUnitId(getString(R.string.ad_inters_unit_id));
+			// Create ad request.
+			AdRequest adRequest = new AdRequest.Builder().build();
+			// Begin loading your interstitial.
+			mInterstitialAd.setAdListener(new AdListener() {
+				@Override
+				public void onAdLoaded() {
+					super.onAdLoaded();
+					displayInterstitial();
+				}
+			});
+			mInterstitialAd.loadAd(adRequest);
+		}
+		curTime++;
+		App.Instance.setAdsShownTimes(curTime);
 	}
 
 

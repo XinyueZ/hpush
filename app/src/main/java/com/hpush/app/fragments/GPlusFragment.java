@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -92,7 +91,6 @@ public final class GPlusFragment extends BaseFragment {
 				}
 				Activity activity = getActivity();
 				if (activity != null) {
-					ActivityCompat.finishAfterTransition(activity);
 					ConnectGoogleActivity.showInstance(getActivity());
 				}
 			}

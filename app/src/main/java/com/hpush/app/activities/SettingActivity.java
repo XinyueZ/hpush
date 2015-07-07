@@ -282,9 +282,6 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		mShowPref.setChecked(prefs.getPush(Prefs.KEY_PUSH_SHOWSTORIES));
 		mJobPref.setChecked(prefs.getPush(Prefs.KEY_PUSH_JOBSTORIES));
 
-		CheckBoxPreference allowEmptyUrl = (CheckBoxPreference) findPreference(Prefs.KEY_ALLOW_EMPTY_URL);
-		allowEmptyUrl.setOnPreferenceChangeListener(this);
-
 		ListPreference sort = (ListPreference) findPreference(Prefs.KEY_SORT_TYPE);
 		String value = prefs.getSortTypeValue();
 		sort.setValue(value);
