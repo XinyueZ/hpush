@@ -22,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.android.volley.VolleyError;
 import com.chopping.application.BasicPrefs;
 import com.chopping.fragments.BaseFragment;
 import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
@@ -222,6 +223,17 @@ public class MessagesListFragment extends BaseFragment {
 		EventBus.getDefault().removeAllStickyEvents();
 	}
 
+	/**
+	 * Handler for {@link VolleyError}.
+	 *
+	 * @param e
+	 * 		Event {@link VolleyError}.
+	 */
+	public void onEvent(VolleyError e) {
+		if(mSwipeRefreshLayout != null) {
+			mSwipeRefreshLayout.setRefreshing(false);
+		}
+	}
 
 	//------------------------------------------------
 	public static MessagesListFragment newInstance(Context context) {
