@@ -55,10 +55,14 @@
     </LinearLayout>
 
 
-    <ProgressBar
+    <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        app:matProg_barColor="@color/primary_accent"
+        app:matProg_fillRadius="true"
+        app:matProg_progressIndeterminate="true" />
+
+
 </FrameLayout>
