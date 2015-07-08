@@ -60,6 +60,8 @@
     <string name="msg_saved_account_successfully">Saved the push-account on server successfully.</string>
     <string name="msg_deleted_account_successfully">Removed the push-account on server successfully.</string>
     <string name="msg_no_data">No data!</string>
+    <string name="msg_welcome">Welcome!</string>
+    <string name="msg_welcome_return">Welcome return!</string>
 
     <string name="setting_push_title">@string/lbl_turn_on_push_info</string>
     <string name="setting_push_cat">Push</string>

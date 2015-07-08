@@ -33,7 +33,6 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.hpush.R;
 import com.hpush.app.activities.DailiesActivity;
 import com.hpush.bus.LoadAllEvent;
-import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.Message;
 import com.hpush.db.DB;
 import com.hpush.utils.Prefs;
@@ -125,7 +124,6 @@ public class MyGcmListenerService extends GcmListenerService {
                         }
                         mNotifyBuilder.setLights(getResources().getColor(R.color.primary_color), 1000, 1000);
                         mNotificationManager.notify(0x98, mNotifyBuilder.build());
-                        EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
                         //Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.
                         EventBus.getDefault().post(new LoadAllEvent());
                     }

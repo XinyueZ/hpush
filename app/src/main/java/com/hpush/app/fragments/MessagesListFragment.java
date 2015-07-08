@@ -7,36 +7,35 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.os.AsyncTaskCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import com.android.volley.VolleyError;
 import com.chopping.application.BasicPrefs;
 import com.chopping.fragments.BaseFragment;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.hpush.R;
 import com.hpush.app.activities.SettingActivity;
 import com.hpush.app.adapters.MessagesListAdapter;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
+import com.hpush.bus.FloatActionButtonEvent;
 import com.hpush.bus.LoadAllEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SortAllEvent;
-import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
 import com.hpush.data.Message;
 import com.hpush.data.MessageListItem;
 import com.hpush.data.SyncList;
@@ -66,7 +65,7 @@ public class MessagesListFragment extends BaseFragment {
 	/**
 	 * A list to show all messages.
 	 */
-	private ObservableRecyclerView mRv;
+	private RecyclerView mRv;
 	/**
 	 * {@link android.support.v7.widget.RecyclerView.Adapter} for the {@link #mRv}.
 	 */
@@ -280,32 +279,24 @@ public class MessagesListFragment extends BaseFragment {
 			});
 		}
 		mDB = DB.getInstance(getActivity().getApplication());
-		mRv = (ObservableRecyclerView) view.findViewById(R.id.msg_rv);
+		mRv = (RecyclerView) view.findViewById(R.id.msg_rv);
 		if (getResources().getBoolean(R.bool.landscape)) {
 			mRv.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
 		} else {
 			mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 		}
 		mRv.setHasFixedSize(false);
-		final Activity parentActivity = getActivity();
-		if (parentActivity instanceof ObservableScrollViewCallbacks) {
-			final int initialPosition = 0;
-			ViewTreeObserver vto = mRv.getViewTreeObserver();
-			vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-				@Override
-				public void onGlobalLayout() {
-					if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-						mRv.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-					} else {
-						mRv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-					}
-					mRv.scrollVerticallyToPosition(initialPosition);
+		mRv.addOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				float y = ViewCompat.getY(recyclerView);
+				if (y < dy) {
+					EventBus.getDefault().post(new FloatActionButtonEvent(true));
+				} else {
+					EventBus.getDefault().post(new FloatActionButtonEvent(false));
 				}
-			});
-
-			mRv.setScrollViewCallbacks((ObservableScrollViewCallbacks) parentActivity);
-		}
-
+			}
+		});
 		if (getWhichPage() == WhichPage.Messages) {
 			mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.content_srl);
 			mSwipeRefreshLayout.setColorSchemeResources(R.color.hacker_orange, R.color.hacker_orange_mid_deep,
@@ -380,7 +371,6 @@ public class MessagesListFragment extends BaseFragment {
 								mAdp.notifyDataSetChanged();
 							}
 							testEmpty();
-							EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 						}
 					}
 				};
@@ -415,7 +405,6 @@ public class MessagesListFragment extends BaseFragment {
 				super.onPostExecute(data);
 				mAdp.notifyDataSetChanged();
 				testEmpty();
-				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 			}
 		};
 		AsyncTaskCompat.executeParallel(task, mAdp.getMessages());
@@ -439,7 +428,6 @@ public class MessagesListFragment extends BaseFragment {
 				super.onPostExecute(data);
 				mAdp.notifyDataSetChanged();
 				testEmpty();
-				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 			}
 		};
 		AsyncTaskCompat.executeParallel(task);

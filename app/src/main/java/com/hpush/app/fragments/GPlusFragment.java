@@ -2,7 +2,6 @@ package com.hpush.app.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -20,7 +19,6 @@ import com.chopping.utils.Utils;
 import com.hpush.R;
 import com.hpush.app.App;
 import com.hpush.app.activities.ConnectGoogleActivity;
-import com.hpush.gcm.UnregistrationIntentService;
 import com.hpush.utils.Prefs;
 import com.squareup.picasso.Picasso;
 
@@ -81,14 +79,7 @@ public final class GPlusFragment extends BaseFragment {
 				EventBus.getDefault().post(new CloseDrawerEvent());
 
 				//Logout and delete all userdata.
-				Prefs prefs = Prefs.getInstance(App.Instance);
-				if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
-					Intent intent = new Intent(App.Instance, UnregistrationIntentService.class);
-					App.Instance.startService(intent);
-					prefs.setGoogleAccount(null);
-					prefs.setGoogleDisplyName(null);
-					prefs.setGoogleThumbUrl(null);
-				}
+				com.hpush.utils.Utils.logout();
 				Activity activity = getActivity();
 				if (activity != null) {
 					ConnectGoogleActivity.showInstance(getActivity());

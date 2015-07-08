@@ -5,16 +5,19 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.chopping.utils.Utils;
 import com.hpush.R;
+import com.hpush.bus.DeleteAllDailiesEvent;
+import com.hpush.bus.FloatActionButtonEvent;
 import com.hpush.bus.LoadedAllDailiesEvent;
-import com.hpush.bus.ShowActionBar;
 import com.software.shell.fab.ActionButton;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Show all {@link com.hpush.data.Recent}s.
@@ -36,21 +39,16 @@ public class DailiesActivity extends BasicActivity {
 	//------------------------------------------------
 
 	/**
-	 * Handler for {@link com.hpush.bus.ShowActionBar}.
+	 * Handler for {@link com.hpush.bus.FloatActionButtonEvent}.
 	 *
 	 * @param e
-	 * 		Event {@link com.hpush.bus.ShowActionBar}.
+	 * 		Event {@link com.hpush.bus.FloatActionButtonEvent}.
 	 */
-	public void onEvent(ShowActionBar e) {
-		ActionBar ab = getSupportActionBar();
-		if (!e.isShow()) {
-			if (ab.isShowing()) {
-				ab.hide();
-			}
+	public void onEvent(FloatActionButtonEvent e) {
+		if(e.isHide()) {
+			mRmAllV.hide();
 		} else {
-			if (!ab.isShowing()) {
-				ab.show();
-			}
+			mRmAllV.show();
 		}
 	}
 
@@ -88,6 +86,14 @@ public class DailiesActivity extends BasicActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResId());
+
+		mRmAllV = (ActionButton) findViewById(R.id.remove_all_btn);
+		mRmAllV.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v ) {
+				EventBus.getDefault().post(new DeleteAllDailiesEvent());
+			}
+		});
 		mPbV = findViewById(R.id.progressBar);
 
 		if (getResources().getBoolean(R.bool.landscape)) {
@@ -132,7 +138,8 @@ public class DailiesActivity extends BasicActivity {
 	 * Show some UIs after loading all data.
 	 */
 	protected void toggleUI() {
-		final ActionButton rmAllV = (ActionButton) findViewById(R.id.remove_all_btn);
-		rmAllV.show();
+		mRmAllV.show();
 	}
+
+	private ActionButton mRmAllV;
 }

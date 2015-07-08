@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -18,7 +17,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -33,17 +31,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.TextView;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.chopping.bus.CloseDrawerEvent;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookException;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.github.ksoichiro.android.observablescrollview.Scrollable;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -60,17 +53,13 @@ import com.hpush.app.fragments.GPlusFragment;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
+import com.hpush.bus.FloatActionButtonEvent;
 import com.hpush.bus.RemoveAllEvent;
 import com.hpush.bus.RemoveAllEvent.WhichPage;
 import com.hpush.bus.SelectMessageEvent;
-import com.hpush.bus.UpdateCurrentTotalMessagesEvent;
-import com.hpush.db.DB;
-import com.hpush.db.DB.Sort;
 import com.hpush.gcm.RegistrationIntentService;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
-import com.nineoldandroids.view.ViewHelper;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.software.shell.fab.ActionButton;
 
 import de.greenrobot.event.EventBus;
@@ -80,7 +69,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public final class MainActivity extends BasicActivity implements ObservableScrollViewCallbacks {
+public final class MainActivity extends BasicActivity   {
 	/**
 	 * Main layout for this component.
 	 */
@@ -108,7 +97,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	/**
 	 * Tabs.
 	 */
-	private PagerSlidingTabStrip mTabs;
+	private android.support.design.widget.TabLayout mTabs;
 	/**
 	 * Click to remove all selected items.
 	 */
@@ -129,10 +118,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	 * The interstitial ad.
 	 */
 	private InterstitialAd mInterstitialAd;
-	/**
-	 * Count of total messages saved.
-	 */
-	private TextView mTotalTv;
 
 	/**
 	 * Container for toolbar and viewpager.
@@ -145,6 +130,22 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
+
+	/**
+	 * Handler for {@link com.hpush.bus.FloatActionButtonEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.hpush.bus.FloatActionButtonEvent}.
+	 */
+	public void onEvent(FloatActionButtonEvent e) {
+		if(e.isHide()) {
+			mOpenBtn.hide();
+			hideFABs();
+		} else {
+			mOpenBtn.show();
+		}
+	}
+
 
 	/**
 	 * Handler for {@link  EULARejectEvent}.
@@ -188,15 +189,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	}
 
 
-	/**
-	 * Handler for {@link UpdateCurrentTotalMessagesEvent}.
-	 *
-	 * @param e
-	 * 		Event {@link UpdateCurrentTotalMessagesEvent}.
-	 */
-	public void onEvent(UpdateCurrentTotalMessagesEvent e) {
-		this.refreshCurrentTotalMessages();
-	}
 
 
 	//------------------------------------------------
@@ -276,12 +268,10 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		mPagerAdapter = new MainViewPagerAdapter(this, getSupportFragmentManager());
 		mViewPager.setAdapter(mPagerAdapter);
 		calcActionBarHeight();
-		mViewPager.setPadding(0, 2 * getActionBarHeight(), 0, 0);
 		// Bind the tabs to the ViewPager
-		mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		mTabs.setViewPager(mViewPager);
-		mTabs.setIndicatorColorResource(R.color.common_white);
-		mTabs.setOnPageChangeListener(new OnPageChangeListener() {
+		mTabs = (android.support.design.widget.TabLayout) findViewById(R.id.tabs);
+		mTabs.setupWithViewPager(mViewPager);
+		mViewPager.addOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 				closeFloatButtons();
@@ -289,7 +279,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 
 			@Override
 			public void onPageSelected(int position) {
-				propagateToolbarState(toolbarIsShown());
 			}
 
 			@Override
@@ -297,7 +286,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 
 			}
 		});
-		propagateToolbarState(toolbarIsShown());
 
 		mRemoveAllBtn = (ActionButton) findViewById(R.id.remove_all_btn);
 		mRemoveAllBtn.setOnClickListener(new OnClickListener() {
@@ -323,14 +311,19 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		mSearchBtn.setOnClickListener(mSearchListener);
 
 
-		mTotalTv = (TextView) findViewById(R.id.total_tv);
-		this.refreshCurrentTotalMessages();
-
 		Prefs prefs = Prefs.getInstance(App.Instance);
-		if (prefs.isEULAOnceConfirmed() && TextUtils.isEmpty(prefs.getGoogleAccount())) {
+		if(!prefs.isUpdatedV2()) {
+			prefs.setUpdatedV2(true);
+			Utils.logout();
+			com.chopping.utils.Utils.showLongToast(App.Instance, R.string.msg_welcome);
 			ConnectGoogleActivity.showInstance(this);
-		} else if (prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty(prefs.getGoogleAccount())) {
-			//Should do something.....
+		} else {
+			if (prefs.isEULAOnceConfirmed() && TextUtils.isEmpty(prefs.getGoogleAccount())) {
+				com.chopping.utils.Utils.showLongToast(App.Instance, R.string.msg_welcome_return);
+				ConnectGoogleActivity.showInstance(this);
+			} else if (prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty(prefs.getGoogleAccount())) {
+				//Should do something.....
+			}
 		}
 	}
 
@@ -511,13 +504,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 			actionBar.setDisplayHomeAsUpEnabled(true);
 			mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 			mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.application_name,
-					R.string.app_name) {
-				@Override
-				public void onDrawerOpened(View drawerView) {
-					super.onDrawerOpened(drawerView);
-					showToolbar();
-				}
-			};
+					R.string.app_name)  ;
 
 
 			mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -700,24 +687,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	}
 
 
-	private void refreshCurrentTotalMessages() {
-		AsyncTask<Void, int[], int[]> task = new AsyncTask<Void, int[], int[]>() {
-			@Override
-			protected int[] doInBackground(Void... params) {
-				DB db = DB.getInstance(getApplication());
-				return new int[] { db.getBookmarks(Sort.DESC).size(), db.getMessages(Sort.DESC).size() };
-			}
-
-			@Override
-			protected void onPostExecute(int[] ints) {
-				super.onPostExecute(ints);
-				int sum = ints[0] + ints[1];
-				mTotalTv.setText(sum + "");
-			}
-		};
-		AsyncTaskCompat.executeParallel(task);
-	}
-
 
 	/**
 	 * Close progress indicator.
@@ -739,137 +708,5 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		}
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//UI effect:
-	//https://github.com/ksoichiro/Android-ObservableScrollView/blob/master/observablescrollview-samples/src/main/java/com/github/ksoichiro/android/observablescrollview/samples/ViewPagerTabActivity.java
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private int mBaseTranslationY;
 
-	@Override
-	public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
-		int toolbarHeight = mToolbar.getHeight();
-		float currentHeaderTranslationY = ViewHelper.getTranslationY(mHeaderView);
-		if (firstScroll) {
-			if (-toolbarHeight < currentHeaderTranslationY) {
-				mBaseTranslationY = scrollY;
-			}
-		}
-		int headerTranslationY = Math.min(0, Math.max(-toolbarHeight, -(scrollY - mBaseTranslationY)));
-		ViewPropertyAnimator.animate(mHeaderView).cancel();
-		ViewHelper.setTranslationY(mHeaderView, headerTranslationY);
-	}
-
-	@Override
-	public void onDownMotionEvent() {
-
-	}
-
-
-	@Override
-	public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-		mBaseTranslationY = 0;
-
-		Fragment fragment = mPagerAdapter.getItemAt(mViewPager.getCurrentItem());
-		if (fragment == null) {
-			return;
-		}
-		View view = fragment.getView();
-		if (view == null) {
-			return;
-		}
-
-		// ObservableXxxViews have same API
-		// but currently they don't have any common interfaces.
-		adjustToolbar(scrollState, view);
-	}
-
-	private void adjustToolbar(ScrollState scrollState, View view) {
-		int toolbarHeight = mToolbar.getHeight();
-		final Scrollable scrollView = (Scrollable) view.findViewById(R.id.msg_rv);
-		if (scrollView == null) {
-			return;
-		}
-		if (scrollState == ScrollState.UP) {
-			if (toolbarHeight < scrollView.getCurrentScrollY()) {
-				hideToolbar();
-			} else if (scrollView.getCurrentScrollY() < toolbarHeight) {
-				showToolbar();
-			}
-		} else if (scrollState == ScrollState.DOWN) {
-			if (toolbarHeight < scrollView.getCurrentScrollY()) {
-				showToolbar();
-			}
-		}
-	}
-
-	private void hideToolbar() {
-		float headerTranslationY = ViewHelper.getTranslationY(mHeaderView);
-		int toolbarHeight = mToolbar.getHeight();
-		if (headerTranslationY != -toolbarHeight) {
-			ViewPropertyAnimator.animate(mHeaderView).cancel();
-			ViewPropertyAnimator.animate(mHeaderView).translationY(-toolbarHeight).setDuration(200).start();
-		}
-		propagateToolbarState(false);
-	}
-
-	private void showToolbar() {
-		float headerTranslationY = ViewHelper.getTranslationY(mHeaderView);
-		if (headerTranslationY != 0) {
-			ViewPropertyAnimator.animate(mHeaderView).cancel();
-			ViewPropertyAnimator.animate(mHeaderView).translationY(0).setDuration(200).start();
-		}
-		propagateToolbarState(true);
-	}
-
-	private void propagateToolbarState(boolean isShown) {
-		int toolbarHeight = mToolbar.getHeight();
-
-		// Set scrollY for the fragments that are not created yet
-		mPagerAdapter.setScrollY(isShown ? 0 : toolbarHeight);
-
-		// Set scrollY for the active fragments
-		for (int i = 0; i < mPagerAdapter.getCount(); i++) {
-			// Skip current item
-			if (i == mViewPager.getCurrentItem()) {
-				continue;
-			}
-
-			// Skip destroyed or not created item
-			Fragment f = mPagerAdapter.getItemAt(i);
-			if (f == null) {
-				continue;
-			}
-
-			View view = f.getView();
-			if (view == null) {
-				continue;
-			}
-			propagateToolbarState(isShown, view, toolbarHeight);
-		}
-	}
-
-
-	private void propagateToolbarState(boolean isShown, View view, int toolbarHeight) {
-		Scrollable scrollView = (Scrollable) view.findViewById(R.id.msg_rv);
-		if (scrollView == null) {
-			return;
-		}
-		if (isShown) {
-			// Scroll up
-			if (0 < scrollView.getCurrentScrollY()) {
-				scrollView.scrollVerticallyTo(0);
-			}
-		} else {
-			// Scroll down (to hide padding)
-			if (scrollView.getCurrentScrollY() < toolbarHeight * 2) {
-				scrollView.scrollVerticallyTo(toolbarHeight * 2);
-			}
-		}
-	}
-
-	private boolean toolbarIsShown() {
-		return ViewHelper.getTranslationY(mHeaderView) == 0;
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

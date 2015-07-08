@@ -7,7 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.os.AsyncTaskCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,16 +18,13 @@ import android.view.ViewGroup;
 
 import com.chopping.application.BasicPrefs;
 import com.chopping.fragments.BaseFragment;
-import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
-import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
-import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.hpush.R;
 import com.hpush.app.adapters.DailiesListAdapter;
 import com.hpush.bus.BookmarkMessageEvent;
 import com.hpush.bus.BookmarkedEvent;
 import com.hpush.bus.DeleteAllDailiesEvent;
+import com.hpush.bus.FloatActionButtonEvent;
 import com.hpush.bus.LoadedAllDailiesEvent;
-import com.hpush.bus.ShowActionBar;
 import com.hpush.data.RecentListItem;
 import com.hpush.db.DB;
 import com.hpush.db.DB.Sort;
@@ -37,7 +37,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public class DailiesLstFragment extends BaseFragment implements ObservableScrollViewCallbacks {
+public class DailiesLstFragment extends BaseFragment   {
 
 	/**
 	 * Main layout for this component.
@@ -51,7 +51,7 @@ public class DailiesLstFragment extends BaseFragment implements ObservableScroll
 	/**
 	 * View shows all data.
 	 */
-	private ObservableRecyclerView mRv;
+	private android.support.v7.widget.RecyclerView mRv;
 	/**
 	 * {@link android.support.v7.widget.RecyclerView.Adapter} for the {@link #mRv}.
 	 */
@@ -133,14 +133,24 @@ public class DailiesLstFragment extends BaseFragment implements ObservableScroll
 		mDataCanBeShown = true;
 
 		mDB = DB.getInstance(getActivity().getApplication());
-		mRv = (ObservableRecyclerView) view.findViewById(R.id.daily_rv);
+		mRv = (android.support.v7.widget.RecyclerView) view.findViewById(R.id.daily_rv);
 		if (getResources().getBoolean(R.bool.landscape)) {
 			mRv.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
 		} else {
 			mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
 		}
 		mRv.setHasFixedSize(false);
-		mRv.setScrollViewCallbacks(this);
+		mRv.addOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+				float y = ViewCompat.getY(recyclerView);
+				if (y < dy) {
+					EventBus.getDefault().post(new FloatActionButtonEvent(true));
+				} else {
+					EventBus.getDefault().post(new FloatActionButtonEvent(false));
+				}
+			}
+		});
 
 
 		loadDailies();
@@ -216,24 +226,8 @@ public class DailiesLstFragment extends BaseFragment implements ObservableScroll
 		}, mAdp.getMessages());
 	}
 
-	@Override
-	public void onScrollChanged(int i, boolean b, boolean b2) {
 
-	}
 
-	@Override
-	public void onDownMotionEvent() {
-
-	}
-
-	@Override
-	public void onUpOrCancelMotionEvent(ScrollState scrollState) {
-		if (scrollState == ScrollState.UP) {
-			EventBus.getDefault().post(new ShowActionBar(false));
-		} else if (scrollState == ScrollState.DOWN) {
-			EventBus.getDefault().post(new ShowActionBar(true));
-		}
-	}
 
 
 	/**

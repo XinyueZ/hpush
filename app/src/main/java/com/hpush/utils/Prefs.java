@@ -38,6 +38,7 @@ public final class Prefs extends BasicPrefs {
 	 * {@code true} if EULA has been shown and agreed.
 	 */
 	private static final String KEY_EULA_SHOWN = "key_eula_shown";
+
 	private static final String PUSH_HOST = "push_host";
 	private static final String PUSH_SENDER_ID = "push_sender_id";
 	private static final String PUSH_URL_INFO_BACKEND_SYNC = "push_url_info_backend_sync";
@@ -47,7 +48,6 @@ public final class Prefs extends BasicPrefs {
 	private static final String KEY_SHOWN_DETAILS_ADS_TIMES = "ads";
 	private static final String SYNC_RETRY = "sync_retry";
 	private static final String DEFAULT_SORT_VALUE = "default_sort_value";
-	private static final String DEFAULT_MSG_COUNT = "default_msg_count";
 
 
 	//--------------
@@ -59,6 +59,12 @@ public final class Prefs extends BasicPrefs {
 	public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
 	public static final String KEY_PUSH_SUMMARY = "key.push.summary";
 	//--------------
+
+	/**
+	 * Flag for updated version 2.0 {@true} if upgrade was done.
+	 */
+	private static final String KEY_UPDATED_V2 = "key.updated.v2";
+
 
 	/**
 	 * Created a DeviceData storage.
@@ -207,11 +213,6 @@ public final class Prefs extends BasicPrefs {
 		return getString(KEY_SOUND_TYPE, "0");
 	}
 
-
-	private int getDefaultDefaultMsgCount() {
-		return getInt(DEFAULT_MSG_COUNT, 100);
-	}
-
 	private int getDefaultSortValue() {
 		return getInt(DEFAULT_SORT_VALUE, 2);
 	}
@@ -284,5 +285,21 @@ public final class Prefs extends BasicPrefs {
 	 */
 	public String getGoogleThumbUrl() {
 		return getString(KEY_GOOGLE_THUMB_URL, null);
+	}
+
+	/**
+	 * Flag for updated version 2.0
+	 * @param updatedV2 {@true} if upgrade was done.
+	 */
+	public void setUpdatedV2(boolean updatedV2) {
+		setBoolean(KEY_UPDATED_V2, updatedV2);
+	}
+
+	/**
+	 * Flag for updated version 2.0
+	 * @return   {@true} if upgrade was done.
+	 */
+	public boolean isUpdatedV2() {
+		return getBoolean(KEY_UPDATED_V2, false);
 	}
 }

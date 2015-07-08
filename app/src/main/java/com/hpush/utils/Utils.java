@@ -5,6 +5,10 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.text.TextUtils;
+
+import com.hpush.app.App;
+import com.hpush.gcm.UnregistrationIntentService;
 
 import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
 import static android.text.format.DateUtils.FORMAT_SHOW_DATE;
@@ -71,4 +75,17 @@ public final class Utils {
 		}
 	}
 
+	/**
+	 * Doing logout from app.
+	 */
+	public static void logout() {
+		Prefs prefs = Prefs.getInstance(App.Instance);
+		if (!TextUtils.isEmpty(prefs.getGoogleAccount())) {
+			Intent intent = new Intent(App.Instance, UnregistrationIntentService.class);
+			App.Instance.startService(intent);
+			prefs.setGoogleAccount(null);
+			prefs.setGoogleDisplyName(null);
+			prefs.setGoogleThumbUrl(null);
+		}
+	}
 }

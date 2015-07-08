@@ -8,84 +8,40 @@
     android:fitsSystemWindows="true"
     tools:context=".app.activities.MainActivity">
 
-    <FrameLayout
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/common_transparent">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="@style/ActionBar_ToolBar"
+                app:layout_scrollFlags="scroll|enterAlways" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </android.support.design.widget.AppBarLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:paddingTop="?attr/actionBarSize">
-
-            <com.hpush.views.FontTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:maxLines="1"
-                android:minLines="1"
-                android:text="@string/lbl_total_messages_head"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/common_black"
-                app:font="light" />
-
-            <com.hpush.views.FontTextView
-                android:id="@+id/total_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/common_orange" />
-
-            <com.hpush.views.FontTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:lines="1"
-                android:maxLines="1"
-                android:minLines="1"
-                android:text="@string/lbl_total_messages_tail"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/common_black"
-                app:font="light" />
-        </LinearLayout>
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <LinearLayout
             android:id="@id/error_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/common_transparent"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                style="@style/ActionBar_ToolBar" />
-
-            <com.astuetz.PagerSlidingTabStrip
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/primary_color"
-                android:textColor="@color/common_white" />
-
-
-        </LinearLayout>
-
-
-        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:orientation="vertical">
 
 
@@ -152,7 +108,8 @@
 
 
         </LinearLayout>
-    </FrameLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

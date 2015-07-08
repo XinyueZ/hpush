@@ -46,6 +46,8 @@
     <string name="msg_saved_account_successfully">Speicherte Push-Account auf Server.</string>
     <string name="msg_deleted_account_successfully">Entfernte Push-Account auf Server.</string>
     <string name="msg_no_data">Keine Daten!</string>
+    <string name="msg_welcome">Willkommen!</string>
+    <string name="msg_welcome_return">Willkommen zurück!</string>
 
     <string name="setting_push_cat">Benachrichtigungen</string>
     <string name="setting_push_off">Aus</string>

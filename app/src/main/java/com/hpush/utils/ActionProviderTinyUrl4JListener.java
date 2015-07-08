@@ -22,7 +22,7 @@ public final class ActionProviderTinyUrl4JListener implements TinyUrl4JListener 
 
 	public ActionProviderTinyUrl4JListener(Context cxt, android.support.v7.widget.ShareActionProvider provider,
 			int titleResId, int contentResId, Message msg) {
-		mContextWeakReference = new WeakReference<Context>(cxt);
+		mContextWeakReference = new WeakReference<>(cxt);
 		mProvider = provider;
 		mSubjectResId = titleResId;
 		mContentResId = contentResId;
