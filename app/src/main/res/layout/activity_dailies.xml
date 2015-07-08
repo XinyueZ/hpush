@@ -58,11 +58,11 @@
         app:show_animation="@anim/fab_jump_from_down"
         app:type="DEFAULT" />
 
-    <fragment
-        android:name="com.hpush.app.fragments.AdFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center_horizontal" />
+    <!--<fragment-->
+        <!--android:name="com.hpush.app.fragments.AdFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="top|center_horizontal" />-->
 
 
     <com.pnikosis.materialishprogress.ProgressWheel

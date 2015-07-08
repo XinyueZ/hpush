@@ -2,7 +2,6 @@ package com.hpush.app.fragments;
 
 import java.util.List;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -116,9 +115,7 @@ public class DailiesLstFragment extends BaseFragment   {
 	}
 
 	//------------------------------------------------
-	public static DailiesLstFragment newInstance(Context context) {
-		return (DailiesLstFragment) DailiesLstFragment.instantiate(context, DailiesLstFragment.class.getName());
-	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -183,8 +180,8 @@ public class DailiesLstFragment extends BaseFragment   {
 						mAdp.setMessages(items);
 						mAdp.notifyDataSetChanged();
 					}
-					EventBus.getDefault().post(new LoadedAllDailiesEvent(items.size()));
 				}
+				EventBus.getDefault().post(new LoadedAllDailiesEvent(items.size()));
 			}
 		});
 	}
