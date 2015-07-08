@@ -11,7 +11,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"strings" 
+	"strings"
+	"net/url"
 )
 
 type TopStoresRes struct {
@@ -255,6 +256,7 @@ func sync(w http.ResponseWriter, r *http.Request) {
 		itemDetail.Title = strings.Replace(itemDetail.Title, "\"", "'", -1)
 		itemDetail.Title = strings.Replace(itemDetail.Title, "%", "％", -1)
 		itemDetail.Title = strings.Replace(itemDetail.Title, "\\", ",", -1)
+		itemDetail.Url, _ = url.QueryUnescape(	itemDetail.Url )
 		syncItem := SyncItemDetails{
 			By:          itemDetail.By,
 			Id:          itemDetail.Id,
@@ -269,8 +271,7 @@ func sync(w http.ResponseWriter, r *http.Request) {
 	}
 	if len(syncItems) > 0 {
 		if json, err := json.Marshal(SyncItemDetailsList{syncItems}); err == nil {
-			result := string(json)
-			result = strings.Replace(result, "(MISSING)","", -1)
+			result := fmt.Sprintf(`%s`,string(json))
 			w.Header().Set("Content-Type", API_RESTYPE)
 			fmt.Fprintf(w, result)
 		} else {
