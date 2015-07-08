@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.chopping.net.TaskHelper;
 import com.facebook.stetho.Stetho;
@@ -51,7 +51,7 @@ import cn.bmob.v3.Bmob;
  *
  * @author Xinyue Zhao
  */
-public final class App extends Application {
+public final class App extends MultiDexApplication {
     /**
      * Singleton.
      */

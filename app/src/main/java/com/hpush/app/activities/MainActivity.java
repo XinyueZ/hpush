@@ -164,6 +164,7 @@ public final class MainActivity extends BasicActivity   {
 	 * 		Event {@link  EULAConfirmedEvent}.
 	 */
 	public void onEvent(EULAConfirmedEvent e) {
+		Prefs.getInstance(App.Instance).setUpdatedV2(true);
 		ConnectGoogleActivity.showInstance(this);
 	}
 
@@ -310,14 +311,15 @@ public final class MainActivity extends BasicActivity   {
 		ViewCompat.setTranslationX(mSearchBtn, ViewCompat.getTranslationX(mOpenBtn));
 		mSearchBtn.setOnClickListener(mSearchListener);
 
-
+		//User that have used this application, should go back to login-page for upgrade version 2.0
 		Prefs prefs = Prefs.getInstance(App.Instance);
-		if(!prefs.isUpdatedV2()) {
+		if(prefs.isEULAOnceConfirmed() && !prefs.isUpdatedV2()) {
 			prefs.setUpdatedV2(true);
 			Utils.logout();
 			com.chopping.utils.Utils.showLongToast(App.Instance, R.string.msg_welcome);
 			ConnectGoogleActivity.showInstance(this);
 		} else {
+			//User that have used this application and done clear(logout), should go back to login-page.
 			if (prefs.isEULAOnceConfirmed() && TextUtils.isEmpty(prefs.getGoogleAccount())) {
 				com.chopping.utils.Utils.showLongToast(App.Instance, R.string.msg_welcome_return);
 				ConnectGoogleActivity.showInstance(this);

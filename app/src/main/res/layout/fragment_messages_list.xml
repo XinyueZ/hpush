@@ -27,15 +27,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
         android:visibility="gone">
 
-        <com.pnikosis.materialishprogress.ProgressWheel
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:matProg_barColor="@color/primary_accent"
-            app:matProg_fillRadius="true"
-            app:matProg_progressIndeterminate="true" />
 
         <com.hpush.views.FontTextView
             android:layout_width="match_parent"
@@ -75,6 +70,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
         android:visibility="gone">
 
         <com.hpush.views.FontTextView
@@ -82,22 +79,22 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="@string/lbl_no_push_set"
-            android:textColor="@color/hacker_orange_deep"
+            android:textColor="@color/primary_accent"
             app:font="bold" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <com.hpush.views.MaterialRippleLayout
                 android:id="@+id/sync_ii_btn"
-                android:layout_marginRight="1dp"
                 style="@style/MaterialRippleLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="2dp"
                 android:background="@color/primary_color"
                 android:paddingBottom="10dp"
                 android:paddingLeft="15dp"

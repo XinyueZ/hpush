@@ -291,6 +291,7 @@ public final class SubscribeTopicsActivity extends AppCompatActivity {
 	private synchronized void updateSubscribing() {
 		if (mTotal == 0) {
 			mBinding.closeBtn.setVisibility(View.VISIBLE);
+			mBinding.loadPb.setVisibility(View.GONE);
 		} else {
 			mTotal--;
 		}
