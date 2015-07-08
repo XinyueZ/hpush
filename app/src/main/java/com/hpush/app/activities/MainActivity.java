@@ -63,6 +63,7 @@ import com.hpush.utils.Utils;
 import com.software.shell.fab.ActionButton;
 
 import de.greenrobot.event.EventBus;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Main activity of the app.
@@ -227,7 +228,7 @@ public final class MainActivity extends BasicActivity   {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Crashlytics.start(this);
+		Fabric.with(this, new Crashlytics());
 		setContentView(LAYOUT);
 
 		mRegistrationBroadcastReceiver = new BroadcastReceiver() {
