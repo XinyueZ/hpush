@@ -1,6 +1,5 @@
 package com.hpush.app.activities;
 
-import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -463,7 +462,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	 */
 	private void checkPushSetting() {
 		if (TextUtils.isEmpty(Prefs.getInstance(getApplication()).getPushRegId())) {
-			new Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
+			new android.support.v7.app.AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_turn_on_push_info)
 					.setCancelable(false).setPositiveButton(R.string.lbl_yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -628,7 +627,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 				showDialogFragment(new EulaConfirmationDialog(), null);
 			}
 		} else {
-			new Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_play_service).setCancelable(
+			new android.support.v7.app.AlertDialog.Builder(this).setTitle(R.string.application_name).setMessage(R.string.lbl_play_service).setCancelable(
 					false).setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					dialog.dismiss();

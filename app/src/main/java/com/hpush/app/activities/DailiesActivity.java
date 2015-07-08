@@ -3,8 +3,8 @@ package com.hpush.app.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -113,11 +113,7 @@ public class DailiesActivity extends BasicActivity {
 		switch (item.getItemId()) {
 		// Respond to the action bar's Up/Home button
 		case android.R.id.home:
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				finishAfterTransition();
-			} else {
-				finish();
-			}
+			ActivityCompat.finishAfterTransition(this);
 			MainActivity.showInstance(this);
 			return true;
 		}
