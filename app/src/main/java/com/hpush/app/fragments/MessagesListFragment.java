@@ -88,6 +88,10 @@ public class MessagesListFragment extends BaseFragment {
 	 * Refresh view.
 	 */
 	private SwipeRefreshLayout mSwipeRefreshLayout;
+	/**
+	 * {@true} if the view can take all data to show.
+	 */
+	private boolean mDataCanBeShown;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
@@ -248,6 +252,7 @@ public class MessagesListFragment extends BaseFragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		mDataCanBeShown = true;
 		mEmptyV = view.findViewById(R.id.empty_ll);
 		mEmpty2V = view.findViewById(R.id.empty_ll_2);
 		if(getWhichPage() == WhichPage.Messages) {
@@ -308,6 +313,12 @@ public class MessagesListFragment extends BaseFragment {
 	}
 
 	@Override
+	public void onDestroyView() {
+		mDataCanBeShown = false;
+		super.onDestroyView();
+	}
+
+	@Override
 	protected BasicPrefs getPrefs() {
 		return Prefs.getInstance(getActivity().getApplication());
 	}
@@ -344,15 +355,17 @@ public class MessagesListFragment extends BaseFragment {
 					@Override
 					protected void onPostExecute(List<MessageListItem>  data) {
 						super.onPostExecute(data);
-						if (mAdp == null) {
-							mAdp = new MessagesListAdapter(data, getToolbarMenuId());
-							mRv.setAdapter(mAdp);
-						} else {
-							mAdp.setMessages(data);
-							mAdp.notifyDataSetChanged();
+						if(	mDataCanBeShown ) {
+							if (mAdp == null) {
+								mAdp = new MessagesListAdapter(data, getToolbarMenuId());
+								mRv.setAdapter(mAdp);
+							} else {
+								mAdp.setMessages(data);
+								mAdp.notifyDataSetChanged();
+							}
+							testEmpty();
+							EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 						}
-						testEmpty();
-						EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
 					}
 				};
 		AsyncTaskCompat.executeParallel(task);

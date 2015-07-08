@@ -37,7 +37,7 @@ import de.greenrobot.event.EventBus;
  *
  * @author Xinyue Zhao
  */
-public   class DailiesLstFragment extends BaseFragment implements ObservableScrollViewCallbacks {
+public class DailiesLstFragment extends BaseFragment implements ObservableScrollViewCallbacks {
 
 	/**
 	 * Main layout for this component.
@@ -56,7 +56,10 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 	 * {@link android.support.v7.widget.RecyclerView.Adapter} for the {@link #mRv}.
 	 */
 	private DailiesListAdapter mAdp;
-
+	/**
+	 * {@true} if the view can take all data to show.
+	 */
+	private boolean mDataCanBeShown;
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
@@ -68,14 +71,14 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 	 * 		Event {@link com.hpush.bus.BookmarkMessageEvent}.
 	 */
 	public void onEvent(BookmarkMessageEvent e) {
-		if(e.getMessageListItem() instanceof RecentListItem) {
+		if (e.getMessageListItem() instanceof RecentListItem) {
 			//Bookmark on the site self.
 			bookmarkOneItem((RecentListItem) e.getMessageListItem());
 		} else {
 			//Bookmark from a webview shows details.
 			List<RecentListItem> list = mAdp.getMessages();
-			for(RecentListItem item : list) {
-				if(item.getId() == e.getMessageListItem().getId()) {
+			for (RecentListItem item : list) {
+				if (item.getId() == e.getMessageListItem().getId()) {
 					bookmarkOneItem(item);
 					EventBus.getDefault().removeAllStickyEvents();
 					break;
@@ -94,7 +97,7 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 		AsyncTaskCompat.executeParallel(new AsyncTask<Object, Object, Object>() {
 			@Override
 			protected Object doInBackground(Object... params) {
-				if(mAdp != null ) {
+				if (mAdp != null) {
 					mAdp.getMessages().clear();
 				}
 				mDB.clearDailies();
@@ -104,7 +107,7 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 			@Override
 			protected void onPostExecute(Object o) {
 				super.onPostExecute(o);
-				if(mAdp != null) {
+				if (mAdp != null) {
 					mAdp.notifyDataSetChanged();
 					ActivityCompat.finishAfterTransition(getActivity());
 				}
@@ -127,10 +130,11 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		setErrorHandlerAvailable(false);
+		mDataCanBeShown = true;
 
 		mDB = DB.getInstance(getActivity().getApplication());
 		mRv = (ObservableRecyclerView) view.findViewById(R.id.daily_rv);
-		if(getResources().getBoolean(R.bool.landscape)) {
+		if (getResources().getBoolean(R.bool.landscape)) {
 			mRv.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
 		} else {
 			mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -148,7 +152,6 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 	}
 
 
-
 	/**
 	 * Get all data.
 	 */
@@ -162,20 +165,21 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 			@Override
 			protected void onPostExecute(List<RecentListItem> items) {
 				super.onPostExecute(items);
-				if (mAdp == null) {
-					mAdp = new DailiesListAdapter(items );
-					mRv.setAdapter(mAdp);
-				} else {
-					mAdp.setMessages(items);
-					mAdp.notifyDataSetChanged();
+				if (mDataCanBeShown) {
+					if (mAdp == null) {
+						mAdp = new DailiesListAdapter(items);
+						mRv.setAdapter(mAdp);
+					} else {
+						mAdp.setMessages(items);
+						mAdp.notifyDataSetChanged();
+					}
+					EventBus.getDefault().post(new LoadedAllDailiesEvent(items.size()));
 				}
-				EventBus.getDefault().post(new LoadedAllDailiesEvent(items.size()));
 			}
 		});
 	}
 
 	/**
-	 *
 	 * @return Data on the view.
 	 */
 	protected List<RecentListItem> doSearch() {
@@ -191,10 +195,9 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 	private void bookmarkOneItem(final RecentListItem itemToBookmark) {
 		AsyncTaskCompat.executeParallel(new AsyncTask<List<RecentListItem>, Void, Void>() {
 			@Override
-			protected Void doInBackground(
-					List<RecentListItem>... params) {
+			protected Void doInBackground(List<RecentListItem>... params) {
 				List<RecentListItem> data = params[0];
-				for (RecentListItem obj:data) {
+				for (RecentListItem obj : data) {
 					if (obj.getId() == itemToBookmark.getId()) {
 						mDB.removeMessage(obj == null ? null : obj.getMessage());
 						mDB.addBookmark(obj.getMessage());
@@ -233,12 +236,16 @@ public   class DailiesLstFragment extends BaseFragment implements ObservableScro
 	}
 
 
-
 	/**
-	 *
 	 * @return The database.
 	 */
 	protected DB getDB() {
 		return mDB;
+	}
+
+	@Override
+	public void onDestroyView() {
+		mDataCanBeShown = false;
+		super.onDestroyView();
 	}
 }
