@@ -38,7 +38,7 @@ public final class ActionProviderTinyUrl4JListener implements TinyUrl4JListener 
 			if (response != null) {
 				text = cxt.getString(mContentResId, msg.getTitle(), response.getResult());
 			} else {
-				text = cxt.getString(mContentResId, msg.getTitle(), response.getOriginal());
+				text = cxt.getString(mContentResId, msg.getTitle(), Prefs.getInstance(cxt).getHackerNewsHomeUrl());
 			}
 			mProvider.setShareIntent(Utils.getDefaultShareIntent(mProvider, subject, text));
 		}
