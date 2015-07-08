@@ -310,7 +310,7 @@
                 android:layout_below="@+id/summary_vg"
                 android:text="@string/btn_close"
                 android:visibility="invisible"
-                android:background="@color/primary_color"
+                android:background="@color/common_transparent"
                 android:paddingBottom="10dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"

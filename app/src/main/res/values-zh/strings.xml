@@ -31,8 +31,8 @@
         http://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">你当前拥有</string>
     <string name="lbl_total_messages_tail">消息。</string>
-    <string name="lbl_no_data">当前没有消息，但是你可以通过下拉来同步数据。</string>
-    <string name="lbl_no_push_set">你还没打开推送功能，请在“设置”中打开，不过你可以通过下拉这里来同步数据。</string>
+    <string name="lbl_no_data">当前没有消息，但是你可以</string>
+    <string name="lbl_no_push_set">你还没打开推送功能，不过你可以</string>
     <string name="lbl_no_push_for_subscribe">打开推送功能，然后订阅。</string>
     <string name="lbl_welcome">欢迎使用 %1$s，独立，轻量级消息推送工具!</string>
     <string name="lbl_connect_google">正在连接谷歌后台…</string>
@@ -106,7 +106,7 @@
     <string name="btn_retry">再尝试</string>
     <string name="btn_begin">开始使用</string>
     <string name="btn_close_app">退出App</string>
-
+    <string name="btn_synchronize">同步</string>
 
     <string name="lbl_recent">最近</string>
     <string name="lbl_search">搜索</string>

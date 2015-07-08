@@ -92,12 +92,15 @@ public class MessagesListFragment extends BaseFragment {
 	 * {@true} if the view can take all data to show.
 	 */
 	private boolean mDataCanBeShown;
+	/**
+	 * {@true} if request is running.
+	 */
+	private boolean mInProgress;
 
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
 
-	 
 
 	/**
 	 * Handler for {@link SortAllEvent}.
@@ -108,6 +111,7 @@ public class MessagesListFragment extends BaseFragment {
 	public void onEvent(SortAllEvent e) {
 		loadMessages();
 	}
+
 	/**
 	 * Handler for {@link SyncList}.
 	 *
@@ -115,10 +119,6 @@ public class MessagesListFragment extends BaseFragment {
 	 * 		Event {@link SyncList}.
 	 */
 	public void onEvent(SyncList e) {
-		if (getWhichPage() == WhichPage.Messages) {
-			mSwipeRefreshLayout.setRefreshing(false);
-		}
-
 		AsyncTask<SyncList, Void, Void> task = new AsyncTask<SyncList, Void, Void>() {
 			@Override
 			protected Void doInBackground(SyncList... params) {
@@ -138,6 +138,13 @@ public class MessagesListFragment extends BaseFragment {
 			protected void onPostExecute(Void aVoid) {
 				super.onPostExecute(aVoid);
 				loadMessages();
+
+
+				if (getWhichPage() == WhichPage.Messages) {
+					mSwipeRefreshLayout.setRefreshing(false);
+				}
+
+				mInProgress = false;
 			}
 		};
 		AsyncTaskCompat.executeParallel(task, e);
@@ -234,9 +241,10 @@ public class MessagesListFragment extends BaseFragment {
 	 * 		Event {@link VolleyError}.
 	 */
 	public void onEvent(VolleyError e) {
-		if(mSwipeRefreshLayout != null) {
+		if (mSwipeRefreshLayout != null) {
 			mSwipeRefreshLayout.setRefreshing(false);
 		}
+		mInProgress = false;
 	}
 
 	//------------------------------------------------
@@ -255,17 +263,31 @@ public class MessagesListFragment extends BaseFragment {
 		mDataCanBeShown = true;
 		mEmptyV = view.findViewById(R.id.empty_ll);
 		mEmpty2V = view.findViewById(R.id.empty_ll_2);
-		if(getWhichPage() == WhichPage.Messages) {
+		if (getWhichPage() == WhichPage.Messages) {
 			mEmpty2V.findViewById(R.id.open_setting_btn).setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					SettingActivity.showInstance(getActivity(), v);
 				}
 			});
+			mEmpty2V.findViewById(R.id.sync_ii_btn).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mSwipeRefreshLayout.setRefreshing(true);
+					sync(false);
+				}
+			});
+			mEmptyV.findViewById(R.id.sync_i_btn).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					mSwipeRefreshLayout.setRefreshing(true);
+					sync(false);
+				}
+			});
 		}
 		mDB = DB.getInstance(getActivity().getApplication());
 		mRv = (ObservableRecyclerView) view.findViewById(R.id.msg_rv);
-		if(getResources().getBoolean(R.bool.landscape)) {
+		if (getResources().getBoolean(R.bool.landscape)) {
 			mRv.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
 		} else {
 			mRv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -298,7 +320,7 @@ public class MessagesListFragment extends BaseFragment {
 			mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 				@Override
 				public void onRefresh() {
-					sync();
+					sync(true);
 				}
 			});
 		}
@@ -327,15 +349,15 @@ public class MessagesListFragment extends BaseFragment {
 	 * Test whether data is empty not, then shows a message on UI.
 	 */
 	private void testEmpty() {
-		if (getWhichPage() == WhichPage.Messages ) {
+		if (getWhichPage() == WhichPage.Messages) {
 			mEmptyV.setVisibility(View.GONE);
 			mEmpty2V.setVisibility(View.GONE);
 			Activity activity = getActivity();
 			if (activity != null) {
-				if( !TextUtils.isEmpty(Prefs.getInstance(activity.getApplication()).getPushRegId())) {
+				if (!TextUtils.isEmpty(Prefs.getInstance(activity.getApplication()).getPushRegId())) {
 					mEmptyV.setVisibility(mAdp == null || mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 				} else {
-					mEmpty2V.setVisibility(mAdp == null ||  mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+					mEmpty2V.setVisibility(mAdp == null || mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE);
 				}
 			}
 		}
@@ -345,17 +367,17 @@ public class MessagesListFragment extends BaseFragment {
 	 * Load all messages.
 	 */
 	protected void loadMessages() {
-		AsyncTask<Void, List<MessageListItem> , List<MessageListItem> > task =
-				new AsyncTask<Void, List<MessageListItem> , List<MessageListItem> >() {
+		AsyncTask<Void, List<MessageListItem>, List<MessageListItem>> task =
+				new AsyncTask<Void, List<MessageListItem>, List<MessageListItem>>() {
 					@Override
 					protected List<MessageListItem> doInBackground(Void... params) {
 						return fetchDataFromDB();
 					}
 
 					@Override
-					protected void onPostExecute(List<MessageListItem>  data) {
+					protected void onPostExecute(List<MessageListItem> data) {
 						super.onPostExecute(data);
-						if(	mDataCanBeShown ) {
+						if (mDataCanBeShown) {
 							if (mAdp == null) {
 								mAdp = new MessagesListAdapter(data, getToolbarMenuId());
 								mRv.setAdapter(mAdp);
@@ -376,33 +398,32 @@ public class MessagesListFragment extends BaseFragment {
 	 * Remove items that have been selected.
 	 */
 	private void removeSelectedItems() {
-		AsyncTask<List<MessageListItem>, Void, Void> task =
-				new AsyncTask<List<MessageListItem>, Void, Void>() {
-					@Override
-					protected Void doInBackground(List<MessageListItem>... params) {
-						List<MessageListItem> data = params[0];
-						List<MessageListItem> rmvData = new ArrayList<>();
+		AsyncTask<List<MessageListItem>, Void, Void> task = new AsyncTask<List<MessageListItem>, Void, Void>() {
+			@Override
+			protected Void doInBackground(List<MessageListItem>... params) {
+				List<MessageListItem> data = params[0];
+				List<MessageListItem> rmvData = new ArrayList<>();
 
-						for (MessageListItem obj : data) {
-							if (obj.isChecked()) {
-								deleteDataOnDB(obj);
-								rmvData.add(obj);
-							}
-						}
-						for (MessageListItem rd : rmvData) {
-							data.remove(rd);
-						}
-						return null;
+				for (MessageListItem obj : data) {
+					if (obj.isChecked()) {
+						deleteDataOnDB(obj);
+						rmvData.add(obj);
 					}
+				}
+				for (MessageListItem rd : rmvData) {
+					data.remove(rd);
+				}
+				return null;
+			}
 
-					@Override
-					protected void onPostExecute(Void data) {
-						super.onPostExecute(data);
-						mAdp.notifyDataSetChanged();
-						testEmpty();
-						EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
-					}
-				};
+			@Override
+			protected void onPostExecute(Void data) {
+				super.onPostExecute(data);
+				mAdp.notifyDataSetChanged();
+				testEmpty();
+				EventBus.getDefault().post(new UpdateCurrentTotalMessagesEvent());
+			}
+		};
 		AsyncTaskCompat.executeParallel(task, mAdp.getMessages());
 	}
 
@@ -435,16 +456,14 @@ public class MessagesListFragment extends BaseFragment {
 	 * Bookmark items that have been selected.
 	 */
 	private void bookmarkSelectedItems() {
-		AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>
-				task =
+		AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>> task =
 				new AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>() {
 					@Override
-					protected List<MessageListItem> doInBackground(
-							List<MessageListItem>... params) {
+					protected List<MessageListItem> doInBackground(List<MessageListItem>... params) {
 						List<MessageListItem> data = params[0];
 						List<MessageListItem> rmvData = new ArrayList<>();
 
-						for (MessageListItem obj :data) {
+						for (MessageListItem obj : data) {
 							if (obj.isChecked()) {
 								deleteDataOnDB(obj);
 								rmvData.add(obj);
@@ -478,18 +497,16 @@ public class MessagesListFragment extends BaseFragment {
 	 * 		The item to bookmark.
 	 */
 	private void bookmarkOneItem(final MessageListItem itemToBookmark) {
-		AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>
-				task =
+		AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>> task =
 				new AsyncTask<List<MessageListItem>, List<MessageListItem>, List<MessageListItem>>() {
 					@Override
-					protected List<MessageListItem> doInBackground(
-							List<MessageListItem>... params) {
+					protected List<MessageListItem> doInBackground(List<MessageListItem>... params) {
 						List<MessageListItem> data = params[0];
 						List<MessageListItem> rmvData = new ArrayList<>();
-						for (MessageListItem obj:data) {
+						for (MessageListItem obj : data) {
 							if (obj.getId() == itemToBookmark.getId()) {
 								deleteDataOnDB(obj);
-								rmvData.add( obj);
+								rmvData.add(obj);
 							}
 						}
 						for (MessageListItem rd : rmvData) {
@@ -503,7 +520,7 @@ public class MessagesListFragment extends BaseFragment {
 						super.onPostExecute(rmvData);
 						mAdp.notifyDataSetChanged();
 
-						for (MessageListItem obj :rmvData) {
+						for (MessageListItem obj : rmvData) {
 							mDB.addBookmark(obj.getMessage());
 						}
 
@@ -562,7 +579,7 @@ public class MessagesListFragment extends BaseFragment {
 	}
 
 	/**
-	 * Sync DB when sync has been fired, see {@link #sync()}.
+	 * Sync DB when sync has been fired, see {@link #sync(boolean)}.
 	 *
 	 * @param db
 	 * 		The instance of {@link com.hpush.db.DB}.
@@ -572,45 +589,51 @@ public class MessagesListFragment extends BaseFragment {
 	protected void syncDB(DB db, Message message) {
 		boolean foundMsg = db.findMessage(message);
 		boolean foundBookmark = db.findBookmark(message);
-		if(!foundMsg && !foundBookmark) {//To test whether in our local database or not.
+		if (!foundMsg && !foundBookmark) {//To test whether in our local database or not.
 			//Save in database.
 			db.addMessage(message);
 		} else {
-			if(foundMsg) {
+			if (foundMsg) {
 				db.updateMessage(message);
-			} else if(foundBookmark) {
+			} else {
 				db.updateBookmark(message);
 			}
 		}
 	}
 
+
 	/**
 	 * Sync data from backend and refresh DB, see {@link #syncDB(com.hpush.db.DB, com.hpush.data.Message)}.
+	 *
+	 * @param handlingDelayIndicator
+	 * 		{@true} if the request too delay and dismiss indicator automatically.
 	 */
-	private void sync() {
+	private void sync(boolean handlingDelayIndicator) {
 		Activity activity = getActivity();
-		if (activity != null) {
+		if (activity != null && !mInProgress) {
+			mInProgress = true;
 			SyncTask.sync(activity.getApplication());
-			final Prefs prefs = (Prefs) getPrefs();
-			mHandler.postDelayed(new Runnable() {
-									 @Override
-									 public void run() {
-										 if(mSwipeRefreshLayout != null) {
-											 mSwipeRefreshLayout.setRefreshing(false);
-										 }
-									 }
-								 },
-					prefs.getSyncRetry() * 1000);
+			if (handlingDelayIndicator) {
+				Prefs prefs = (Prefs) getPrefs();
+				mHandler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						if (mSwipeRefreshLayout != null) {
+							mSwipeRefreshLayout.setRefreshing(false);
+						}
+					}
+				}, prefs.getSyncRetry() * 1000);
+			}
 		}
 
 	}
 
-	private android.os.Handler mHandler = new android.os.Handler()   ;
+	private android.os.Handler mHandler = new android.os.Handler();
 
 	@Override
 	protected void onReload() {
-		if(getWhichPage()==WhichPage.Messages) {
-			sync();
+		if (getWhichPage() == WhichPage.Messages) {
+			sync(true);
 		}
 	}
 }

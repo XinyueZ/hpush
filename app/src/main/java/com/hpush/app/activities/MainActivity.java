@@ -302,6 +302,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		mRemoveAllBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				hideFABs();
 				EventBus.getDefault().post(new RemoveAllEvent(
 						mViewPager.getCurrentItem() == 0 ? WhichPage.Messages : WhichPage.Bookmarks));
 			}
@@ -310,6 +311,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		mBookmarkAllBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				hideFABs();
 				EventBus.getDefault().post(new BookmarkAllEvent());
 			}
 		});
@@ -329,6 +331,16 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		} else if (prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty(prefs.getGoogleAccount())) {
 			//Should do something.....
 		}
+	}
+
+	/**
+	 * Dismiss all Float-Action-buttons.
+	 */
+	private void hideFABs() {
+		mRemoveAllBtn.hide();
+		mBookmarkAllBtn.hide();
+		mOpenBtn.hide();
+		mSearchBtn.hide();
 	}
 
 
@@ -548,6 +560,7 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	private OnClickListener mSearchListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			hideFABs();
 			onSearchRequested();
 		}
 	};
