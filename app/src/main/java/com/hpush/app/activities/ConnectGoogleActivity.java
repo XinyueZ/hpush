@@ -1,14 +1,17 @@
 package com.hpush.app.activities;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +31,7 @@ import com.google.android.gms.plus.Plus.PlusOptions;
 import com.google.android.gms.plus.model.people.Person;
 import com.hpush.R;
 import com.hpush.app.App;
+import com.hpush.app.SyncBookmarkIntentService;
 import com.hpush.databinding.ActivityConnectGoogleBinding;
 import com.hpush.utils.Prefs;
 import com.nineoldandroids.view.ViewPropertyAnimator;
@@ -65,6 +69,7 @@ public final class ConnectGoogleActivity extends BasicActivity {
 	private static int REQUEST_CODE_RESOLVE_ERR = 0x98;
 
 	private boolean mStop;
+
 	/**
 	 * Show single instance of {@link ConnectGoogleActivity}
 	 *
@@ -98,7 +103,7 @@ public final class ConnectGoogleActivity extends BasicActivity {
 						new ResultCallback<LoadPeopleResult>() {
 							@Override
 							public void onResult(LoadPeopleResult loadPeopleResult) {
-								if(!mStop) {
+								if (!mStop) {
 									if (loadPeopleResult.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
 										Prefs prefs = Prefs.getInstance(App.Instance);
 										Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
@@ -117,7 +122,8 @@ public final class ConnectGoogleActivity extends BasicActivity {
 													.start();
 
 
-											mBinding.helloTv.setText(getString(R.string.lbl_hello, person.getDisplayName()));
+											mBinding.helloTv.setText(getString(R.string.lbl_hello,
+													person.getDisplayName()));
 											mBinding.loginPb.setVisibility(View.GONE);
 											mBinding.closeBtn.setVisibility(View.VISIBLE);
 											Animation shake = AnimationUtils.loadAnimation(App.Instance, R.anim.shake);
@@ -148,11 +154,11 @@ public final class ConnectGoogleActivity extends BasicActivity {
 				} else {
 					Snackbar.make(mBinding.loginContentLl, R.string.meta_load_error, Snackbar.LENGTH_LONG).setAction(
 							R.string.btn_close_app, new OnClickListener() {
-						@Override
-						public void onClick(View v) {
-							ActivityCompat.finishAffinity(ConnectGoogleActivity.this);
-						}
-					}).show();
+								@Override
+								public void onClick(View v) {
+									ActivityCompat.finishAffinity(ConnectGoogleActivity.this);
+								}
+							}).show();
 				}
 			}
 		}).addApi(Plus.API, PlusOptions.builder().build()).addScope(Plus.SCOPE_PLUS_LOGIN).build();
@@ -173,25 +179,61 @@ public final class ConnectGoogleActivity extends BasicActivity {
 		mBinding.closeBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				setResult(RESULT_OK);
-				ActivityCompat.finishAfterTransition(ConnectGoogleActivity.this);
+//				ConnectGoogleActivity.this.setResult(RESULT_OK);
+//				ActivityCompat.finishAfterTransition(ConnectGoogleActivity.this);
+				v.setVisibility(View.GONE);
+				mBinding.helloTv.setText(R.string.lbl_sync_old_data);
+				Intent intent = new Intent(ConnectGoogleActivity.this, SyncBookmarkIntentService.class);
+				startService(intent);
 			}
 		});
 	}
 
+	//-------------------
+	//Sync bookmarks
+	//-------------------
+	/**
+	 * Listener while sync-bookmarks.
+	 */
+	private BroadcastReceiver mBookmarkSyncRec = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			boolean success = intent.getBooleanExtra(SyncBookmarkIntentService.SYNC_RESULT, false);
+			if (success) {
+				ConnectGoogleActivity.this.setResult(RESULT_OK);
+				ActivityCompat.finishAfterTransition(ConnectGoogleActivity.this);
+			} else {
+				mBinding.closeBtn.setVisibility(View.VISIBLE);
+				mBinding.helloTv.setText(getString(R.string.lbl_hello, Prefs.getInstance(App.Instance).getGoogleDisplyName()));
+			}
+		}
+	};
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		LocalBroadcastManager.getInstance(this).registerReceiver(mBookmarkSyncRec, new IntentFilter(
+				SyncBookmarkIntentService.SYNC_COMPLETE));
+	}
+
+	@Override
+	protected void onPause() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mBookmarkSyncRec);
+		super.onPause();
+	}
+	//-------------------
 
 	@Override
 	protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
 		if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_OK) {
 			mConnectionResult = null;
 			mGoogleApiClient.connect();
-		} else if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_CANCELED ) {
+		} else if (requestCode == REQUEST_CODE_RESOLVE_ERR && responseCode == RESULT_CANCELED) {
 			mConnectionResult = null;
 			mBinding.helloTv.setText(getString(R.string.lbl_welcome, getString(R.string.application_name)));
 			mBinding.loginPb.setVisibility(View.GONE);
 			ViewPropertyAnimator.animate(mBinding.thumbIv).cancel();
-			ViewPropertyAnimator.animate(mBinding.thumbIv).alpha(1).setDuration(500)
-					.start();
+			ViewPropertyAnimator.animate(mBinding.thumbIv).alpha(1).setDuration(500).start();
 			mBinding.googleLoginBtn.setVisibility(View.VISIBLE);
 		}
 	}

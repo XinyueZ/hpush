@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="lbl_hello">你好 %1$s!</string>
+    <string name="lbl_blog">HN 博客</string>
     <string name="lbl_turn_on_push_info">是否启动推送功能，来获取Hacker News社区的最Top的内容？</string>
     <string name="app_name">骇客推送</string>
     <string name="application_name">骇客推送</string>
@@ -36,6 +37,7 @@
     <string name="lbl_no_push_for_subscribe">打开推送功能，然后订阅。</string>
     <string name="lbl_welcome">欢迎使用 %1$s，独立，轻量级消息推送工具!</string>
     <string name="lbl_connect_google">正在连接谷歌后台…</string>
+    <string name="lbl_sync_old_data">同步以前的数据…</string>
 
     <string name="msg_push_registering">注册推送…</string>
     <string name="msg_push_unregistering">取消推送…</string>

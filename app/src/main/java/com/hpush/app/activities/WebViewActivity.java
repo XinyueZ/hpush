@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -157,10 +158,11 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		settings.setJavaScriptEnabled(true);
 		settings.setLoadsImagesAutomatically(true);
 		settings.setJavaScriptCanOpenWindowsAutomatically(true);
-		settings.setCacheMode(WebSettings.LOAD_NORMAL);
 		settings.setSupportZoom(true);
 		settings.setBuiltInZoomControls(false);
 		settings.setDomStorageEnabled(true);
+		settings.setRenderPriority(RenderPriority.HIGH);
+		settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 		mWebView.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {

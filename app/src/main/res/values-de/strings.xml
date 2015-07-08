@@ -35,7 +35,7 @@
     <string name="lbl_no_push_for_subscribe">Push-Benachrichtigung eingschalten, dann Abo.</string>
     <string name="lbl_welcome">Willkommen bei %1$s!</string>
     <string name="lbl_connect_google">Verbindung an Google…</string>
-
+    <string name="lbl_sync_old_data">Synchronisiere alten Daten…</string>
 
     <string name="msg_push_registering">Anmeldung…</string>
     <string name="msg_push_unregistering">Abmeldung…</string>

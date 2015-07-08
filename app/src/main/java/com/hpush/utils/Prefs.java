@@ -40,12 +40,10 @@ public final class Prefs extends BasicPrefs {
 	private static final String KEY_EULA_SHOWN = "key_eula_shown";
 	private static final String PUSH_HOST = "push_host";
 	private static final String PUSH_SENDER_ID = "push_sender_id";
-	private static final String PUSH_URL_INFO_BACKEND_REG = "push_url_info_backend_reg";
-	private static final String PUSH_URL_INFO_BACKEND_UNREG = "push_url_info_backend_unreg";
-	private static final String PUSH_URL_INFO_BACKEND_EDIT = "push_url_info_backend_edit";
 	private static final String PUSH_URL_INFO_BACKEND_SYNC = "push_url_info_backend_sync";
 	private static final String HACKER_NEWS_HOME_URL = "hacker_news_home_url";
 	private static final String HACKER_NEWS_COMMENTS_URL = "hacker_news_comments_url";
+	private static final String HACKER_NEWS_BLOG_URL = "hacker_news_blog_url";
 	private static final String KEY_SHOWN_DETAILS_ADS_TIMES = "ads";
 	private static final String SYNC_RETRY = "sync_retry";
 	private static final String DEFAULT_SORT_VALUE = "default_sort_value";
@@ -140,6 +138,9 @@ public final class Prefs extends BasicPrefs {
 		return getString(HACKER_NEWS_COMMENTS_URL, null);
 	}
 
+	public String getHackerNewsBlogUrl() {
+		return getString(HACKER_NEWS_BLOG_URL, null);
+	}
 
 
 	public int getShownDetailsAdsTimes() {

@@ -51,6 +51,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hpush.R;
 import com.hpush.app.App;
+import com.hpush.app.SyncBookmarkIntentService;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
 import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;
@@ -339,7 +340,6 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 	private void hideFABs() {
 		mRemoveAllBtn.hide();
 		mBookmarkAllBtn.hide();
-		mOpenBtn.hide();
 		mSearchBtn.hide();
 	}
 
@@ -539,6 +539,9 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 				case R.id.action_home:
 					WebViewActivity.showInstance(MainActivity.this, null, null, null);
 					break;
+				case R.id.action_blog:
+					WebViewActivity.showInstance(MainActivity.this, Prefs.getInstance(App.Instance).getHackerNewsBlogUrl(), null, null);
+					break;
 				case R.id.action_recent:
 					DailiesActivity.showInstance(MainActivity.this);
 					break;
@@ -730,6 +733,8 @@ public final class MainActivity extends BasicActivity implements ObservableScrol
 		if (mDrawerLayout.isDrawerOpen(Gravity.LEFT) || mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
 			mDrawerLayout.closeDrawers();
 		} else {
+			Intent intent = new Intent(this, SyncBookmarkIntentService.class);
+			startService(intent);
 			super.onBackPressed();
 		}
 	}

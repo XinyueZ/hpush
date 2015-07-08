@@ -31,6 +31,10 @@
 
 package com.hpush.app;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import android.app.Application;
 
 import com.chopping.net.TaskHelper;
@@ -38,6 +42,8 @@ import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.hpush.R;
 import com.squareup.okhttp.OkHttpClient;
+
+import cn.bmob.v3.Bmob;
 
 
 /**
@@ -71,6 +77,27 @@ public final class App extends Application {
 			OkHttpClient client = new OkHttpClient();
 			client.networkInterceptors().add(new StethoInterceptor());
 		}
+
+        Properties prop = new Properties();
+        InputStream input = null;
+        try {
+			/*From "resources".*/
+            input = getClassLoader().getResourceAsStream("key.properties");
+            if (input != null) {
+                // load a properties file
+                prop.load(input);
+                Bmob.initialize(this, prop.getProperty("bmobkey"));
+            }
+        } catch (IOException ex) {
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 	}
 
 

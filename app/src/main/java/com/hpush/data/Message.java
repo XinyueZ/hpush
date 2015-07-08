@@ -5,7 +5,9 @@ import java.io.Serializable;
 
 import com.google.gson.annotations.SerializedName;
 
-public   class Message implements Serializable{
+import cn.bmob.v3.BmobObject;
+
+public class Message extends BmobObject implements Serializable {
 	private long mDbId;
 	@SerializedName("By")
 	private String mBy;
@@ -26,7 +28,11 @@ public   class Message implements Serializable{
 	@SerializedName("Pushed_Time")
 	private long mPushedTime;
 
-	public Message(long dbId, String by, long id, long score, long commentsCount, String text, long time, String title, String url, long pushedTime) {
+	protected Message() {
+	}
+
+	public Message(long dbId, String by, long id, long score, long commentsCount, String text, long time, String title,
+			String url, long pushedTime) {
 		mDbId = dbId;
 		this.mBy = by;
 		this.mId = id;
@@ -39,7 +45,8 @@ public   class Message implements Serializable{
 		mPushedTime = pushedTime;
 	}
 
-	public Message(String by, long id, long score, long commentsCount, String text, long time, String title, String url, long pushedTime) {
+	public Message(String by, long id, long score, long commentsCount, String text, long time, String title, String url,
+			long pushedTime) {
 		this.mBy = by;
 		this.mId = id;
 		this.mScore = score;

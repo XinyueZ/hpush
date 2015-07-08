@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -189,19 +188,14 @@ public class MessagesListFragment extends BaseFragment {
 		} else {
 			Activity activity = getActivity();
 			if (activity != null) {
-				new AlertDialog.Builder(activity).setTitle(R.string.application_name).setMessage(
+				new android.support.v7.app.AlertDialog.Builder(activity).setTitle(R.string.application_name).setMessage(
 						R.string.msg_remove_all).setCancelable(false).setPositiveButton(R.string.lbl_yes,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								removeAllItems();
 							}
-						}).setNeutralButton(R.string.lbl_no, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						//Do nothing at moment.
-					}
-				}).create().show();
+						}).setNegativeButton(R.string.lbl_no,  null).create().show();
 			}
 		}
 	}
