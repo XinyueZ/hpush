@@ -50,6 +50,7 @@
     <string name="msg_no_data">无数据！</string>
     <string name="msg_welcome">欢迎!</string>
     <string name="msg_welcome_return">欢迎回来!</string>
+    <string name="msg_sync_failed_go_on">当前同步旧数据失败，不过你可以继续使用应用。</string>
 
     <string name="setting_push_cat">推送</string>
     <string name="setting_push_off">关闭</string>
@@ -111,6 +112,7 @@
     <string name="btn_begin">开始使用</string>
     <string name="btn_close_app">退出App</string>
     <string name="btn_synchronize">同步</string>
+    <string name="btn_skip">跳过</string>
 
     <string name="lbl_recent">最近</string>
     <string name="lbl_search">搜索</string>

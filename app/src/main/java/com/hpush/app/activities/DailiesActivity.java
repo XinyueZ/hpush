@@ -109,7 +109,6 @@ public class DailiesActivity extends BasicActivity {
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 		calcActionBarHeight();
 	}
 

@@ -23,7 +23,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textColor="?android:attr/textColorSecondary" />
 
         <TextView
             android:id="@android:id/summary"

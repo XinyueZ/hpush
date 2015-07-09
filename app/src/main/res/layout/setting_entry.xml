@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@android:id/title"
             android:layout_alignLeft="@android:id/title"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="?android:attr/textColorSecondary"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:maxLines="4" />
 

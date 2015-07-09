@@ -67,7 +67,9 @@ public final class ConnectGoogleActivity extends BasicActivity {
 	 * Login-error.
 	 */
 	private static int REQUEST_CODE_RESOLVE_ERR = 0x98;
-
+	/**
+	 * View visible flag, for some reasons that data-callback is available only when view's seen.
+	 */
 	private boolean mStop;
 
 	/**
@@ -179,8 +181,8 @@ public final class ConnectGoogleActivity extends BasicActivity {
 		mBinding.closeBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				ConnectGoogleActivity.this.setResult(RESULT_OK);
-//				ActivityCompat.finishAfterTransition(ConnectGoogleActivity.this);
+				//				ConnectGoogleActivity.this.setResult(RESULT_OK);
+				//				ActivityCompat.finishAfterTransition(ConnectGoogleActivity.this);
 				v.setVisibility(View.GONE);
 				mBinding.helloTv.setText(R.string.lbl_sync_old_data);
 				Intent intent = new Intent(ConnectGoogleActivity.this, SyncBookmarkIntentService.class);
@@ -200,11 +202,24 @@ public final class ConnectGoogleActivity extends BasicActivity {
 		public void onReceive(Context context, Intent intent) {
 			boolean success = intent.getBooleanExtra(SyncBookmarkIntentService.SYNC_RESULT, false);
 			if (success) {
+				//Sync done, using now this app.
 				ConnectGoogleActivity.this.setResult(RESULT_OK);
 				ActivityCompat.finishAfterTransition(ConnectGoogleActivity.this);
 			} else {
 				mBinding.closeBtn.setVisibility(View.VISIBLE);
-				mBinding.helloTv.setText(getString(R.string.lbl_hello, Prefs.getInstance(App.Instance).getGoogleDisplyName()));
+				mBinding.helloTv.setText(getString(R.string.lbl_hello, Prefs.getInstance(App.Instance)
+						.getGoogleDisplyName()));
+
+				Snackbar.make(findViewById(R.id.error_content), R.string.msg_sync_failed_go_on, Snackbar.LENGTH_LONG)
+						.setActionTextColor(getResources().getColor(R.color.primary_accent)).setAction(
+						R.string.btn_skip, new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								//Still to use app when sync failed.
+								ConnectGoogleActivity.this.setResult(RESULT_OK);
+								ActivityCompat.finishAfterTransition(ConnectGoogleActivity.this);
+							}
+						}).show();
 			}
 		}
 	};
