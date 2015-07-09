@@ -34,6 +34,11 @@ public class DailiesActivity extends BasicActivity {
 	 */
 	private View mPbV;
 
+	/**
+	 * Button view to remove all recent messages from backend(summary).
+	 */
+	private ActionButton mRmAllBtn;
+
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
@@ -46,9 +51,9 @@ public class DailiesActivity extends BasicActivity {
 	 */
 	public void onEvent(FloatActionButtonEvent e) {
 		if(e.isHide()) {
-			mRmAllV.hide();
+			mRmAllBtn.hide();
 		} else {
-			mRmAllV.show();
+			mRmAllBtn.show();
 		}
 	}
 
@@ -87,10 +92,10 @@ public class DailiesActivity extends BasicActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(getLayoutResId());
 
-		mRmAllV = (ActionButton) findViewById(R.id.remove_all_btn);
-		mRmAllV.setOnClickListener(new OnClickListener() {
+		mRmAllBtn = (ActionButton) findViewById(R.id.remove_all_btn);
+		mRmAllBtn.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View v ) {
+			public void onClick(View v) {
 				EventBus.getDefault().post(new DeleteAllDailiesEvent());
 			}
 		});
@@ -138,8 +143,7 @@ public class DailiesActivity extends BasicActivity {
 	 * Show some UIs after loading all data.
 	 */
 	protected void toggleUI() {
-		mRmAllV.show();
+		mRmAllBtn.show();
 	}
 
-	private ActionButton mRmAllV;
 }

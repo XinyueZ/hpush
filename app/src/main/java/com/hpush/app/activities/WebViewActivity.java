@@ -286,7 +286,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 			break;
 		case R.id.action_item_bookmark:
 			EventBus.getDefault().postSticky(new BookmarkMessageEvent(new MessageListItem(msg)));
-			Snackbar.make(findViewById(android.R.id.list), R.string.lbl_has_been_bookmarked, Snackbar.LENGTH_LONG)
+			Snackbar.make(mRefreshLayout, R.string.lbl_has_been_bookmarked, Snackbar.LENGTH_LONG)
 					.show();
 			item.setVisible(false);
 			break;

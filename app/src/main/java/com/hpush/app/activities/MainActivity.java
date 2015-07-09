@@ -238,8 +238,9 @@ public final class MainActivity extends BasicActivity   {
 					dismissProgressDialog();
 					SubscribeTopicsActivity.showInstance(MainActivity.this);
 				} else {
+					View view = findViewById(R.id.coordinator_layout);
 					dismissProgressDialog();
-					Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
+					Snackbar.make(view, R.string.meta_load_error, Snackbar.LENGTH_LONG)
 							.setAction(R.string.btn_retry, new OnClickListener() {
 								@Override
 								public void onClick(View v) {

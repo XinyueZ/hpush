@@ -77,6 +77,9 @@ public class MyGcmListenerService extends GcmListenerService {
 
             //Notify only for the "summary"s.
             if (isSummary) {
+                //Remove old ones.
+				db.clearDailies();
+
                 final String summary = msg.getString("summary");
                 final String summaryIds = msg.getString("ids");
                 final int count = Integer.valueOf(msg.getString("count"));
@@ -169,7 +172,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 } else {
                     if (foundMsg) {
                         db.updateMessage(message);
-                    } else if (foundBookmark) {
+                    } else {
                         db.updateBookmark(message);
                     }
                 }

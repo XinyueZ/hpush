@@ -1,7 +1,6 @@
 package com.hpush.app.activities;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,17 +14,7 @@ import com.hpush.app.fragments.SearchFragment;
  */
 public final class SearchActivity extends DailiesActivity {
 
-	/**
-	 * Show single instance of {@link SearchActivity}
-	 *
-	 * @param cxt
-	 * 		{@link android.content.Context}.
-	 */
-	public static void showInstance(Context cxt) {
-		Intent intent = new Intent(cxt, SearchActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		cxt.startActivity(intent);
-	}
+
 
 	/**
 	 * Handle search intent.
