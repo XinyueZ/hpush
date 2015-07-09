@@ -93,12 +93,14 @@ public class DailiesActivity extends BasicActivity {
 		setContentView(getLayoutResId());
 
 		mRmAllBtn = (ActionButton) findViewById(R.id.remove_all_btn);
-		mRmAllBtn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				EventBus.getDefault().post(new DeleteAllDailiesEvent());
-			}
-		});
+		if(mRmAllBtn!=null) {//Search-view has no "delete" button.
+			mRmAllBtn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					EventBus.getDefault().post(new DeleteAllDailiesEvent());
+				}
+			});
+		}
 		mPbV = findViewById(R.id.progressBar);
 
 		if (getResources().getBoolean(R.bool.landscape)) {
