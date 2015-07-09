@@ -157,7 +157,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 		mPb.setCancelable(true);
 		mToolbar = (Toolbar) getLayoutInflater().inflate(R.layout.toolbar, null, false);
 		addContentView(mToolbar, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		mToolbar.setTitle(R.string.application_name);
+		mToolbar.setTitle(R.string.lbl_setting);
 		mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 		mToolbar.setNavigationOnClickListener(new OnClickListener() {
 			@Override
