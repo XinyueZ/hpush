@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.hpush"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="preferExternal">
+    package="com.hpush"
+    android:installLocation="preferExternal" >
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -24,37 +25,36 @@
     <application
         android:name=".app.App"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/application_name"
-        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:label">
+        tools:replace="android:label" >
 
-        <!-- This meta-data tag is required to use Google Play Services. --><meta-data
-        android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version" />
+        <!-- This meta-data tag is required to use Google Play Services. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".app.activities.MainActivity"
             android:label="@string/application_name"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- This activity enables the search dialog to initiate searches
+            <!--
+                 This activity enables the search dialog to initiate searches
                 in the SearchableActivity, enable the search dialog to send searches to SearchableActivity.
             -->
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".app.activities.SearchActivity" />
         </activity>
-
-
         <activity
             android:name=".app.activities.SubscribeTopicsActivity"
             android:label="@string/subscribing_title"
@@ -64,45 +64,47 @@
         <!-- SearchActivity is the searchable activity; it performs searches. -->
         <activity
             android:name=".app.activities.SearchActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name=".app.activities.SettingActivity"
             android:label="@string/lbl_setting"
             android:screenOrientation="portrait"
             android:theme="@style/SettingsTheme" />
-
         <activity
             android:name=".app.activities.WebViewActivity"
             android:label="@string/application_name"
-            android:screenOrientation="portrait">
-            <!-- This activity enables the search dialog to initiate searches
+            android:screenOrientation="portrait" >
+
+            <!--
+                 This activity enables the search dialog to initiate searches
                 in the SearchableActivity, enable the search dialog to send searches to SearchableActivity.
             -->
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".app.activities.SearchActivity" />
         </activity>
-
         <activity
             android:name=".app.activities.DailiesActivity"
             android:label="@string/lbl_recent"
-            android:screenOrientation="portrait">
-            <!--android:parentActivityName=".app.activities.MainActivity">--><!--<meta-data--><!--android:name="android.support.PARENT_ACTIVITY"--><!--android:value=".app.activities.MainActivity" />-->
-        </activity>
+            android:screenOrientation="portrait" >
 
+            <!-- android:parentActivityName=".app.activities.MainActivity"> -->
+            <!-- <meta-data -->
+            <!-- android:name="android.support.PARENT_ACTIVITY" -->
+            <!-- android:value=".app.activities.MainActivity" /> -->
+        </activity>
         <activity
             android:name=".app.activities.ConnectGoogleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.FirstPage" />
-
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/application_name"
@@ -116,12 +118,11 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/applicationId" />
 
-
         <!-- Event handler for changing system packages. -->
         <receiver
             android:name="com.chopping.application.InstalledAppReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -134,7 +135,7 @@
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
@@ -146,15 +147,16 @@
         <!-- [START gcm_listener] -->
         <service
             android:name=".gcm.MyGcmListenerService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-        <!-- [END gcm_listener] --><!-- [START instanceId_listener] -->
+        <!-- [END gcm_listener] -->
+        <!-- [START instanceId_listener] -->
         <service
             android:name=".gcm.MyInstanceIDListenerService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
@@ -173,11 +175,11 @@
             android:name=".gcm.UnsubscribeIntentService"
             android:exported="false" />
 
-        <!--Event handler for changing system packages, for external links-->
+        <!-- Event handler for changing system packages, for external links -->
         <receiver
             android:name="com.chopping.application.InstalledAppReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -192,11 +194,22 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
 
-
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="0bf5835ac1569fe382ff64839c0be3d3ed9396b9" />
 
+        <service
+            android:name=".app.AppGuardService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+        <receiver
+            android:name=".app.BootReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 
