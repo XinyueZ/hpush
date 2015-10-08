@@ -34,6 +34,7 @@
 
 
             <fragment
+                android:id="@+id/dailies_list_frg"
                 android:name="com.hpush.app.fragments.DailiesLstFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
