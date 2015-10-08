@@ -38,8 +38,6 @@ import com.hpush.utils.ActionProviderTinyUrl4JListener;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 import com.hpush.views.WebViewEx;
-import com.hpush.views.WebViewEx.OnWebViewExScrolledListener;
-import com.nineoldandroids.view.ViewPropertyAnimator;
 import com.tinyurl4j.Api;
 
 import de.greenrobot.event.EventBus;
@@ -129,7 +127,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				animToolActionBar(-getActionBarHeight() * 4);
+
 				mWebView.reload();
 			}
 		});
@@ -137,21 +135,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		mWebView = (WebViewEx) findViewById(R.id.home_wv);
-		mWebView.setOnWebViewExScrolledListener(new OnWebViewExScrolledListener() {
-			@Override
-			public void onScrollChanged(boolean isUp) {
-				if (isUp) {
-					animToolActionBar(0);
-				} else {
-					animToolActionBar(-getActionBarHeight() * 4);
-				}
-			}
 
-			@Override
-			public void onScrolledTop() {
-				animToolActionBar(-getActionBarHeight() * 4);
-			}
-		});
 		mWebView.setDownloadListener(this);
 		WebSettings settings = mWebView.getSettings();
 		settings.setLoadWithOverviewMode(true);
@@ -181,7 +165,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 			}
 		});
 		handleIntent();
-		animToolActionBar(-getActionBarHeight() * 4);
+
 	}
 
 	@Override
@@ -330,16 +314,6 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 	}
 
 
-	/**
-	 * Animation and moving actionbar(toolbar).
-	 *
-	 * @param value
-	 * 		The property value of animation.
-	 */
-	private void animToolActionBar(float value) {
-		ViewPropertyAnimator animator = ViewPropertyAnimator.animate(mToolbar);
-		animator.translationY(value).setDuration(400);
-	}
 
 
 	@Override
