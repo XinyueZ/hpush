@@ -12,6 +12,7 @@ import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.hpush.R;
 import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
+import com.hpush.bus.ShareIntentEvent;
 import com.hpush.bus.ShareMessageEvent;
 import com.hpush.data.MessageListItem;
 import com.hpush.utils.Prefs;
@@ -69,6 +70,18 @@ public abstract class BasicActivity extends BaseActivity {
 		case Tweet:
 			break;
 		}
+	}
+
+
+
+	/**
+	 * Handler for {@link com.hpush.bus.ShareIntentEvent}.
+	 *
+	 * @param e
+	 * 		Event {@link com.hpush.bus.ShareIntentEvent}.
+	 */
+	public void onEvent(  ShareIntentEvent e) {
+		startActivity(e.getIntent());
 	}
 
 	/**

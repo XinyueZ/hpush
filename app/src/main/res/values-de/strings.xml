@@ -24,10 +24,8 @@
     <string name="lbl_play_service">Diese App braucht Google Play Service, Sie müssen erst herunterladen dann
         weiter.</string>
     <string name="lbl_share_app_title">Eine gute App: %s</string>
-    <string name="lbl_share_app_content">Hallo!\n\nDie Push-Benachrichtigung aus Hacker-News zu empfangen?\n\nDownload:\n
-        http://tinyurl.com/pcopzdh</string>
-    <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload Hacker News Push App:\n
-        http://tinyurl.com/pcopzdh</string>
+    <string name="lbl_share_app_content">Hallo!\n\nDie Push-Benachrichtigung aus Hacker-News zu empfangen?\n\nDownload:\nhttp://tinyurl.com/pcopzdh</string>
+    <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload Hacker News Push App:\nhttp://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">Du hast jetzt</string>
     <string name="lbl_total_messages_tail">Meldung(en).</string>
     <string name="lbl_no_data">Es gibt keine Nachrichten im Augenblick, aber Du kannst Daten </string>

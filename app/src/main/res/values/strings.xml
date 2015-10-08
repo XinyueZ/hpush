@@ -33,11 +33,9 @@
     <string name="lbl_has_been_bookmarked">This article has been bookmarked.</string>
     <string name="lbl_play_service">This application needs Google Play Service, you must install it first.</string>
     <string name="lbl_share_app_title">A good App you should have: %s</string>
-    <string name="lbl_share_app_content">Hello!\n\n\u00A0\u00A0\u00A0\u00A0Subscribe push-news from Hacker-News?\n\nDownload:\n
-        http://tinyurl.com/pcopzdh</string>
+    <string name="lbl_share_app_content">Hello!\n\n\u00A0\u00A0\u00A0\u00A0Subscribe push-news from Hacker-News?\n\nDownload:\nhttp://tinyurl.com/pcopzdh</string>
     <string name="lbl_share_item_title">Hacker News Push</string>
-    <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload Hacker News Push App:\n
-        http://tinyurl.com/pcopzdh</string>
+    <string name="lbl_share_item_content">%1$s\n%2$s\n\nDownload Hacker News Push App:\nhttp://tinyurl.com/pcopzdh</string>
     <string name="lbl_total_messages_head">You have</string>
     <string name="lbl_total_messages_tail">message(s).</string>
     <string name="lbl_no_data">There\'re no messages at moment, however you can </string>
@@ -150,6 +148,11 @@
     <string name="ad_inters_unit_id">ca-app-pub-9133982521997162/9212548933</string>
     <string name="play_service_url">market://details?id=com.google.android.gms</string>
     <string name="play_service_web">https://play.google.com/store/apps/details?id=com.google.android.gms</string>
+
+
+    <string name="no_app_to_share">No app installed to share data of type %s!</string>
+    <string name="no_share_type">No share type specified!</string>
+    <string name="error_occurred">Sorry, an error occurred.</string>
 
 
     <string name="action_more_apps">More Apps</string>

@@ -3,6 +3,7 @@ package com.hpush.app.adapters;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.MenuRes;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.Toolbar.OnMenuItemClickListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,17 +23,20 @@ import com.hpush.bus.ClickMessageCommentsEvent;
 import com.hpush.bus.ClickMessageEvent;
 import com.hpush.bus.ClickMessageLinkEvent;
 import com.hpush.bus.SelectMessageEvent;
+import com.hpush.bus.ShareIntentEvent;
 import com.hpush.bus.ShareMessageEvent;
 import com.hpush.bus.ShareMessageEvent.Type;
 import com.hpush.data.MessageListItem;
-import com.hpush.utils.ActionProviderTinyUrl4JListener;
+import com.hpush.utils.DynamicShareActionProvider;
 import com.hpush.utils.Prefs;
 import com.hpush.utils.Utils;
 import com.hpush.views.OnViewAnimatedClickedListener;
 import com.hpush.views.OnViewAnimatedClickedListener2;
 import com.tinyurl4j.Api;
+import com.tinyurl4j.data.Response;
 
 import de.greenrobot.event.EventBus;
+import retrofit.RetrofitError;
 
 /**
  * The adapter for list of messages.
@@ -129,25 +132,47 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 			}
 		});
 
+		Context cxt = viewHolder.mToolbar.getContext();
+		final String subject = cxt.getString(R.string.lbl_share_item_title);
+		final String content = cxt.getString(R.string.lbl_share_item_content);
+		final String hackerNewsHomeUrl = Prefs.getInstance(cxt).getHackerNewsHomeUrl();
+		MenuItem shareMi = viewHolder.mToolbar.getMenu().findItem(R.id.action_item_share);
+		DynamicShareActionProvider shareLaterProvider = (DynamicShareActionProvider) MenuItemCompat.getActionProvider(
+				shareMi);
+		shareLaterProvider.setShareDataType("text/plain");
+		shareLaterProvider.setOnShareLaterListener(new DynamicShareActionProvider.OnShareLaterListener() {
+			@Override
+			public void onShareClick(final Intent shareIntent) {
+				Api.getTinyUrl(msg.getUrl(), new retrofit.Callback<Response>() {
+					@Override
+					public void success(Response response, retrofit.client.Response response2) {
+						String text;
+						if (response != null) {
+							text = String.format(content, msg.getTitle(), response.getResult());
+						} else {
+							text = String.format(content, msg.getTitle(), hackerNewsHomeUrl);
+						}
+
+						shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+						shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+						EventBus.getDefault().post(new ShareIntentEvent(shareIntent));
+					}
+
+					@Override
+					public void failure(RetrofitError error) {
+						String text = String.format(content, msg.getTitle(), hackerNewsHomeUrl);
+						shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+						shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+						EventBus.getDefault().post(new ShareIntentEvent(shareIntent));
+					}
+				});
+			}
+		});
 
 		viewHolder.mToolbar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			@Override
 			public boolean onMenuItemClick(MenuItem menuItem) {
 				switch (menuItem.getItemId()) {
-				case R.id.action_item_share:
-					Context cxt = viewHolder.itemView.getContext();
-					Menu menu = viewHolder.mToolbar.getMenu();
-					MenuItem menuShare = menu.findItem(R.id.action_item_share);
-					//Getting the actionprovider associated with the menu item whose id is share.
-					android.support.v7.widget.ShareActionProvider provider =
-							(android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(menuShare);
-					String url = msg.getUrl();
-					if (TextUtils.isEmpty(url)) {
-						url = Prefs.getInstance(cxt.getApplicationContext()).getHackerNewsCommentsUrl() + msg.getId();
-					}
-					//Setting a share intent.
-					Api.call(url, new ActionProviderTinyUrl4JListener(cxt, provider, R.string.lbl_share_item_title, R.string.lbl_share_item_content, msg.getMessage() ));
-					break;
 				case R.id.action_item_comment:
 					EventBus.getDefault().post(new ClickMessageCommentsEvent(msg.getMessage(), viewHolder.itemView));
 					break;
