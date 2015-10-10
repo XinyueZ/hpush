@@ -55,7 +55,11 @@ public class AppGuardService extends Service {
 
 	@Override
 	public void onDestroy() {
-		unregisterReceiver(mReceiver);
+		try {
+			unregisterReceiver(mReceiver);
+		} catch (RuntimeException ex) {
+
+		}
 		super.onDestroy();
 	}
 }

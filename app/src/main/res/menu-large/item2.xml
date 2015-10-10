@@ -21,8 +21,8 @@
 
     <item
         android:id="@+id/action_item_share"
-        android:title="@string/lbl_share"
+        android:title="@string/lbl_share" android:icon="@drawable/ic_item_share"
         app:actionProviderClass="com.hpush.utils.DynamicShareActionProvider"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>

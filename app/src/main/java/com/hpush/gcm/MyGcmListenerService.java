@@ -56,15 +56,14 @@ public class MyGcmListenerService extends GcmListenerService {
      */
     // [START receive_message]
     @Override
-    public void onMessageReceived(String from, Bundle data) {
+    public void onMessageReceived(String from, final Bundle data) {
         mLargeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-        try {
-            synchronized (TAG) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
                 sendNotification(data);
             }
-        } catch (Exception e) {
-            //Ignore.
-        }
+        }).start();
     }
     // [END receive_message]
 
