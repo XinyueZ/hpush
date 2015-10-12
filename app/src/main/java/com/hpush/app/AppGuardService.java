@@ -1,13 +1,7 @@
 package com.hpush.app;
 
-import java.util.Calendar;
-
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.app.IntentService;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.IBinder;
 
 import com.hpush.db.DB;
 
@@ -16,50 +10,23 @@ import com.hpush.db.DB;
  *
  * @author Xinyue Zhao
  */
-public class AppGuardService extends Service {
-	private IntentFilter mIntentFilter = new IntentFilter(Intent.ACTION_TIME_TICK);
-	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context cxt, Intent intent) {
-			Calendar calendar = Calendar.getInstance();
-			int hour = calendar.get(Calendar.HOUR_OF_DAY);
-			int min = calendar.get(Calendar.MINUTE);
-			int day = calendar.get(Calendar.DAY_OF_WEEK);
+public class AppGuardService extends IntentService {
+	public static final String EXTRAS_RMV_ALL = AppGuardService.class.getName() + ".EXTRAS.RMV_ALL";
 
-			if (hour == 0 && min == 15) {
-				DB db = DB.getInstance(getApplication());
-				db.clearDailies();
-			}
-
-			if (day == Calendar.SUNDAY && hour == 23 && min == 45) {
-				DB db = DB.getInstance(getApplication());
-				db.removeMessage(null);
-			}
-
-		}
-	};
-
-
-	@Override
-	public IBinder onBind(Intent intent) {
-		return null;
+	public AppGuardService() {
+		super("AppGuardService");
 	}
 
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		//Utils.showShortToast(this, "AppGuardService");
-		registerReceiver(mReceiver, mIntentFilter);
-		return super.onStartCommand(intent, flags, startId);
-	}
-
-	@Override
-	public void onDestroy() {
-		try {
-			unregisterReceiver(mReceiver);
-		} catch (RuntimeException ex) {
-
+	protected void onHandleIntent(Intent intent) {
+		boolean allToRemove = intent.getBooleanExtra(EXTRAS_RMV_ALL, false);
+		DB db = DB.getInstance(getApplicationContext());
+		if (!allToRemove) {
+			db.clearDailies();
+		} else {
+			db.removeMessage(null);
 		}
-		super.onDestroy();
+		WakeupDeviceReceiver.completeWakefulIntent(intent);
 	}
 }

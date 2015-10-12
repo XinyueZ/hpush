@@ -44,7 +44,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hpush.R;
 import com.hpush.app.App;
-import com.hpush.app.AppGuardService;
 import com.hpush.app.SyncBookmarkIntentService;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
@@ -231,7 +230,6 @@ public final class MainActivity extends BasicActivity   {
 		super.onCreate(savedInstanceState);
 		Fabric.with(this, new Crashlytics());
 		setContentView(LAYOUT);
-		stopService(new Intent(App.Instance, AppGuardService.class));
 
 		mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 			@Override
@@ -714,9 +712,5 @@ public final class MainActivity extends BasicActivity   {
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		startService(new Intent(App.Instance, AppGuardService.class));
-		super.onDestroy();
-	}
+
 }

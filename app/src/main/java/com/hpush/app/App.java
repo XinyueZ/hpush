@@ -35,6 +35,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.multidex.MultiDexApplication;
 
 import com.chopping.net.TaskHelper;
@@ -63,7 +66,9 @@ public final class App extends MultiDexApplication {
      */
     private int mAdsShownTimes;
 
+    private IntentFilter mIntentFilter = new IntentFilter(Intent.ACTION_TIME_TICK);
 
+    private BroadcastReceiver mReceiver = new WakeupDeviceReceiver() ;
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -98,6 +103,7 @@ public final class App extends MultiDexApplication {
                 }
             }
         }
+        registerReceiver(mReceiver, mIntentFilter);
 	}
 
 

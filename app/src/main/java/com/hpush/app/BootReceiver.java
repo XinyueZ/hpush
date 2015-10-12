@@ -12,9 +12,7 @@ import android.content.Intent;
 public final class BootReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-			context.startService(new Intent(context, AppGuardService.class));
-		}
+
 	}
 }
 
