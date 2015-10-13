@@ -203,6 +203,11 @@
             android:enabled="true"
             android:exported="false" >
         </service>
+        <service
+            android:name=".app.DeleteDataService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
         <receiver
             android:name=".app.BootReceiver"
             android:enabled="true" >

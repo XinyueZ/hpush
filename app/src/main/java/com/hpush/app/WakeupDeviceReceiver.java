@@ -38,8 +38,8 @@ public final class WakeupDeviceReceiver extends WakefulBroadcastReceiver {
 	@NonNull
 	private Intent initService(Context context, boolean allToRemove) {
 		Intent service;
-		service = new Intent(context, AppGuardService.class);
-		service.putExtra(AppGuardService.EXTRAS_RMV_ALL, allToRemove);
+		service = new Intent(context, DeleteDataService.class);
+		service.putExtra(DeleteDataService.EXTRAS_RMV_ALL, allToRemove);
 		return service;
 	}
 }

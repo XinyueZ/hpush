@@ -1,32 +1,36 @@
 package com.hpush.app;
 
-import android.app.IntentService;
+
+import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 
-import com.hpush.db.DB;
+public final class AppGuardService extends Service {
+	private IntentFilter mIntentFilter = new IntentFilter(Intent.ACTION_TIME_TICK);
+	private BroadcastReceiver mReceiver = new WakeupDeviceReceiver();
 
-/**
- * A server that protect application  by deleting unused data.
- *
- * @author Xinyue Zhao
- */
-public class AppGuardService extends IntentService {
-	public static final String EXTRAS_RMV_ALL = AppGuardService.class.getName() + ".EXTRAS.RMV_ALL";
-
-	public AppGuardService() {
-		super("AppGuardService");
+	@Nullable
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
 	}
 
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		registerReceiver(mReceiver, mIntentFilter);
+		return super.onStartCommand(intent, flags, startId);
+	}
 
 	@Override
-	protected void onHandleIntent(Intent intent) {
-		boolean allToRemove = intent.getBooleanExtra(EXTRAS_RMV_ALL, false);
-		DB db = DB.getInstance(getApplicationContext());
-		if (!allToRemove) {
-			db.clearDailies();
-		} else {
-			db.removeMessage(null);
+	public void onDestroy() {
+		try {
+			unregisterReceiver(mReceiver);
+		} catch (Exception e) {
+			//Ignore...
 		}
-		WakeupDeviceReceiver.completeWakefulIntent(intent);
+		super.onDestroy();
 	}
 }
