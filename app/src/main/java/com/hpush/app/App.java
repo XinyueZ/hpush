@@ -35,12 +35,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
 
 import com.chopping.net.TaskHelper;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.PeriodicTask;
 import com.hpush.R;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -98,9 +99,27 @@ public final class App extends MultiDexApplication {
                 }
             }
         }
-        startService(new Intent(this, AppGuardService.class));
+        startAppGuardService();
 	}
 
+    /**
+     * A background service that will looking for time to notify user for some weather condition.
+     */
+    private void startAppGuardService() {
+        long periodSecs = 1L; // the task should be executed every 30 seconds
+        long flexSecs = 0L; // the task can run as early as -15 seconds from the scheduled time
+        String tag = System.currentTimeMillis() + "";
+        PeriodicTask periodic = new PeriodicTask.Builder()
+                .setService(AppGuardService.class)
+                .setPeriod(periodSecs)
+                .setFlex(flexSecs)
+                .setTag(tag)
+                .setPersisted(true)
+                .setRequiredNetwork(com.google.android.gms.gcm.Task.NETWORK_STATE_ANY)
+                .setRequiresCharging(false)
+                .build();
+        GcmNetworkManager.getInstance(this).schedule(periodic);
+    }
 
     /**
      * @return How much times that the AdMob has shown before, it under App-process domain. When process killed, it

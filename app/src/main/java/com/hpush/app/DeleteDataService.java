@@ -23,6 +23,5 @@ public class DeleteDataService extends IntentService {
 		} else {
 			db.removeMessage(null);
 		}
-		WakeupDeviceReceiver.completeWakefulIntent(intent);
 	}
 }
