@@ -123,5 +123,7 @@
     <string name="no_app_to_share">没找到分享 %s 的应用!</string>
     <string name="no_share_type">没有确定分享类别！</string>
     <string name="error_occurred">报错！</string>
+    <string name="msg_clear_all">欢迎使用，很高兴能听到您的回馈。</string>
+    <string name="msg_clear_daily">欢迎使用，获取更多来自HN的消息。</string>
 
 </resources>

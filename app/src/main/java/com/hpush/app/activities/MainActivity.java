@@ -49,7 +49,6 @@ import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
 import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;
 import com.hpush.app.fragments.AppListImpFragment;
-import com.hpush.app.fragments.GPlusFragment;
 import com.hpush.bus.BookmarkAllEvent;
 import com.hpush.bus.EULAConfirmedEvent;
 import com.hpush.bus.EULARejectEvent;
@@ -259,8 +258,6 @@ public final class MainActivity extends BasicActivity   {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		}
 
-		getSupportFragmentManager().beginTransaction().replace(R.id.gplus_container, GPlusFragment.newInstance(
-				getApplication())).commit();
 
 		mHeaderView = findViewById(R.id.error_content);
 		ViewCompat.setElevation(mHeaderView, getResources().getDimension(R.dimen.toolbar_elevation));

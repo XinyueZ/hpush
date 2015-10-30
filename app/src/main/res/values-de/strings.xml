@@ -109,4 +109,6 @@
 
 
     <string name="action_more_apps">Weitere Apps</string>
+    <string name="msg_clear_all">Danke für die Aufmerksamkeit. Es froht uns sehr, wenn Du Feedsback geben könntest.</string>
+    <string name="msg_clear_daily">Danke für die Aufmerksamkeit. Mehr Information aus HN könntest Du hier mit Klicken bekommen.</string>
 </resources>
