@@ -1,16 +1,16 @@
 cron:
 - description: Push topstories.
   url: /topstories
-  schedule: every 60 minutes from 0:00 to 23:59
+  schedule: every 180 minutes from 0:00 to 23:59
 - description: Push newstories.
   url: /newstories
-  schedule: every 120 minutes from 0:00 to 23:59
+  schedule: every 200 minutes from 0:00 to 23:59
 - description: Push askstories.
   url: /askstories
-  schedule: every 180 minutes from 0:00 to 23:59
+  schedule: every 220 minutes from 0:00 to 23:59
 - description: Push showstories.
   url: /showstories
   schedule: every 240 minutes from 0:00 to 23:59
 - description: Push jobstories.
   url: /jobstories
-  schedule: every 300 minutes from 0:00 to 23:59
+  schedule: every 260 minutes from 0:00 to 23:59
