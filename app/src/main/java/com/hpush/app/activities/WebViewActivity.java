@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -231,7 +232,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 				url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl() + msg.getId();
 			}
 			Api.call(url, new ActionProviderTinyUrl4JListener(this, provider, R.string.lbl_share_item_title,
-					R.string.lbl_share_item_content, msg));
+					R.string.lbl_share_item_content, msg, url));
 		} else {
 			//Setting a share intent.
 			String subject = getString(R.string.lbl_share_app_title, getString(R.string.application_name));
@@ -246,11 +247,7 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		String name, caption, desc, link;
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				finishAfterTransition();
-			} else {
-				finish();
-			}
+			ActivityCompat.finishAfterTransition(this);
 			break;
 		case R.id.action_search:
 			onSearchRequested();
