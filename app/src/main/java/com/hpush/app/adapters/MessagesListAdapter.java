@@ -147,11 +147,14 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 					@Override
 					public void success(Response response, retrofit.client.Response response2) {
 						String text;
+						String sharedLink;
 						if (response != null) {
-							text = String.format(content, msg.getTitle(), response.getResult());
+							sharedLink = TextUtils.isEmpty(response.getResult()) ?
+									msg.getUrl() : response.getResult();
 						} else {
-							text = String.format(content, msg.getTitle(), hackerNewsHomeUrl);
+							sharedLink = hackerNewsHomeUrl;
 						}
+						text = String.format(content, msg.getTitle(), sharedLink );
 
 						shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
 						shareIntent.putExtra(Intent.EXTRA_TEXT, text);
@@ -160,7 +163,7 @@ public   class MessagesListAdapter<T extends MessageListItem> extends RecyclerVi
 
 					@Override
 					public void failure(RetrofitError error) {
-						String text = String.format(content, msg.getTitle(), hackerNewsHomeUrl);
+						String text = String.format(content, msg.getTitle(), msg.getUrl());
 						shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
 						shareIntent.putExtra(Intent.EXTRA_TEXT, text);
 						EventBus.getDefault().post(new ShareIntentEvent(shareIntent));

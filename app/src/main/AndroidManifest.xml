@@ -67,7 +67,8 @@
         <!-- SearchActivity is the searchable activity; it performs searches. -->
         <activity
             android:name=".app.activities.SearchActivity"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
