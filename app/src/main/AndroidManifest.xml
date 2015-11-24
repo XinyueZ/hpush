@@ -35,17 +35,20 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <activity
-            android:name=".app.activities.MainActivity"
-            android:label="@string/application_name"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
+            android:name=".app.activities.SplashActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.activities.MainActivity"
+            android:label="@string/application_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
 
             <!--
                  This activity enables the search dialog to initiate searches

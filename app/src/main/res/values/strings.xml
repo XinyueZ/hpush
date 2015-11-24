@@ -63,6 +63,7 @@
     <string name="msg_sync_failed_go_on">Can\'t synchronize at moment, but don\'t worry you can skip it.</string>
     <string name="msg_clear_daily">Thank you. Get more information from HN by starting here.</string>
     <string name="msg_clear_all">Thank you. It is so appreciated to hear about your feeling.</string>
+    <string name="msg_permission_prompt">Without "Read Phone State" and "Write External Storage" the App can\'t work…</string>
 
     <string name="setting_push_title">@string/lbl_turn_on_push_info</string>
     <string name="setting_push_cat">Push</string>
