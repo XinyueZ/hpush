@@ -106,8 +106,8 @@ public final class App extends MultiDexApplication {
      * A background service that will looking for time to notify user for some weather condition.
      */
     private void startAppGuardService() {
-        long periodSecs = 1L; // the task should be executed every 30 seconds
-        long flexSecs = 0L; // the task can run as early as -15 seconds from the scheduled time
+        long periodSecs = 82800L; // the task should be executed every 23 hours
+        long flexSecs = 600L; // the task can run as early as 10 minutes from the scheduled time
         String tag = System.currentTimeMillis() + "";
         PeriodicTask periodic = new PeriodicTask.Builder()
                 .setService(AppGuardService.class)

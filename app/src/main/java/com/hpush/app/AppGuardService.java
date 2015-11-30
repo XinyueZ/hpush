@@ -30,11 +30,11 @@ public final class AppGuardService extends GcmTaskService {
 			sLastMin = min;
 			int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-			if (hour == 0 && min == 15) {
-				service = initService(this, false);
-			}
 
-			if (day == Calendar.SUNDAY && hour == 23 && min == 45) {
+			service = initService(this, false);
+
+
+			if (day == Calendar.SUNDAY) {
 				service = initService(this, true);
 			}
 
