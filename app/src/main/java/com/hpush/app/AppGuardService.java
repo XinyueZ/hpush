@@ -13,36 +13,16 @@ import com.google.android.gms.gcm.TaskParams;
 
 public final class AppGuardService extends GcmTaskService {
 	private static final String TAG = "AppGuardService";
-	private static int sLastHour = -1;
-	private static int sLastMin = -1;
 
 	@Override
 	public int onRunTask(TaskParams taskParams) {
-		synchronized (AppGuardService.TAG) {
-			Intent service = null;
-			Calendar calendar = Calendar.getInstance();
-			int hour = calendar.get(Calendar.HOUR_OF_DAY);
-			int min = calendar.get(Calendar.MINUTE);
-			if (hour == sLastHour && min == sLastMin) {
-				return GcmNetworkManager.RESULT_SUCCESS;
-			}
-			sLastHour = hour;
-			sLastMin = min;
-			int day = calendar.get(Calendar.DAY_OF_WEEK);
-
-
-			service = initService(this, false);
-
-
-			if (day == Calendar.SUNDAY) {
-				service = initService(this, true);
-			}
-
-			if (service != null) {
-				startService(service);
-			}
-			return GcmNetworkManager.RESULT_SUCCESS;
+		Calendar calendar = Calendar.getInstance();
+		int day = calendar.get(Calendar.DAY_OF_WEEK);
+		startService(initService(this, false));
+		if (day == Calendar.SUNDAY) {
+			startService(initService(this, true));
 		}
+		return GcmNetworkManager.RESULT_SUCCESS;
 	}
 
 
