@@ -33,15 +33,17 @@ package com.hpush.app;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Properties;
 
+import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
 import com.chopping.net.TaskHelper;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
+import com.google.android.gms.gcm.OneoffTask;
 import com.hpush.R;
 import com.hpush.app.noactivities.AppGuardService;
 import com.squareup.okhttp.OkHttpClient;
@@ -100,26 +102,29 @@ public final class App extends MultiDexApplication {
                 }
             }
         }
-        startAppGuardService();
+        startAppGuardService(this, 0);
 	}
 
-    /**
-     * A background service that will looking for time to notify user for some weather condition.
-     */
-    private void startAppGuardService() {
-        long periodSecs = 82800L; // the task should be executed every 23 hours
+
+    public static void startAppGuardService(Context cxt, int plusDay) {
+		long currentTime = System.currentTimeMillis();
+		Calendar notifyTime = Calendar.getInstance();
+		notifyTime.set(Calendar.HOUR_OF_DAY, 23);
+		notifyTime.set(Calendar.MINUTE, 0);
+		notifyTime.set(Calendar.SECOND, 0);
+		notifyTime.add(Calendar.DAY_OF_YEAR, plusDay);
+		long nextFireWindow = notifyTime.getTimeInMillis() - currentTime;
         long flexSecs = 600L; // the task can run as early as 10 minutes from the scheduled time
         String tag = System.currentTimeMillis() + "";
-        PeriodicTask periodic = new PeriodicTask.Builder()
+		OneoffTask onceTask = new OneoffTask.Builder ()
                 .setService(AppGuardService.class)
-                .setPeriod(periodSecs)
-                .setFlex(flexSecs)
+                .setExecutionWindow(nextFireWindow + flexSecs, nextFireWindow + flexSecs * 2)
                 .setTag(tag)
                 .setPersisted(true)
                 .setRequiredNetwork(com.google.android.gms.gcm.Task.NETWORK_STATE_ANY)
                 .setRequiresCharging(false)
                 .build();
-        GcmNetworkManager.getInstance(this).schedule(periodic);
+        GcmNetworkManager.getInstance(cxt).schedule(onceTask);
     }
 
     /**

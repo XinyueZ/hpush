@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.hpush.app.App;
 
 public final class AppGuardService extends GcmTaskService {
 	private static final String TAG = "AppGuardService";
@@ -22,6 +23,7 @@ public final class AppGuardService extends GcmTaskService {
 		if (day == Calendar.SUNDAY) {
 			startService(initService(this, true));
 		}
+		App.startAppGuardService(getApplication(), 1);
 		return GcmNetworkManager.RESULT_SUCCESS;
 	}
 
