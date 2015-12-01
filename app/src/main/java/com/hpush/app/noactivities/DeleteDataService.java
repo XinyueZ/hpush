@@ -1,4 +1,4 @@
-package com.hpush.app;
+package com.hpush.app.noactivities;
 
 import android.app.IntentService;
 import android.app.NotificationManager;

@@ -43,6 +43,7 @@ import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.hpush.R;
+import com.hpush.app.noactivities.AppGuardService;
 import com.squareup.okhttp.OkHttpClient;
 
 import cn.bmob.v3.Bmob;

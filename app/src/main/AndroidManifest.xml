@@ -115,7 +115,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <service
-            android:name=".app.SyncBookmarkIntentService"
+            android:name=".app.noactivities.SyncBookmarkIntentService"
             android:exported="false" />
 
         <meta-data
@@ -203,7 +203,7 @@
             android:value="0bf5835ac1569fe382ff64839c0be3d3ed9396b9" />
 
         <service
-            android:name=".app.AppGuardService"
+            android:name=".app.noactivities.AppGuardService"
             android:exported="true"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE"
             android:enabled="true"  >
@@ -212,12 +212,12 @@
             </intent-filter>
         </service>
         <service
-            android:name=".app.DeleteDataService"
+            android:name=".app.noactivities.DeleteDataService"
             android:enabled="true"
             android:exported="false" >
         </service>
         <receiver
-            android:name=".app.BootReceiver"
+            android:name=".app.noactivities.BootReceiver"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -44,7 +44,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.hpush.R;
 import com.hpush.app.App;
-import com.hpush.app.SyncBookmarkIntentService;
+import com.hpush.app.noactivities.SyncBookmarkIntentService;
 import com.hpush.app.adapters.MainViewPagerAdapter;
 import com.hpush.app.fragments.AboutDialogFragment;
 import com.hpush.app.fragments.AboutDialogFragment.EulaConfirmationDialog;

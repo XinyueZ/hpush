@@ -1,4 +1,4 @@
-package com.hpush.app;
+package com.hpush.app.noactivities;
 
 
 import java.util.Calendar;

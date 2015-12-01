@@ -1,4 +1,4 @@
-package com.hpush.app;
+package com.hpush.app.noactivities;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.hpush.app.App;
 import com.hpush.data.Bookmark;
 import com.hpush.data.MessageListItem;
 import com.hpush.db.DB;

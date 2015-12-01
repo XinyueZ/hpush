@@ -31,7 +31,7 @@ import com.google.android.gms.plus.Plus.PlusOptions;
 import com.google.android.gms.plus.model.people.Person;
 import com.hpush.R;
 import com.hpush.app.App;
-import com.hpush.app.SyncBookmarkIntentService;
+import com.hpush.app.noactivities.SyncBookmarkIntentService;
 import com.hpush.databinding.ActivityConnectGoogleBinding;
 import com.hpush.utils.Prefs;
 import com.nineoldandroids.view.ViewPropertyAnimator;
