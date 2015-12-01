@@ -20,14 +20,15 @@ public final class RemoveAllEvent {
 
 	/**
 	 * Constructor of {@link RemoveAllEvent}
-	 * @param whichPage Pager type.
+	 *
+	 * @param whichPage
+	 * 		Pager type.
 	 */
-	public RemoveAllEvent(WhichPage whichPage) {
+	public RemoveAllEvent( WhichPage whichPage ) {
 		mWhichPage = whichPage;
 	}
 
 	/**
-	 *
 	 * @return Pager type.
 	 */
 	public WhichPage getWhichPage() {

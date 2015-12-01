@@ -11,25 +11,21 @@ public final class RecentListItem extends MessageListItem {
 	 */
 	private Recent mRecent;
 
-	public RecentListItem(Recent recent) {
-		super(recent);
+	public RecentListItem( Recent recent ) {
+		super( recent );
 		mRecent = recent;
 	}
 
 	public boolean isBookmarked() {
 		return mRecent.isBookmarked();
 	}
-
+	public void setBookmarked( boolean bookmarked ) {
+		mRecent.setBookmarked( bookmarked );
+	}
 	@Override
 	public String getText() {
 		return mRecent.getText();
 	}
-
-	@Override
-	public void setPushedTime(long pushedTime) {
-		mRecent.setPushedTime(pushedTime);
-	}
-
 	@Override
 	public long getScore() {
 		return mRecent.getScore();
@@ -49,34 +45,28 @@ public final class RecentListItem extends MessageListItem {
 	public long getDbId() {
 		return mRecent.getDbId();
 	}
-
+	@Override
+	public void setDbId( long dbId ) {
+		mRecent.setDbId( dbId );
+	}
 	@Override
 	public long getPushedTime() {
 		return mRecent.getPushedTime();
 	}
-
+	@Override
+	public void setPushedTime( long pushedTime ) {
+		mRecent.setPushedTime( pushedTime );
+	}
 	@Override
 	public long getTime() {
 		return mRecent.getTime();
 	}
-
-	@Override
-	public void setDbId(long dbId) {
-		mRecent.setDbId(dbId);
-	}
-
 	@Override
 	public String getTitle() {
 		return mRecent.getTitle();
 	}
-
 	@Override
 	public String getBy() {
 		return mRecent.getBy();
-	}
-
-
-	public void setBookmarked( boolean bookmarked) {
-		mRecent.setBookmarked(bookmarked);
 	}
 }

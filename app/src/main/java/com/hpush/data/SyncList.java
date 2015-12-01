@@ -13,7 +13,7 @@ public final class SyncList {
 	@SerializedName("SyncList")
 	private List<Message> mSyncList;
 
-	public SyncList(List<Message> syncList) {
+	public SyncList( List<Message> syncList ) {
 		mSyncList = syncList;
 	}
 
@@ -21,7 +21,7 @@ public final class SyncList {
 		return mSyncList;
 	}
 
-	public void setSyncList(List<Message> syncList) {
+	public void setSyncList( List<Message> syncList ) {
 		mSyncList = syncList;
 	}
 }

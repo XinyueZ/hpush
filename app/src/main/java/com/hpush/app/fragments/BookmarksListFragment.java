@@ -24,13 +24,13 @@ import cn.bmob.v3.listener.FindListener;
  *
  * @author Xinyue Zhao
  */
-public final class BookmarksListFragment extends MessagesListFragment{
+public final class BookmarksListFragment extends MessagesListFragment {
 	/**
 	 * Main layout for this component.
 	 */
-	private static final int LAYOUT = R.layout.fragment_bookmarks_list;
+	private static final int LAYOUT       = R.layout.fragment_bookmarks_list;
 	/**
-	 *  Menu on toolbar.
+	 * Menu on toolbar.
 	 */
 	private static final int TOOLBAR_MENU = R.menu.item2;
 
@@ -39,14 +39,13 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	//------------------------------------------------
 
 
-
 	/**
 	 * Handler for {@link SyncList}.
 	 *
 	 * @param e
 	 * 		Event {@link}.
 	 */
-	public void onEvent(SyncList e) {
+	public void onEvent( SyncList e ) {
 		//We don't sync in bookmark.
 	}
 	/**
@@ -55,7 +54,7 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 * @param e
 	 * 		Event {@link}.
 	 */
-	public void onEvent(BookmarkedEvent e) {
+	public void onEvent( BookmarkedEvent e ) {
 		loadMessages();
 	}
 
@@ -66,7 +65,7 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 * @param e
 	 * 		Event {@link com.hpush.bus.BookmarkAllEvent}.
 	 */
-	public void onEvent(BookmarkAllEvent e) {
+	public void onEvent( BookmarkAllEvent e ) {
 		//We don't bookmark anything in "bookmark-list".
 	}
 
@@ -77,79 +76,81 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	 * @param e
 	 * 		Event {@link com.hpush.bus.BookmarkMessageEvent}.
 	 */
-	public void onEvent(BookmarkMessageEvent e) {
+	public void onEvent( BookmarkMessageEvent e ) {
 		//We don't bookmark anything in "bookmark-list".
 	}
 
 	//------------------------------------------------
 
-	public static BookmarksListFragment newInstance(Context context) {
-		return (BookmarksListFragment) BookmarksListFragment.instantiate(context, BookmarksListFragment.class.getName());
+	public static BookmarksListFragment newInstance( Context context ) {
+		return (BookmarksListFragment) BookmarksListFragment.instantiate( context, BookmarksListFragment.class.getName() );
 	}
 
 	/**
 	 * Get data from application's database.
+	 *
 	 * @return List of all data from DB.
 	 */
 	protected List<MessageListItem> fetchDataFromDB() {
-		return getDB().getBookmarks(Sort.DESC);
+		return getDB().getBookmarks( Sort.DESC );
 	}
 
 	/**
 	 * Delete one item on database.
-	 * @param obj The item to delete.
+	 *
+	 * @param obj
+	 * 		The item to delete.
 	 */
-	protected void deleteDataOnDB(final MessageListItem obj) {
-		if(getWhichPage() == WhichPage.Bookmarks) {
-			getDB().removeBookmark(obj == null ? null : obj.getMessage());
-			Prefs prefs = Prefs.getInstance(App.Instance);
-			if(obj == null) {
+	protected void deleteDataOnDB( final MessageListItem obj ) {
+		if( getWhichPage() == WhichPage.Bookmarks ) {
+			getDB().removeBookmark( obj == null ? null : obj.getMessage() );
+			Prefs prefs = Prefs.getInstance( App.Instance );
+			if( obj == null ) {
 				//Remove all on backend.
 				BmobQuery<Bookmark> query = new BmobQuery<>();
-				query.addWhereEqualTo("mUID", prefs.getGoogleAccount());
-				query.findObjects(App.Instance, new FindListener<Bookmark>() {
+				query.addWhereEqualTo( "mUID", prefs.getGoogleAccount() );
+				query.findObjects( App.Instance, new FindListener<Bookmark>() {
 					@Override
-					public void onSuccess(List<Bookmark> list) {
-						for(Bookmark bookmark : list) {
+					public void onSuccess( List<Bookmark> list ) {
+						for( Bookmark bookmark : list ) {
 							Bookmark delBookmark = new Bookmark();
-							delBookmark.setObjectId(bookmark.getObjectId());
-							delBookmark.delete(App.Instance);
+							delBookmark.setObjectId( bookmark.getObjectId() );
+							delBookmark.delete( App.Instance );
 						}
 					}
 
 					@Override
-					public void onError(int i, String s) {
+					public void onError( int i, String s ) {
 						//Ignore.
 					}
-				});
+				} );
 			} else {
 				BmobQuery<Bookmark> query = new BmobQuery<>();
-				query.addWhereEqualTo("mUID", prefs.getGoogleAccount());
-				query.findObjects(App.Instance, new FindListener<Bookmark>() {
+				query.addWhereEqualTo( "mUID", prefs.getGoogleAccount() );
+				query.findObjects( App.Instance, new FindListener<Bookmark>() {
 					@Override
-					public void onSuccess(List<Bookmark> list) {
-						for(Bookmark bookmark : list) {
-							if(bookmark.equals(obj.getMessage())) {
-								Bookmark delBookmark = new Bookmark(obj.getMessage());
-								delBookmark.setObjectId(bookmark.getObjectId());
-								delBookmark.delete(App.Instance);
+					public void onSuccess( List<Bookmark> list ) {
+						for( Bookmark bookmark : list ) {
+							if( bookmark.equals( obj.getMessage() ) ) {
+								Bookmark delBookmark = new Bookmark( obj.getMessage() );
+								delBookmark.setObjectId( bookmark.getObjectId() );
+								delBookmark.delete( App.Instance );
 								break;
 							}
 						}
 					}
 
 					@Override
-					public void onError(int i, String s) {
+					public void onError( int i, String s ) {
 						//Ignore.
 					}
-				});
+				} );
 			}
 		}
 	}
 
 
 	/**
-	 *
 	 * @return Define the command whom to do remove.
 	 */
 	protected WhichPage getWhichPage() {
@@ -157,7 +158,6 @@ public final class BookmarksListFragment extends MessagesListFragment{
 	}
 
 	/**
-	 *
 	 * @return Menu on toolbar.
 	 */
 	protected int getToolbarMenuId() {

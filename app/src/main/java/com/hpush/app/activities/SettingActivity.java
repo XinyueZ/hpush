@@ -57,7 +57,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	/**
 	 * Progress indicator.
 	 */
-	private ProgressDialog mPb;
+	private ProgressDialog    mPb;
 	/**
 	 * Listener while registering push-feature.
 	 */
@@ -74,11 +74,11 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	private CheckBoxPreference mJobPref;
 
 
-	private Intent mSubJobIntent;
-	private Intent mSubShowIntent;
-	private Intent mSubAskIntent;
-	private Intent mSubTopIntent;
-	private Intent mSubNewIntent;
+	private Intent            mSubJobIntent;
+	private Intent            mSubShowIntent;
+	private Intent            mSubAskIntent;
+	private Intent            mSubTopIntent;
+	private Intent            mSubNewIntent;
 	private BroadcastReceiver mSubTopsRegRecv;
 	private BroadcastReceiver mSubNewRegRecv;
 	private BroadcastReceiver mSubAskRegRecv;
@@ -86,11 +86,11 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	private BroadcastReceiver mSubJobsRegRecv;
 
 
-	private Intent mUnsubJobIntent;
-	private Intent mUnsubShowIntent;
-	private Intent mUnsubAskIntent;
-	private Intent mUnsubTopIntent;
-	private Intent mUnsubNewIntent;
+	private Intent            mUnsubJobIntent;
+	private Intent            mUnsubShowIntent;
+	private Intent            mUnsubAskIntent;
+	private Intent            mUnsubTopIntent;
+	private Intent            mUnsubNewIntent;
 	private BroadcastReceiver mUnsubTopsRegRecv;
 	private BroadcastReceiver mUnsubNewRegRecv;
 	private BroadcastReceiver mUnsubAskRegRecv;
@@ -107,7 +107,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 * @param e
 	 * 		Event {@link  com.chopping.bus.ApplicationConfigurationDownloadedEvent}.
 	 */
-	public void onEvent(ApplicationConfigurationDownloadedEvent e) {
+	public void onEvent( ApplicationConfigurationDownloadedEvent e ) {
 		onAppConfigLoaded();
 	}
 
@@ -117,8 +117,8 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 * @param e
 	 * 		Event {@link com.chopping.bus.ApplicationConfigurationLoadingIgnoredEvent}.
 	 */
-	public void onEvent(ApplicationConfigurationLoadingIgnoredEvent e) {
-		LL.i("Ignored a change to load application's configuration.");
+	public void onEvent( ApplicationConfigurationLoadingIgnoredEvent e ) {
+		LL.i( "Ignored a change to load application's configuration." );
 		onAppConfigIgnored();
 	}
 
@@ -132,58 +132,56 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 * @param openSettingV
 	 * 		The view that open the {@link com.hpush.app.activities.WebViewActivity}.
 	 */
-	public static void showInstance(Activity context, View openSettingV) {
-		Intent intent = new Intent(context, SettingActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+	public static void showInstance( Activity context, View openSettingV ) {
+		Intent intent = new Intent( context, SettingActivity.class );
+		intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP );
 		//		if (openSettingV != null && (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) ){
 		//			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(context,
 		//					Pair.create(openSettingV, "openSettingV"));
 		//			context.startActivity(intent, transitionActivityOptions.toBundle());
 		//		} else {
-		context.startActivity(intent);
+		context.startActivity( intent );
 		//		}
 	}
 
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Prefs prefs = Prefs.getInstance(getApplication());
-		if (getResources().getBoolean(R.bool.landscape)) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+	public void onCreate( Bundle savedInstanceState ) {
+		super.onCreate( savedInstanceState );
+		Prefs prefs = Prefs.getInstance( getApplication() );
+		if( getResources().getBoolean( R.bool.landscape ) ) {
+			setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
 		}
-		addPreferencesFromResource(R.xml.settings);
-		mPb = ProgressDialog.show(this, null, getString(R.string.msg_app_init));
-		mPb.setCancelable(true);
-		mToolbar = (Toolbar) getLayoutInflater().inflate(R.layout.toolbar, null, false);
-		addContentView(mToolbar, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		mToolbar.setTitle(R.string.lbl_setting);
-		mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-		mToolbar.setNavigationOnClickListener(new OnClickListener() {
+		addPreferencesFromResource( R.xml.settings );
+		mPb = ProgressDialog.show( this, null, getString( R.string.msg_app_init ) );
+		mPb.setCancelable( true );
+		mToolbar = (Toolbar) getLayoutInflater().inflate( R.layout.toolbar, null, false );
+		addContentView( mToolbar, new LayoutParams( LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT ) );
+		mToolbar.setTitle( R.string.lbl_setting );
+		mToolbar.setNavigationIcon( R.drawable.ic_arrow_back_white_24dp );
+		mToolbar.setNavigationOnClickListener( new OnClickListener() {
 			@Override
-			public void onClick(View v) {
+			public void onClick( View v ) {
 				backPressed();
 			}
-		});
+		} );
 
-		CheckBoxPreference push = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_SETTING);
-		push.setSummary(getString(!TextUtils.isEmpty(prefs.getPushRegId()) ? R.string.setting_push_on :
-				R.string.setting_push_off));
-		push.setChecked(!TextUtils.isEmpty(prefs.getPushRegId()));
-		push.setOnPreferenceChangeListener(this);
+		CheckBoxPreference push = (CheckBoxPreference) findPreference( Prefs.KEY_PUSH_SETTING );
+		push.setSummary( getString( !TextUtils.isEmpty( prefs.getPushRegId() ) ? R.string.setting_push_on : R.string.setting_push_off ) );
+		push.setChecked( !TextUtils.isEmpty( prefs.getPushRegId() ) );
+		push.setOnPreferenceChangeListener( this );
 
 		subscribeTopStories();
 		unsubscribeTopStories();
-		mTopPref = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_TOPSTORIES);
-		mTopPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		mTopPref = (CheckBoxPreference) findPreference( Prefs.KEY_PUSH_TOPSTORIES );
+		mTopPref.setOnPreferenceClickListener( new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				if (TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
-					Snackbar.make(findViewById(android.R.id.list), R.string.lbl_no_push_for_subscribe,
-							Snackbar.LENGTH_SHORT).show();
-					mTopPref.setChecked(false);
+			public boolean onPreferenceClick( Preference preference ) {
+				if( TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
+					Snackbar.make( findViewById( android.R.id.list ), R.string.lbl_no_push_for_subscribe, Snackbar.LENGTH_SHORT ).show();
+					mTopPref.setChecked( false );
 				} else {
-					if (Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_TOPSTORIES)) {
+					if( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_TOPSTORIES ) ) {
 						subscribeTopStories();
 					} else {
 						unsubscribeTopStories();
@@ -191,20 +189,19 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 				}
 				return true;
 			}
-		});
+		} );
 
 		subscribeNewStories();
 		unsubscribeNewStories();
-		mNewPref = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_NEWSTORIES);
-		mNewPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		mNewPref = (CheckBoxPreference) findPreference( Prefs.KEY_PUSH_NEWSTORIES );
+		mNewPref.setOnPreferenceClickListener( new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				if (TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
-					Snackbar.make(findViewById(android.R.id.list), R.string.lbl_no_push_for_subscribe,
-							Snackbar.LENGTH_SHORT).show();
-					mNewPref.setChecked(false);
+			public boolean onPreferenceClick( Preference preference ) {
+				if( TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
+					Snackbar.make( findViewById( android.R.id.list ), R.string.lbl_no_push_for_subscribe, Snackbar.LENGTH_SHORT ).show();
+					mNewPref.setChecked( false );
 				} else {
-					if (Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_NEWSTORIES)) {
+					if( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_NEWSTORIES ) ) {
 						subscribeNewStories();
 					} else {
 						unsubscribeNewStories();
@@ -212,20 +209,19 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 				}
 				return true;
 			}
-		});
+		} );
 
 		subscribeAskStories();
 		unsubscribeAskStories();
-		mAskPref = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_ASKSTORIES);
-		mAskPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		mAskPref = (CheckBoxPreference) findPreference( Prefs.KEY_PUSH_ASKSTORIES );
+		mAskPref.setOnPreferenceClickListener( new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				if (TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
-					Snackbar.make(findViewById(android.R.id.list), R.string.lbl_no_push_for_subscribe,
-							Snackbar.LENGTH_SHORT).show();
-					mAskPref.setChecked(false);
+			public boolean onPreferenceClick( Preference preference ) {
+				if( TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
+					Snackbar.make( findViewById( android.R.id.list ), R.string.lbl_no_push_for_subscribe, Snackbar.LENGTH_SHORT ).show();
+					mAskPref.setChecked( false );
 				} else {
-					if (Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_ASKSTORIES)) {
+					if( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_ASKSTORIES ) ) {
 						subscribeAskStories();
 					} else {
 						unsubscribeAskStories();
@@ -233,20 +229,19 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 				}
 				return true;
 			}
-		});
+		} );
 
 		subscribeShowStories();
 		unsubscribeShowStories();
-		mShowPref = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_SHOWSTORIES);
-		mShowPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		mShowPref = (CheckBoxPreference) findPreference( Prefs.KEY_PUSH_SHOWSTORIES );
+		mShowPref.setOnPreferenceClickListener( new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				if (TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
-					Snackbar.make(findViewById(android.R.id.list), R.string.lbl_no_push_for_subscribe,
-							Snackbar.LENGTH_SHORT).show();
-					mShowPref.setChecked(false);
+			public boolean onPreferenceClick( Preference preference ) {
+				if( TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
+					Snackbar.make( findViewById( android.R.id.list ), R.string.lbl_no_push_for_subscribe, Snackbar.LENGTH_SHORT ).show();
+					mShowPref.setChecked( false );
 				} else {
-					if (Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_SHOWSTORIES)) {
+					if( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_SHOWSTORIES ) ) {
 						subscribeShowStories();
 					} else {
 						unsubscribeShowStories();
@@ -254,20 +249,19 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 				}
 				return true;
 			}
-		});
+		} );
 
 		subscribeJobStories();
 		unsubscribeJobStories();
-		mJobPref = (CheckBoxPreference) findPreference(Prefs.KEY_PUSH_JOBSTORIES);
-		mJobPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		mJobPref = (CheckBoxPreference) findPreference( Prefs.KEY_PUSH_JOBSTORIES );
+		mJobPref.setOnPreferenceClickListener( new OnPreferenceClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
-				if (TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
-					Snackbar.make(findViewById(android.R.id.list), R.string.lbl_no_push_for_subscribe,
-							Snackbar.LENGTH_SHORT).show();
-					mJobPref.setChecked(false);
+			public boolean onPreferenceClick( Preference preference ) {
+				if( TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
+					Snackbar.make( findViewById( android.R.id.list ), R.string.lbl_no_push_for_subscribe, Snackbar.LENGTH_SHORT ).show();
+					mJobPref.setChecked( false );
 				} else {
-					if (Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_JOBSTORIES)) {
+					if( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_JOBSTORIES ) ) {
 						subscribeJobStories();
 					} else {
 						unsubscribeJobStories();
@@ -275,89 +269,91 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 				}
 				return true;
 			}
-		});
-		mTopPref.setChecked(prefs.getPush(Prefs.KEY_PUSH_TOPSTORIES));
-		mNewPref.setChecked(prefs.getPush(Prefs.KEY_PUSH_NEWSTORIES));
-		mAskPref.setChecked(prefs.getPush(Prefs.KEY_PUSH_ASKSTORIES));
-		mShowPref.setChecked(prefs.getPush(Prefs.KEY_PUSH_SHOWSTORIES));
-		mJobPref.setChecked(prefs.getPush(Prefs.KEY_PUSH_JOBSTORIES));
+		} );
+		mTopPref.setChecked( prefs.getPush( Prefs.KEY_PUSH_TOPSTORIES ) );
+		mNewPref.setChecked( prefs.getPush( Prefs.KEY_PUSH_NEWSTORIES ) );
+		mAskPref.setChecked( prefs.getPush( Prefs.KEY_PUSH_ASKSTORIES ) );
+		mShowPref.setChecked( prefs.getPush( Prefs.KEY_PUSH_SHOWSTORIES ) );
+		mJobPref.setChecked( prefs.getPush( Prefs.KEY_PUSH_JOBSTORIES ) );
 
-		ListPreference sort = (ListPreference) findPreference(Prefs.KEY_SORT_TYPE);
-		String value = prefs.getSortTypeValue();
-		sort.setValue(value);
-		int pos = Integer.valueOf(value);
-		String[] arr = getResources().getStringArray(R.array.setting_sort_types);
-		sort.setSummary(arr[pos]);
-		sort.setOnPreferenceChangeListener(this);
+		ListPreference sort  = (ListPreference) findPreference( Prefs.KEY_SORT_TYPE );
+		String         value = prefs.getSortTypeValue();
+		sort.setValue( value );
+		int      pos = Integer.valueOf( value );
+		String[] arr = getResources().getStringArray( R.array.setting_sort_types );
+		sort.setSummary( arr[ pos ] );
+		sort.setOnPreferenceChangeListener( this );
 
 
-		ListPreference sound = (ListPreference) findPreference(Prefs.KEY_SOUND_TYPE);
-		String soundValue = prefs.getSoundTypeValue();
-		sound.setValue(soundValue);
-		int posSound = Integer.valueOf(soundValue);
-		String[] arrSound = getResources().getStringArray(R.array.setting_sound_types);
-		sound.setSummary(arrSound[posSound]);
-		sound.setOnPreferenceChangeListener(this);
+		ListPreference sound      = (ListPreference) findPreference( Prefs.KEY_SOUND_TYPE );
+		String         soundValue = prefs.getSoundTypeValue();
+		sound.setValue( soundValue );
+		int      posSound = Integer.valueOf( soundValue );
+		String[] arrSound = getResources().getStringArray( R.array.setting_sound_types );
+		sound.setSummary( arrSound[ posSound ] );
+		sound.setOnPreferenceChangeListener( this );
 
-		((MarginLayoutParams) findViewById(android.R.id.list).getLayoutParams()).topMargin = getActionBarHeight(this);
+		( (MarginLayoutParams) findViewById( android.R.id.list ).getLayoutParams() ).topMargin = getActionBarHeight( this );
 
 
 		//Listeners for register and unregister PUSH.
 		mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 			@Override
-			public void onReceive(Context context, Intent intent) {
-				if (!TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
+			public void onReceive( Context context, Intent intent ) {
+				if( !TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
 					dismissPb();
-					SubscribeTopicsActivity.showInstance(SettingActivity.this);
+					SubscribeTopicsActivity.showInstance( SettingActivity.this );
 				} else {
 					dismissPb();
-					Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-							.setAction(R.string.btn_retry, new OnClickListener() {
+					Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+							R.string.btn_retry, new OnClickListener() {
 								@Override
-								public void onClick(View v) {
-									mPb = ProgressDialog.show(SettingActivity.this, null, getString(
-											R.string.msg_push_registering));
-									mPb.setCancelable(true);
-									Intent intent = new Intent(SettingActivity.this, RegistrationIntentService.class);
-									startService(intent);
+								public void onClick( View v ) {
+									mPb = ProgressDialog.show(
+											SettingActivity.this, null, getString( R.string.msg_push_registering ) );
+									mPb.setCancelable( true );
+									Intent intent = new Intent(
+											SettingActivity.this, RegistrationIntentService.class );
+									startService( intent );
 								}
-							}).show();
+							} ).show();
 				}
 			}
 		};
 
 		mUnregistrationBroadcastReceiver = new BroadcastReceiver() {
 			@Override
-			public void onReceive(Context context, Intent intent) {
-				if (TextUtils.isEmpty(Prefs.getInstance(getApplicationContext()).getPushRegId())) {
+			public void onReceive( Context context, Intent intent ) {
+				if( TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
 					dismissPb();
-					mTopPref.setChecked(false);
-					mNewPref.setChecked(false);
-					mAskPref.setChecked(false);
-					mShowPref.setChecked(false);
-					mJobPref.setChecked(false);
+					mTopPref.setChecked( false );
+					mNewPref.setChecked( false );
+					mAskPref.setChecked( false );
+					mShowPref.setChecked( false );
+					mJobPref.setChecked( false );
 				} else {
 					dismissPb();
-					Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-							.setAction(R.string.btn_retry, new OnClickListener() {
+					Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+							R.string.btn_retry, new OnClickListener() {
 								@Override
-								public void onClick(View v) {
-									mPb = ProgressDialog.show(SettingActivity.this, null, getString(
-											R.string.msg_push_unregistering));
-									mPb.setCancelable(true);
-									Intent intent = new Intent(SettingActivity.this, UnregistrationIntentService.class);
-									startService(intent);
+								public void onClick( View v ) {
+									mPb = ProgressDialog.show(
+											SettingActivity.this, null, getString( R.string.msg_push_unregistering ) );
+									mPb.setCancelable( true );
+									Intent intent = new Intent(
+											SettingActivity.this, UnregistrationIntentService.class );
+									startService( intent );
 								}
-							}).show();
+							} ).show();
 				}
 			}
 		};
 
 
-		LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver, new IntentFilter(
-				RegistrationIntentService.REGISTRATION_COMPLETE));
-		LocalBroadcastManager.getInstance(this).registerReceiver(mUnregistrationBroadcastReceiver, new IntentFilter(
-				UnregistrationIntentService.UNREGISTRATION_COMPLETE));
+		LocalBroadcastManager.getInstance( this ).registerReceiver(
+				mRegistrationBroadcastReceiver, new IntentFilter( RegistrationIntentService.REGISTRATION_COMPLETE ) );
+		LocalBroadcastManager.getInstance( this ).registerReceiver(
+				mUnregistrationBroadcastReceiver, new IntentFilter( UnregistrationIntentService.UNREGISTRATION_COMPLETE ) );
 	}
 
 
@@ -369,55 +365,55 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 *
 	 * @return Height of bar.
 	 */
-	public static int getActionBarHeight(Activity activity) {
+	public static int getActionBarHeight( Activity activity ) {
 		int[] abSzAttr;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
 			abSzAttr = new int[] { android.R.attr.actionBarSize };
 		} else {
 			abSzAttr = new int[] { R.attr.actionBarSize };
 		}
-		TypedArray a = activity.obtainStyledAttributes(abSzAttr);
-		return a.getDimensionPixelSize(0, -1);
+		TypedArray a = activity.obtainStyledAttributes( abSzAttr );
+		return a.getDimensionPixelSize( 0, -1 );
 	}
 
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			backPressed();
-			break;
+	public boolean onOptionsItemSelected( MenuItem item ) {
+		switch( item.getItemId() ) {
+			case android.R.id.home:
+				backPressed();
+				break;
 		}
-		return super.onOptionsItemSelected(item);
+		return super.onOptionsItemSelected( item );
 	}
 
 
 	@Override
-	public boolean onPreferenceChange(Preference preference, Object newValue) {
-		if (preference.getKey().equals(Prefs.KEY_PUSH_SETTING)) {
-			if (!Boolean.valueOf(newValue.toString())) {
-				mPb = ProgressDialog.show(SettingActivity.this, null, getString(R.string.msg_push_unregistering));
-				Intent intent = new Intent(this, UnregistrationIntentService.class);
-				startService(intent);
+	public boolean onPreferenceChange( Preference preference, Object newValue ) {
+		if( preference.getKey().equals( Prefs.KEY_PUSH_SETTING ) ) {
+			if( !Boolean.valueOf( newValue.toString() ) ) {
+				mPb = ProgressDialog.show( SettingActivity.this, null, getString( R.string.msg_push_unregistering ) );
+				Intent intent = new Intent( this, UnregistrationIntentService.class );
+				startService( intent );
 			} else {
-				mPb = ProgressDialog.show(this, null, getString(R.string.msg_push_registering));
-				Intent intent = new Intent(this, RegistrationIntentService.class);
-				startService(intent);
+				mPb = ProgressDialog.show( this, null, getString( R.string.msg_push_registering ) );
+				Intent intent = new Intent( this, RegistrationIntentService.class );
+				startService( intent );
 			}
 		}
 
 
-		if (preference.getKey().equals(Prefs.KEY_SORT_TYPE)) {
-			int pos = Integer.valueOf(newValue.toString());
-			String[] arr = getResources().getStringArray(R.array.setting_sort_types);
-			preference.setSummary(arr[pos]);
+		if( preference.getKey().equals( Prefs.KEY_SORT_TYPE ) ) {
+			int      pos = Integer.valueOf( newValue.toString() );
+			String[] arr = getResources().getStringArray( R.array.setting_sort_types );
+			preference.setSummary( arr[ pos ] );
 		}
 
 
-		if (preference.getKey().equals(Prefs.KEY_SOUND_TYPE)) {
-			int pos = Integer.valueOf(newValue.toString());
-			String[] arr = getResources().getStringArray(R.array.setting_sound_types);
-			preference.setSummary(arr[pos]);
+		if( preference.getKey().equals( Prefs.KEY_SOUND_TYPE ) ) {
+			int      pos = Integer.valueOf( newValue.toString() );
+			String[] arr = getResources().getStringArray( R.array.setting_sound_types );
+			preference.setSummary( arr[ pos ] );
 		}
 		return true;
 	}
@@ -425,48 +421,48 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	@Override
 	protected void onResume() {
-		EventBus.getDefault().registerSticky(this);
+		EventBus.getDefault().registerSticky( this );
 		super.onResume();
 
 		String mightError = null;
 		try {
-			Prefs.getInstance(getApplication()).downloadApplicationConfiguration();
-		} catch (InvalidAppPropertiesException _e) {
+			Prefs.getInstance( getApplication() ).downloadApplicationConfiguration();
+		} catch( InvalidAppPropertiesException _e ) {
 			mightError = _e.getMessage();
-		} catch (CanNotOpenOrFindAppPropertiesException _e) {
+		} catch( CanNotOpenOrFindAppPropertiesException _e ) {
 			mightError = _e.getMessage();
 		}
-		if (mightError != null) {
-			new AlertDialog.Builder(this).setTitle(com.chopping.R.string.app_name).setMessage(mightError).setCancelable(
-					false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					finish();
-				}
-			}).create().show();
+		if( mightError != null ) {
+			new AlertDialog.Builder( this ).setTitle( com.chopping.R.string.app_name ).setMessage( mightError ).setCancelable( false )
+					.setPositiveButton( "Ok", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick( DialogInterface dialog, int which ) {
+							finish();
+						}
+					} ).create().show();
 		}
 	}
 
 	@Override
 	protected void onPause() {
-		EventBus.getDefault().unregister(this);
+		EventBus.getDefault().unregister( this );
 		super.onPause();
 	}
 
 	@Override
 	protected void onDestroy() {
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mUnregistrationBroadcastReceiver);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mSubTopsRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mSubNewRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mSubAskRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mSubShowRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mSubJobsRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mUnsubTopsRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mUnsubNewRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mUnsubAskRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mUnsubShowRegRecv);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mUnsubJobsRegRecv);
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mRegistrationBroadcastReceiver );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mUnregistrationBroadcastReceiver );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mSubTopsRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mSubNewRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mSubAskRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mSubShowRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mSubJobsRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mUnsubTopsRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mUnsubNewRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mUnsubAskRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mUnsubShowRegRecv );
+		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mUnsubJobsRegRecv );
 		super.onDestroy();
 	}
 
@@ -474,7 +470,7 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 	 * Remove the progress indicator.
 	 */
 	private void dismissPb() {
-		if (mPb != null && mPb.isShowing()) {
+		if( mPb != null && mPb.isShowing() ) {
 			mPb.dismiss();
 		}
 	}
@@ -494,280 +490,278 @@ public final class SettingActivity extends PreferenceActivity implements Prefere
 
 	private void backPressed() {
 		dismissPb();
-		ActivityCompat.finishAfterTransition(this);
+		ActivityCompat.finishAfterTransition( this );
 	}
 
 
 	private void subscribeJobStories() {
-		if (mSubJobIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mSubJobsRegRecv = new BroadcastReceiver() {
+		if( mSubJobIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mSubJobsRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mJobPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_JOBSTORIES));
-					boolean success = intent.getBooleanExtra(SubscribeIntentService.SUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mJobPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_JOBSTORIES ) );
+					boolean success = intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										subscribeJobStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(SubscribeIntentService.SUBSCRIBE_COMPLETE));
-			mSubJobIntent = new Intent(getApplicationContext(), SubscribeIntentService.class);
-			mSubJobIntent.putExtra(SubscribeIntentService.TOPIC, Topics.GET_JOB_STORIES);
-			mSubJobIntent.putExtra(SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_JOBSTORIES);
-			mSubJobIntent.putExtra(SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_JOB_STORIES);
+			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
+			mSubJobIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
+			mSubJobIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_JOB_STORIES );
+			mSubJobIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_JOBSTORIES );
+			mSubJobIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_JOB_STORIES );
 		} else {
-			startService(mSubJobIntent);
+			startService( mSubJobIntent );
 		}
 	}
 
 	private void unsubscribeJobStories() {
-		if (mUnsubJobIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mUnsubJobsRegRecv = new BroadcastReceiver() {
+		if( mUnsubJobIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mUnsubJobsRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mJobPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_JOBSTORIES));
-					boolean success = intent.getBooleanExtra(UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mJobPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_JOBSTORIES ) );
+					boolean success = intent.getBooleanExtra( UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										unsubscribeJobStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(UnsubscribeIntentService.UNSUBSCRIBE_NAME));
-			mUnsubJobIntent = new Intent(getApplicationContext(), UnsubscribeIntentService.class);
-			mUnsubJobIntent.putExtra(UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES);
-			mUnsubJobIntent.putExtra(UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES);
-			mUnsubJobIntent.putExtra(UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES);
+			}, new IntentFilter( UnsubscribeIntentService.UNSUBSCRIBE_NAME ) );
+			mUnsubJobIntent = new Intent( getApplicationContext(), UnsubscribeIntentService.class );
+			mUnsubJobIntent.putExtra( UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES );
+			mUnsubJobIntent.putExtra( UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES );
+			mUnsubJobIntent.putExtra( UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES );
 		} else {
-			startService(mUnsubJobIntent);
+			startService( mUnsubJobIntent );
 		}
 	}
 
 	private void subscribeShowStories() {
-		if (mSubShowIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mSubShowRegRecv = new BroadcastReceiver() {
+		if( mSubShowIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mSubShowRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mShowPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(
-							Prefs.KEY_PUSH_SHOWSTORIES));
-					boolean success = intent.getBooleanExtra(SubscribeIntentService.SUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mShowPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_SHOWSTORIES ) );
+					boolean success = intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										subscribeShowStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(SubscribeIntentService.SUBSCRIBE_COMPLETE));
-			mSubShowIntent = new Intent(getApplicationContext(), SubscribeIntentService.class);
-			mSubShowIntent.putExtra(SubscribeIntentService.TOPIC, Topics.GET_SHOW_STORIES);
-			mSubShowIntent.putExtra(SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_SHOWSTORIES);
-			mSubShowIntent.putExtra(SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_SHOW_STORIES);
+			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
+			mSubShowIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
+			mSubShowIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_SHOW_STORIES );
+			mSubShowIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_SHOWSTORIES );
+			mSubShowIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_SHOW_STORIES );
 		} else {
-			startService(mSubShowIntent);
+			startService( mSubShowIntent );
 		}
 	}
 
 	private void unsubscribeShowStories() {
-		if (mUnsubShowIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mUnsubShowRegRecv = new BroadcastReceiver() {
+		if( mUnsubShowIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mUnsubShowRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mShowPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(
-							Prefs.KEY_PUSH_SHOWSTORIES));
-					boolean success = intent.getBooleanExtra(UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mShowPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_SHOWSTORIES ) );
+					boolean success = intent.getBooleanExtra( UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										unsubscribeShowStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(UnsubscribeIntentService.UNSUBSCRIBE_NAME));
-			mUnsubShowIntent = new Intent(getApplicationContext(), UnsubscribeIntentService.class);
-			mUnsubShowIntent.putExtra(UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES);
-			mUnsubShowIntent.putExtra(UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES);
-			mUnsubShowIntent.putExtra(UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES);
+			}, new IntentFilter( UnsubscribeIntentService.UNSUBSCRIBE_NAME ) );
+			mUnsubShowIntent = new Intent( getApplicationContext(), UnsubscribeIntentService.class );
+			mUnsubShowIntent.putExtra( UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES );
+			mUnsubShowIntent.putExtra( UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES );
+			mUnsubShowIntent.putExtra( UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES );
 		} else {
-			startService(mUnsubShowIntent);
+			startService( mUnsubShowIntent );
 		}
 	}
 
 	private void subscribeAskStories() {
-		if (mSubAskIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mSubAskRegRecv = new BroadcastReceiver() {
+		if( mSubAskIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mSubAskRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mAskPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_ASKSTORIES));
-					boolean success = intent.getBooleanExtra(SubscribeIntentService.SUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mAskPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_ASKSTORIES ) );
+					boolean success = intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										subscribeAskStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(SubscribeIntentService.SUBSCRIBE_COMPLETE));
-			mSubAskIntent = new Intent(getApplicationContext(), SubscribeIntentService.class);
-			mSubAskIntent.putExtra(SubscribeIntentService.TOPIC, Topics.GET_ASK_STORIES);
-			mSubAskIntent.putExtra(SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_ASKSTORIES);
-			mSubAskIntent.putExtra(SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_ASK_STORIES);
+			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
+			mSubAskIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
+			mSubAskIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_ASK_STORIES );
+			mSubAskIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_ASKSTORIES );
+			mSubAskIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_ASK_STORIES );
 		} else {
-			startService(mSubAskIntent);
+			startService( mSubAskIntent );
 		}
 	}
 
 	private void unsubscribeAskStories() {
-		if (mUnsubAskIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mUnsubAskRegRecv = new BroadcastReceiver() {
+		if( mUnsubAskIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mUnsubAskRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mAskPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_ASKSTORIES));
-					boolean success = intent.getBooleanExtra(UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mAskPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_ASKSTORIES ) );
+					boolean success = intent.getBooleanExtra( UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										unsubscribeAskStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(UnsubscribeIntentService.UNSUBSCRIBE_NAME));
-			mUnsubAskIntent = new Intent(getApplicationContext(), UnsubscribeIntentService.class);
-			mUnsubAskIntent.putExtra(UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES);
-			mUnsubAskIntent.putExtra(UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES);
-			mUnsubAskIntent.putExtra(UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES);
+			}, new IntentFilter( UnsubscribeIntentService.UNSUBSCRIBE_NAME ) );
+			mUnsubAskIntent = new Intent( getApplicationContext(), UnsubscribeIntentService.class );
+			mUnsubAskIntent.putExtra( UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES );
+			mUnsubAskIntent.putExtra( UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES );
+			mUnsubAskIntent.putExtra( UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES );
 		} else {
-			startService(mUnsubAskIntent);
+			startService( mUnsubAskIntent );
 		}
 	}
 
 	private void subscribeNewStories() {
-		if (mSubNewIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mSubNewRegRecv = new BroadcastReceiver() {
+		if( mSubNewIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mSubNewRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mNewPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_NEWSTORIES));
-					boolean success = intent.getBooleanExtra(SubscribeIntentService.SUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mNewPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_NEWSTORIES ) );
+					boolean success = intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										subscribeNewStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(SubscribeIntentService.SUBSCRIBE_COMPLETE));
-			mSubNewIntent = new Intent(getApplicationContext(), SubscribeIntentService.class);
-			mSubNewIntent.putExtra(SubscribeIntentService.TOPIC, Topics.GET_NEW_STORIES);
-			mSubNewIntent.putExtra(SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_NEWSTORIES);
-			mSubNewIntent.putExtra(SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_NEW_STORIES);
+			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
+			mSubNewIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
+			mSubNewIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_NEW_STORIES );
+			mSubNewIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_NEWSTORIES );
+			mSubNewIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_NEW_STORIES );
 		} else {
-			startService(mSubNewIntent);
+			startService( mSubNewIntent );
 		}
 	}
 
 	private void unsubscribeNewStories() {
-		if (mUnsubNewIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mUnsubNewRegRecv = new BroadcastReceiver() {
+		if( mUnsubNewIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mUnsubNewRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mNewPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_NEWSTORIES));
-					boolean success = intent.getBooleanExtra(UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mNewPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_NEWSTORIES ) );
+					boolean success = intent.getBooleanExtra( UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										unsubscribeNewStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(UnsubscribeIntentService.UNSUBSCRIBE_COMPLETE));
-			mUnsubNewIntent = new Intent(getApplicationContext(), UnsubscribeIntentService.class);
-			mUnsubNewIntent.putExtra(UnsubscribeIntentService.TOPIC, Topics.GET_NEW_STORIES);
-			mUnsubNewIntent.putExtra(UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_NEWSTORIES);
-			mUnsubNewIntent.putExtra(UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_NEW_STORIES);
+			}, new IntentFilter( UnsubscribeIntentService.UNSUBSCRIBE_COMPLETE ) );
+			mUnsubNewIntent = new Intent( getApplicationContext(), UnsubscribeIntentService.class );
+			mUnsubNewIntent.putExtra( UnsubscribeIntentService.TOPIC, Topics.GET_NEW_STORIES );
+			mUnsubNewIntent.putExtra( UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_NEWSTORIES );
+			mUnsubNewIntent.putExtra( UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_NEW_STORIES );
 		} else {
-			startService(mUnsubNewIntent);
+			startService( mUnsubNewIntent );
 		}
 	}
 
 	private void subscribeTopStories() {
-		if (mSubTopIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mSubTopsRegRecv = new BroadcastReceiver() {
+		if( mSubTopIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mSubTopsRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mTopPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_TOPSTORIES));
-					boolean success = intent.getBooleanExtra(SubscribeIntentService.SUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mTopPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_TOPSTORIES ) );
+					boolean success = intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										subscribeTopStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(SubscribeIntentService.SUBSCRIBE_COMPLETE));
-			mSubTopIntent = new Intent(getApplicationContext(), SubscribeIntentService.class);
-			mSubTopIntent.putExtra(SubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES);
-			mSubTopIntent.putExtra(SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES);
-			mSubTopIntent.putExtra(SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_TOP_STORIES);
+			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
+			mSubTopIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
+			mSubTopIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES );
+			mSubTopIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES );
+			mSubTopIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_TOP_STORIES );
 		} else {
-			startService(mSubTopIntent);
+			startService( mSubTopIntent );
 		}
 	}
 
 
 	private void unsubscribeTopStories() {
-		if (mUnsubTopIntent == null) {
-			LocalBroadcastManager.getInstance(this).registerReceiver(mUnsubTopsRegRecv = new BroadcastReceiver() {
+		if( mUnsubTopIntent == null ) {
+			LocalBroadcastManager.getInstance( this ).registerReceiver( mUnsubTopsRegRecv = new BroadcastReceiver() {
 				@Override
-				public void onReceive(Context context, Intent intent) {
-					mTopPref.setChecked(Prefs.getInstance(getApplicationContext()).getPush(Prefs.KEY_PUSH_TOPSTORIES));
-					boolean success = intent.getBooleanExtra(UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false);
-					if(!success) {
-						Snackbar.make(findViewById(android.R.id.list), R.string.meta_load_error, Snackbar.LENGTH_LONG)
-								.setAction(R.string.btn_retry, new OnClickListener() {
+				public void onReceive( Context context, Intent intent ) {
+					mTopPref.setChecked( Prefs.getInstance( getApplicationContext() ).getPush( Prefs.KEY_PUSH_TOPSTORIES ) );
+					boolean success = intent.getBooleanExtra( UnsubscribeIntentService.UNSUBSCRIBE_RESULT, false );
+					if( !success ) {
+						Snackbar.make( findViewById( android.R.id.list ), R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction(
+								R.string.btn_retry, new OnClickListener() {
 									@Override
-									public void onClick(View v) {
+									public void onClick( View v ) {
 										unsubscribeTopStories();
 									}
-								}).show();
+								} ).show();
 					}
 				}
-			}, new IntentFilter(UnsubscribeIntentService.UNSUBSCRIBE_NAME));
-			mUnsubTopIntent = new Intent(getApplicationContext(), UnsubscribeIntentService.class);
-			mUnsubTopIntent.putExtra(UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES);
-			mUnsubTopIntent.putExtra(UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES);
-			mUnsubTopIntent.putExtra(UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES);
+			}, new IntentFilter( UnsubscribeIntentService.UNSUBSCRIBE_NAME ) );
+			mUnsubTopIntent = new Intent( getApplicationContext(), UnsubscribeIntentService.class );
+			mUnsubTopIntent.putExtra( UnsubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES );
+			mUnsubTopIntent.putExtra( UnsubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES );
+			mUnsubTopIntent.putExtra( UnsubscribeIntentService.UNSUBSCRIBE_NAME, Topics.GET_TOP_STORIES );
 		} else {
-			startService(mUnsubTopIntent);
+			startService( mUnsubTopIntent );
 		}
 	}
 

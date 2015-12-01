@@ -6,8 +6,8 @@ package com.hpush.db;
  * @author Xinyue Zhao
  */
 public interface DailyTbl {
-	static final String DB_ID = "_db_id";
-	static final String ID = "_id";
+	static final String DB_ID     = "_db_id";
+	static final String ID        = "_id";
 	static final String EDIT_TIME = "_edit_time";
 
 	static final String TABLE_NAME = "daily";
@@ -18,8 +18,8 @@ public interface DailyTbl {
 	 * Init new table since {@link com.hpush.db.DatabaseHelper#DATABASE_VERSION} = {@code 2}.
 	 */
 	static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME + " (" +
-			DB_ID + " INTEGER PRIMARY KEY, " +
-			ID + " INTEGER  DEFAULT -1, " +
-			EDIT_TIME + " INTEGER DEFAULT -1" +
-			");";
+									 DB_ID + " INTEGER PRIMARY KEY, " +
+									 ID + " INTEGER  DEFAULT -1, " +
+									 EDIT_TIME + " INTEGER DEFAULT -1" +
+									 ");";
 }

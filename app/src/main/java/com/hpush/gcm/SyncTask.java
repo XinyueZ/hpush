@@ -21,26 +21,27 @@ import com.hpush.utils.Utils;
  */
 public final class SyncTask {
 	/**
-	 *  Only wrapper for a volley request.
+	 * Only wrapper for a volley request.
 	 *
-	 *  @param cxt {@link android.content.Context}.
+	 * @param cxt
+	 * 		{@link android.content.Context}.
 	 */
-	public static void sync(Context cxt) {
-		final Prefs prefs = Prefs.getInstance(cxt);
-		GsonRequestTask<SyncList> task = new GsonRequestTask<SyncList>(cxt,
-				Method.POST, prefs.getPushBackendSyncUrl(), SyncList.class) {
+	public static void sync( Context cxt ) {
+		final Prefs prefs = Prefs.getInstance( cxt );
+		GsonRequestTask<SyncList> task = new GsonRequestTask<SyncList>( cxt, Method.POST, prefs.getPushBackendSyncUrl(), SyncList.class ) {
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
 				Map<String, String> headers = super.getHeaders();
-				if (headers == null || headers.equals(Collections.emptyMap())) {
+				if( headers == null || headers.equals( Collections.emptyMap() ) ) {
 					headers = new HashMap<>();
 				}
-				Utils.makeHttpHeaders(headers);
+				Utils.makeHttpHeaders( headers );
 				return headers;
 			}
 		};
-		task.setRetryPolicy(new DefaultRetryPolicy(prefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+		task.setRetryPolicy( new DefaultRetryPolicy( prefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+													 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+		) );
 		task.execute();
 	}
 }

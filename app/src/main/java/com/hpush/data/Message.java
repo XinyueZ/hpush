@@ -31,8 +31,8 @@ public class Message extends BmobObject implements Serializable {
 	protected Message() {
 	}
 
-	public Message(long dbId, String by, long id, long score, long commentsCount, String text, long time, String title,
-			String url, long pushedTime) {
+	public Message( long dbId, String by, long id, long score, long commentsCount, String text, long time, String title, String url, long pushedTime
+	) {
 		mDbId = dbId;
 		this.mBy = by;
 		this.mId = id;
@@ -45,8 +45,7 @@ public class Message extends BmobObject implements Serializable {
 		mPushedTime = pushedTime;
 	}
 
-	public Message(String by, long id, long score, long commentsCount, String text, long time, String title, String url,
-			long pushedTime) {
+	public Message( String by, long id, long score, long commentsCount, String text, long time, String title, String url, long pushedTime ) {
 		this.mBy = by;
 		this.mId = id;
 		this.mScore = score;
@@ -85,32 +84,25 @@ public class Message extends BmobObject implements Serializable {
 	public String getUrl() {
 		return mUrl;
 	}
-
+	public void setUrl( String url ) {
+		mUrl = url;
+	}
 	public long getDbId() {
 		return mDbId;
 	}
-
-	public void setDbId(long dbId) {
+	public void setDbId( long dbId ) {
 		mDbId = dbId;
 	}
-
 	public long getPushedTime() {
 		return mPushedTime;
 	}
-
-	public void setPushedTime(long pushedTime) {
+	public void setPushedTime( long pushedTime ) {
 		mPushedTime = pushedTime;
 	}
-
 	public long getCommentsCount() {
 		return mCommentsCount;
 	}
-
-	public void setCommentsCount(long commentsCount) {
+	public void setCommentsCount( long commentsCount ) {
 		mCommentsCount = commentsCount;
-	}
-
-	public void setUrl(String url) {
-		mUrl = url;
 	}
 }

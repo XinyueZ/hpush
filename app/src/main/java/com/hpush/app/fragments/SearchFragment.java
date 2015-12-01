@@ -28,22 +28,21 @@ public final class SearchFragment extends DailiesLstFragment {
 	 *
 	 * @return An instance of {@link com.hpush.app.fragments.SearchFragment}.
 	 */
-	public static SearchFragment newInstance(Context context, String keyword) {
+	public static SearchFragment newInstance( Context context, String keyword ) {
 		Bundle args = new Bundle();
-		args.putString(EXTRAS_KEYWORD, keyword);
-		return (SearchFragment) DailiesLstFragment.instantiate(context, SearchFragment.class.getName(), args);
+		args.putString( EXTRAS_KEYWORD, keyword );
+		return (SearchFragment) DailiesLstFragment.instantiate( context, SearchFragment.class.getName(), args );
 	}
 
 	/**
-	 *
 	 * @return The keyword to search.
 	 */
 	private String getKeyword() {
-		return getArguments().getString(EXTRAS_KEYWORD);
+		return getArguments().getString( EXTRAS_KEYWORD );
 	}
 
 	@Override
 	protected List<RecentListItem> doSearch() {
-		return getDB().search(getKeyword());
+		return getDB().search( getKeyword() );
 	}
 }
