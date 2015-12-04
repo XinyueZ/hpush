@@ -8,15 +8,17 @@ public final class Bookmark extends Message {
 
 	}
 
-	public Bookmark(String uid, Message msg) {
-		super(msg.getDbId(), msg.getBy(), msg.getId(), msg.getScore(), msg.getCommentsCount(), msg.getText(),
-				msg.getTime(), msg.getTitle(), msg.getUrl(), msg.getPushedTime());
+	public Bookmark( String uid, Message msg ) {
+		super( msg.getDbId(), msg.getBy(), msg.getId(), msg.getScore(), msg.getCommentsCount(), msg.getText(), msg.getTime(), msg.getTitle(),
+			   msg.getUrl(), msg.getPushedTime()
+		);
 		mUID = uid;
 	}
 
-	public Bookmark(Message msg) {
-		super(msg.getDbId(), msg.getBy(), msg.getId(), msg.getScore(), msg.getCommentsCount(), msg.getText(),
-				msg.getTime(), msg.getTitle(), msg.getUrl(), msg.getPushedTime());
+	public Bookmark( Message msg ) {
+		super( msg.getDbId(), msg.getBy(), msg.getId(), msg.getScore(), msg.getCommentsCount(), msg.getText(), msg.getTime(), msg.getTitle(),
+			   msg.getUrl(), msg.getPushedTime()
+		);
 
 	}
 
@@ -26,7 +28,7 @@ public final class Bookmark extends Message {
 
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals( Object o ) {
 		Message other = (Message) o;
 		return other.getId() == getId();
 	}

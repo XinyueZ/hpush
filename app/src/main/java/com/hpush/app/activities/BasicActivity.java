@@ -39,11 +39,11 @@ public abstract class BasicActivity extends BaseActivity {
 	 * @param e
 	 * 		Event {@link com.hpush.bus.ClickMessageCommentsEvent}.
 	 */
-	public void onEvent(ClickMessageCommentsEvent e) {
-		long cId = e.getMessage().getId();
-		String url = Prefs.getInstance(getApplication()).getHackerNewsCommentsUrl();
+	public void onEvent( ClickMessageCommentsEvent e ) {
+		long   cId    = e.getMessage().getId();
+		String url    = Prefs.getInstance( getApplication() ).getHackerNewsCommentsUrl();
 		String target = url + cId;
-		WebViewActivity.showInstance(this, target, e.getSenderV(), e.getMessage());
+		WebViewActivity.showInstance( this, target, e.getSenderV(), e.getMessage() );
 	}
 
 	/**
@@ -52,26 +52,25 @@ public abstract class BasicActivity extends BaseActivity {
 	 * @param e
 	 * 		Event {@link com.hpush.bus.ShareMessageEvent}.
 	 */
-	public void onEvent(ShareMessageEvent e) {
+	public void onEvent( ShareMessageEvent e ) {
 		MessageListItem msg = e.getMessage();
-		switch (e.getType()) {
-		case Facebook:
-			Bundle postParams = new Bundle();
-			final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(this, getString(R.string.applicationId), postParams)
-					.setName(msg.getTitle()).setDescription(msg.getText()).setLink(msg.getUrl()).build();
-			fbDlg.setOnCompleteListener(new OnCompleteListener() {
-				@Override
-				public void onComplete(Bundle bundle, FacebookException e) {
-					fbDlg.dismiss();
-				}
-			});
-			fbDlg.show();
-			break;
-		case Tweet:
-			break;
+		switch( e.getType() ) {
+			case Facebook:
+				Bundle postParams = new Bundle();
+				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder( this, getString( R.string.applicationId ), postParams ).setName(
+						msg.getTitle() ).setDescription( msg.getText() ).setLink( msg.getUrl() ).build();
+				fbDlg.setOnCompleteListener( new OnCompleteListener() {
+					@Override
+					public void onComplete( Bundle bundle, FacebookException e ) {
+						fbDlg.dismiss();
+					}
+				} );
+				fbDlg.show();
+				break;
+			case Tweet:
+				break;
 		}
 	}
-
 
 
 	/**
@@ -80,8 +79,8 @@ public abstract class BasicActivity extends BaseActivity {
 	 * @param e
 	 * 		Event {@link com.hpush.bus.ShareIntentEvent}.
 	 */
-	public void onEvent(  ShareIntentEvent e) {
-		startActivity(e.getIntent());
+	public void onEvent( ShareIntentEvent e ) {
+		startActivity( e.getIntent() );
 	}
 
 	/**
@@ -90,8 +89,8 @@ public abstract class BasicActivity extends BaseActivity {
 	 * @param e
 	 * 		Event {@link com.hpush.bus.ClickMessageLinkEvent}.
 	 */
-	public void onEvent(ClickMessageLinkEvent e) {
-		WebViewActivity.showInstance(this, e.getMessage().getUrl(), e.getSenderV(), e.getMessage());
+	public void onEvent( ClickMessageLinkEvent e ) {
+		WebViewActivity.showInstance( this, e.getMessage().getUrl(), e.getSenderV(), e.getMessage() );
 	}
 
 	//------------------------------------------------
@@ -101,19 +100,18 @@ public abstract class BasicActivity extends BaseActivity {
 	 */
 	protected void calcActionBarHeight() {
 		int[] abSzAttr;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
 			abSzAttr = new int[] { android.R.attr.actionBarSize };
 		} else {
 			abSzAttr = new int[] { R.attr.actionBarSize };
 		}
-		TypedArray a = obtainStyledAttributes(abSzAttr);
-		mActionBarHeight = a.getDimensionPixelSize(0, -1);
+		TypedArray a = obtainStyledAttributes( abSzAttr );
+		mActionBarHeight = a.getDimensionPixelSize( 0, -1 );
 	}
 
 
 	/**
-	 *
-	 * @return  Height of action-bar general.
+	 * @return Height of action-bar general.
 	 */
 	protected int getActionBarHeight() {
 		return mActionBarHeight;
@@ -121,7 +119,7 @@ public abstract class BasicActivity extends BaseActivity {
 
 	@Override
 	protected BasicPrefs getPrefs() {
-		return Prefs.getInstance(getApplication());
+		return Prefs.getInstance( getApplication() );
 	}
 
 }

@@ -17,7 +17,7 @@ public final class LoadedAllDailiesEvent {
 	 * @param count
 	 * 		Total count of loaded data.
 	 */
-	public LoadedAllDailiesEvent(int count) {
+	public LoadedAllDailiesEvent( int count ) {
 		mCount = count;
 	}
 

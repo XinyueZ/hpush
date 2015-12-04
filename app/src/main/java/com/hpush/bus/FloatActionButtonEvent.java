@@ -8,7 +8,7 @@ package com.hpush.bus;
 public final class FloatActionButtonEvent {
 	private boolean mHide;
 
-	public FloatActionButtonEvent(boolean hide) {
+	public FloatActionButtonEvent( boolean hide ) {
 		mHide = hide;
 	}
 

@@ -15,15 +15,16 @@ public final class BookmarkMessageEvent {
 
 	/**
 	 * Constructor of {@link com.hpush.bus.BookmarkMessageEvent}.
-	 * @param messageListItem  The list item that has been selected to bookmark.
+	 *
+	 * @param messageListItem
+	 * 		The list item that has been selected to bookmark.
 	 */
-	public BookmarkMessageEvent(MessageListItem messageListItem) {
+	public BookmarkMessageEvent( MessageListItem messageListItem ) {
 		mMessageListItem = messageListItem;
 	}
 
 	/**
-	 *
-	 * @return  The list item that has been selected to bookmark.
+	 * @return The list item that has been selected to bookmark.
 	 */
 	public MessageListItem getMessageListItem() {
 		return mMessageListItem;

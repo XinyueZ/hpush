@@ -13,25 +13,25 @@ import com.nineoldandroids.animation.ObjectAnimator;
  *
  * @author Xinyue Zhao
  */
-public   abstract class OnViewAnimatedClickedListener2 implements OnClickListener {
+public abstract class OnViewAnimatedClickedListener2 implements OnClickListener {
 	/**
 	 * Impl. Event what user clicks.
 	 */
 	public abstract void onClick();
 
 	@Override
-	public final void onClick(final View v) {
-		v.setEnabled(false);
+	public final void onClick( final View v ) {
+		v.setEnabled( false );
 		AnimatorSet animatorSet = new AnimatorSet();
-		animatorSet.playTogether(ObjectAnimator.ofFloat(v, "rotationY", 0, 360f));
-		animatorSet.addListener(new AnimatorListenerAdapter() {
+		animatorSet.playTogether( ObjectAnimator.ofFloat( v, "rotationY", 0, 360f ) );
+		animatorSet.addListener( new AnimatorListenerAdapter() {
 			@Override
-			public void onAnimationEnd(Animator animation) {
-				super.onAnimationEnd(animation);
+			public void onAnimationEnd( Animator animation ) {
+				super.onAnimationEnd( animation );
 				onClick();
-				v.setEnabled(true);
+				v.setEnabled( true );
 			}
-		});
+		} );
 		animatorSet.start();
 	}
 }

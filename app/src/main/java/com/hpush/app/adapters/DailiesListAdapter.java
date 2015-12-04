@@ -14,15 +14,15 @@ public final class DailiesListAdapter extends MessagesListAdapter<RecentListItem
 	/**
 	 * Constructor of {@link com.hpush.app.adapters.DailiesListAdapter}.
 	 */
-	public DailiesListAdapter(List<RecentListItem> messages) {
-		super(messages, R.menu.item);
+	public DailiesListAdapter( List<RecentListItem> messages ) {
+		super( messages, R.menu.item );
 	}
 
 	@Override
-	public void onBindViewHolder(MessagesListAdapter.ViewHolder viewHolder, int i) {
-		super.onBindViewHolder(viewHolder, i);
-		final RecentListItem recentListItem = getMessages().get(i);
-		viewHolder.mToolbar.getMenu().findItem(R.id.action_item_bookmark).setVisible(!recentListItem.isBookmarked());
-		viewHolder.mFloatTv.setOnClickListener(null);
+	public void onBindViewHolder( MessagesListAdapter.ViewHolder viewHolder, int i ) {
+		super.onBindViewHolder( viewHolder, i );
+		final RecentListItem recentListItem = getMessages().get( i );
+		viewHolder.mToolbar.getMenu().findItem( R.id.action_item_bookmark ).setVisible( !recentListItem.isBookmarked() );
+		viewHolder.mFloatTv.setOnClickListener( null );
 	}
 }

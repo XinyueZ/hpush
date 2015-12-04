@@ -33,7 +33,7 @@ public final class ShareMessageEvent {
 	 * @param type
 	 * 		Facebook or Tweet.
 	 */
-	public ShareMessageEvent(MessageListItem message, Type type) {
+	public ShareMessageEvent( MessageListItem message, Type type ) {
 		mMessage = message;
 		mType = type;
 	}

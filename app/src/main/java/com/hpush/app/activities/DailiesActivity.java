@@ -32,7 +32,7 @@ public class DailiesActivity extends BasicActivity {
 	/**
 	 * Progress indicator.
 	 */
-	private View mPbV;
+	private View    mPbV;
 
 	/**
 	 * Button view to remove all recent messages from backend(summary).
@@ -49,8 +49,8 @@ public class DailiesActivity extends BasicActivity {
 	 * @param e
 	 * 		Event {@link com.hpush.bus.FloatActionButtonEvent}.
 	 */
-	public void onEvent(FloatActionButtonEvent e) {
-		if(e.isHide()) {
+	public void onEvent( FloatActionButtonEvent e ) {
+		if( e.isHide() ) {
 			mRmAllBtn.hide();
 		} else {
 			mRmAllBtn.show();
@@ -63,13 +63,13 @@ public class DailiesActivity extends BasicActivity {
 	 * @param e
 	 * 		Event {@link LoadedAllDailiesEvent}.
 	 */
-	public void onEvent(LoadedAllDailiesEvent e) {
-		if (e.getCount() > 0) {
+	public void onEvent( LoadedAllDailiesEvent e ) {
+		if( e.getCount() > 0 ) {
 			toggleUI();
 		} else {
-			Utils.showLongToast(getApplication(), R.string.msg_no_data);
+			Utils.showLongToast( getApplication(), R.string.msg_no_data );
 		}
-		mPbV.setVisibility(View.GONE);
+		mPbV.setVisibility( View.GONE );
 	}
 
 
@@ -81,55 +81,55 @@ public class DailiesActivity extends BasicActivity {
 	 * @param cxt
 	 * 		{@link android.content.Context}.
 	 */
-	public static void showInstance(Context cxt) {
-		Intent intent = new Intent(cxt, DailiesActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		cxt.startActivity(intent);
+	public static void showInstance( Context cxt ) {
+		Intent intent = new Intent( cxt, DailiesActivity.class );
+		intent.setFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP );
+		cxt.startActivity( intent );
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(getLayoutResId());
+	protected void onCreate( Bundle savedInstanceState ) {
+		super.onCreate( savedInstanceState );
+		setContentView( getLayoutResId() );
 
-		mRmAllBtn = (ActionButton) findViewById(R.id.remove_all_btn);
-		if(mRmAllBtn!=null) {//Search-view has no "delete" button.
-			mRmAllBtn.setOnClickListener(new OnClickListener() {
+		mRmAllBtn = (ActionButton) findViewById( R.id.remove_all_btn );
+		if( mRmAllBtn != null ) {//Search-view has no "delete" button.
+			mRmAllBtn.setOnClickListener( new OnClickListener() {
 				@Override
-				public void onClick(View v) {
-					EventBus.getDefault().post(new DeleteAllDailiesEvent());
+				public void onClick( View v ) {
+					EventBus.getDefault().post( new DeleteAllDailiesEvent() );
 				}
-			});
+			} );
 		}
-		mPbV = findViewById(R.id.progressBar);
+		mPbV = findViewById( R.id.progressBar );
 
-		if (getResources().getBoolean(R.bool.landscape)) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		if( getResources().getBoolean( R.bool.landscape ) ) {
+			setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE );
 		}
 
 
-		mToolbar = (Toolbar) findViewById(R.id.toolbar);
-		setSupportActionBar(mToolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		mToolbar = (Toolbar) findViewById( R.id.toolbar );
+		setSupportActionBar( mToolbar );
+		getSupportActionBar().setDisplayHomeAsUpEnabled( true );
 		calcActionBarHeight();
 	}
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		setErrorHandlerAvailable(false);
+	protected void onPostCreate( Bundle savedInstanceState ) {
+		super.onPostCreate( savedInstanceState );
+		setErrorHandlerAvailable( false );
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		// Respond to the action bar's Up/Home button
-		case android.R.id.home:
-			ActivityCompat.finishAfterTransition(this);
-			MainActivity.showInstance(this);
-			return true;
+	public boolean onOptionsItemSelected( MenuItem item ) {
+		switch( item.getItemId() ) {
+			// Respond to the action bar's Up/Home button
+			case android.R.id.home:
+				ActivityCompat.finishAfterTransition( this );
+				MainActivity.showInstance( this );
+				return true;
 		}
-		return super.onOptionsItemSelected(item);
+		return super.onOptionsItemSelected( item );
 	}
 
 

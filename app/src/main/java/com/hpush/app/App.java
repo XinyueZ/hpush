@@ -33,15 +33,17 @@ package com.hpush.app;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Properties;
 
+import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
 import com.chopping.net.TaskHelper;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
+import com.google.android.gms.gcm.OneoffTask;
 import com.hpush.R;
 import com.hpush.app.noactivities.AppGuardService;
 import com.squareup.okhttp.OkHttpClient;
@@ -55,88 +57,85 @@ import cn.bmob.v3.Bmob;
  * @author Xinyue Zhao
  */
 public final class App extends MultiDexApplication {
-    /**
-     * Singleton.
-     */
-    public static App Instance;
+	/**
+	 * Singleton.
+	 */
+	public static App Instance;
 
 
-    /**
-     * Times that the AdMob shown before, it under App-process domain. When process killed, it recounts
-     */
-    private int mAdsShownTimes;
+	/**
+	 * Times that the AdMob shown before, it under App-process domain. When process killed, it recounts
+	 */
+	private int mAdsShownTimes;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-        Instance = this;
-		TaskHelper.init(getApplicationContext());
+		Instance = this;
+		TaskHelper.init( getApplicationContext() );
 
-		boolean isDev = getResources().getBoolean(R.bool.dev);
-		if(isDev) {
-			Stetho.initialize(Stetho.newInitializerBuilder(this).enableDumpapp(Stetho.defaultDumperPluginsProvider(this)).enableWebKitInspector(
-					Stetho.defaultInspectorModulesProvider(this)).build());
+		boolean isDev = getResources().getBoolean( R.bool.dev );
+		if( isDev ) {
+			Stetho.initialize( Stetho.newInitializerBuilder( this ).enableDumpapp( Stetho.defaultDumperPluginsProvider( this ) )
+									   .enableWebKitInspector( Stetho.defaultInspectorModulesProvider( this ) ).build() );
 			OkHttpClient client = new OkHttpClient();
-			client.networkInterceptors().add(new StethoInterceptor());
+			client.networkInterceptors().add( new StethoInterceptor() );
 		}
 
-        Properties prop = new Properties();
-        InputStream input = null;
-        try {
+		Properties  prop  = new Properties();
+		InputStream input = null;
+		try {
 			/*From "resources".*/
-            input = getClassLoader().getResourceAsStream("key.properties");
-            if (input != null) {
-                // load a properties file
-                prop.load(input);
-                Bmob.initialize(this, prop.getProperty("bmobkey"));
-            }
-        } catch (IOException ex) {
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        startAppGuardService();
+			input = getClassLoader().getResourceAsStream( "key.properties" );
+			if( input != null ) {
+				// load a properties file
+				prop.load( input );
+				Bmob.initialize( this, prop.getProperty( "bmobkey" ) );
+			}
+		} catch( IOException ex ) {
+		} finally {
+			if( input != null ) {
+				try {
+					input.close();
+				} catch( IOException e ) {
+					e.printStackTrace();
+				}
+			}
+		}
+		startAppGuardService( this, 0 );
 	}
 
-    /**
-     * A background service that will looking for time to notify user for some weather condition.
-     */
-    private void startAppGuardService() {
-        long periodSecs = 82800L; // the task should be executed every 23 hours
-        long flexSecs = 600L; // the task can run as early as 10 minutes from the scheduled time
-        String tag = System.currentTimeMillis() + "";
-        PeriodicTask periodic = new PeriodicTask.Builder()
-                .setService(AppGuardService.class)
-                .setPeriod(periodSecs)
-                .setFlex(flexSecs)
-                .setTag(tag)
-                .setPersisted(true)
-                .setRequiredNetwork(com.google.android.gms.gcm.Task.NETWORK_STATE_ANY)
-                .setRequiresCharging(false)
-                .build();
-        GcmNetworkManager.getInstance(this).schedule(periodic);
-    }
 
-    /**
-     * @return How much times that the AdMob has shown before, it under App-process domain. When process killed, it
-     * recounts.
-     */
-    public int getAdsShownTimes() {
-        return mAdsShownTimes;
-    }
+	public static void startAppGuardService( Context cxt, int plusDay ) {
+		long     currentTime = System.currentTimeMillis();
+		Calendar notifyTime  = Calendar.getInstance();
+		notifyTime.set( Calendar.HOUR_OF_DAY, 23 );
+		notifyTime.set( Calendar.MINUTE, 0 );
+		notifyTime.set( Calendar.SECOND, 0 );
+		notifyTime.add( Calendar.DAY_OF_YEAR, plusDay );
+		long   nextFireWindow = notifyTime.getTimeInMillis() - currentTime;
+		long   flexSecs       = 600L; // the task can run as early as 10 minutes from the scheduled time
+		String tag            = System.currentTimeMillis() + "";
+		OneoffTask onceTask = new OneoffTask.Builder().setService( AppGuardService.class ).setExecutionWindow(
+				nextFireWindow + flexSecs, nextFireWindow + flexSecs * 2 ).setTag( tag ).setPersisted( true ).setRequiredNetwork(
+				com.google.android.gms.gcm.Task.NETWORK_STATE_ANY ).setRequiresCharging( false ).build();
+		GcmNetworkManager.getInstance( cxt ).schedule( onceTask );
+	}
 
-    /**
-     * Set how much times that the AdMob has shown before, it under App-process domain.
-     *
-     * @param adsShownTimes
-     * 		Times that AdMob has shown.
-     */
-    public void setAdsShownTimes(int adsShownTimes) {
-        mAdsShownTimes = adsShownTimes;
-    }
+	/**
+	 * @return How much times that the AdMob has shown before, it under App-process domain. When process killed, it recounts.
+	 */
+	public int getAdsShownTimes() {
+		return mAdsShownTimes;
+	}
+
+	/**
+	 * Set how much times that the AdMob has shown before, it under App-process domain.
+	 *
+	 * @param adsShownTimes
+	 * 		Times that AdMob has shown.
+	 */
+	public void setAdsShownTimes( int adsShownTimes ) {
+		mAdsShownTimes = adsShownTimes;
+	}
 }

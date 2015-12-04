@@ -11,10 +11,10 @@ public final class Status {
 	@SerializedName("status")
 	private boolean mStatus;
 	@SerializedName("function")
-	private String mFunction;
+	private String  mFunction;
 
 
-	public Status(boolean status, String function) {
+	public Status( boolean status, String function ) {
 		mStatus = status;
 		mFunction = function;
 	}

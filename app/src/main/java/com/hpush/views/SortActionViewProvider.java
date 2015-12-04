@@ -25,7 +25,7 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 	/**
 	 * Layout Id for the provider.
 	 */
-	private static final int LAYOUT = R.layout.action_view_provider_sort;
+	private static final int LAYOUT   = R.layout.action_view_provider_sort;
 	/**
 	 * Menu-resource of the popup.
 	 */
@@ -33,7 +33,7 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 	/**
 	 * A {@link android.view.View} for this provider.
 	 */
-	private View mProviderV;
+	private View      mProviderV;
 	/**
 	 * A popup with list of all sort-types.
 	 */
@@ -41,27 +41,28 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 	/**
 	 * Show/Hidden status of menu.
 	 */
-	private boolean mShow;
+	private boolean   mShow;
 
-	public SortActionViewProvider(Context context) {
-		super(context);
-		mProviderV = LayoutInflater.from(context).inflate(LAYOUT, null, false);
-		mProviderV.setOnClickListener(new OnViewAnimatedClickedListener() {
+	public SortActionViewProvider( Context context ) {
+		super( context );
+		mProviderV = LayoutInflater.from( context ).inflate( LAYOUT, null, false );
+		mProviderV.setOnClickListener( new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
-				if (!mShow) {
+				if( !mShow ) {
 					mShow = true;
 					mPopupMenu.show();
-					updateMenuItems(mPopupMenu.getMenu());
+					updateMenuItems( mPopupMenu.getMenu() );
 				} else {
 					mPopupMenu.dismiss();
 				}
 			}
-		});
-		mPopupMenu = new PopupMenu(context, mProviderV);
-		mPopupMenu.inflate(MENU_RES);
-		mPopupMenu.setOnDismissListener(this);mPopupMenu.setOnMenuItemClickListener(this);
-		updateMenuItems(mPopupMenu.getMenu());
+		} );
+		mPopupMenu = new PopupMenu( context, mProviderV );
+		mPopupMenu.inflate( MENU_RES );
+		mPopupMenu.setOnDismissListener( this );
+		mPopupMenu.setOnMenuItemClickListener( this );
+		updateMenuItems( mPopupMenu.getMenu() );
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 
 
 	@Override
-	public void onDismiss(PopupMenu popupMenu) {
+	public void onDismiss( PopupMenu popupMenu ) {
 		mShow = false;
 	}
 
@@ -81,40 +82,40 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 	 * @param menu
 	 * 		The host of all menu-items.
 	 */
-	private void updateMenuItems(Menu menu) {
-		menu.findItem(R.id.action_sort_scores).setChecked(0 == selectedSortTypeValue());
-		menu.findItem(R.id.action_sort_arrival).setChecked(1 == selectedSortTypeValue());
-		menu.findItem(R.id.action_sort_creation).setChecked(2 == selectedSortTypeValue());
-		menu.findItem(R.id.action_sort_comments).setChecked(3 == selectedSortTypeValue());
+	private void updateMenuItems( Menu menu ) {
+		menu.findItem( R.id.action_sort_scores ).setChecked( 0 == selectedSortTypeValue() );
+		menu.findItem( R.id.action_sort_arrival ).setChecked( 1 == selectedSortTypeValue() );
+		menu.findItem( R.id.action_sort_creation ).setChecked( 2 == selectedSortTypeValue() );
+		menu.findItem( R.id.action_sort_comments ).setChecked( 3 == selectedSortTypeValue() );
 	}
 
 	/**
 	 * @return Get current selected sort-type {@code int}
 	 */
 	private int selectedSortTypeValue() {
-		String sortTypeValue = Prefs.getInstance(getContext().getApplicationContext()).getSortTypeValue();
-		return Integer.valueOf(sortTypeValue);
+		String sortTypeValue = Prefs.getInstance( getContext().getApplicationContext() ).getSortTypeValue();
+		return Integer.valueOf( sortTypeValue );
 	}
 
 	@Override
-	public boolean onMenuItemClick(MenuItem menuItem) {
-		Prefs prefs = Prefs.getInstance(getContext().getApplicationContext());
-		switch (menuItem.getItemId()) {
-		case R.id.action_sort_scores:
-			prefs.setSortTypeValue("0");
-		break;
-		case R.id.action_sort_arrival:
-			prefs.setSortTypeValue("1");
-		break;
-		case R.id.action_sort_creation:
-			prefs.setSortTypeValue("2");
-		break;
-		case R.id.action_sort_comments:
-			prefs.setSortTypeValue("3");
-		break;
+	public boolean onMenuItemClick( MenuItem menuItem ) {
+		Prefs prefs = Prefs.getInstance( getContext().getApplicationContext() );
+		switch( menuItem.getItemId() ) {
+			case R.id.action_sort_scores:
+				prefs.setSortTypeValue( "0" );
+				break;
+			case R.id.action_sort_arrival:
+				prefs.setSortTypeValue( "1" );
+				break;
+			case R.id.action_sort_creation:
+				prefs.setSortTypeValue( "2" );
+				break;
+			case R.id.action_sort_comments:
+				prefs.setSortTypeValue( "3" );
+				break;
 		}
-		updateMenuItems(mPopupMenu.getMenu());
-		EventBus.getDefault().post(new SortAllEvent());
+		updateMenuItems( mPopupMenu.getMenu() );
+		EventBus.getDefault().post( new SortAllEvent() );
 		return true;
 	}
 }

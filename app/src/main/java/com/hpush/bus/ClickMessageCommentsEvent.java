@@ -17,15 +17,16 @@ public final class ClickMessageCommentsEvent {
 	/**
 	 * The sender {@link android.view.View}.
 	 */
-	private View mSenderV;
+	private View    mSenderV;
 	/**
 	 * Constructor of {@link com.hpush.bus.ClickMessageCommentsEvent}.
 	 *
 	 * @param message
 	 * 		The message to click.
-	 * @param senderV The sender {@link android.view.View}.
+	 * @param senderV
+	 * 		The sender {@link android.view.View}.
 	 */
-	public ClickMessageCommentsEvent(Message message, View senderV) {
+	public ClickMessageCommentsEvent( Message message, View senderV ) {
 		mMessage = message;
 		mSenderV = senderV;
 	}
@@ -38,7 +39,6 @@ public final class ClickMessageCommentsEvent {
 	}
 
 	/**
-	 *
 	 * @return The sender {@link android.view.View}.
 	 */
 	public View getSenderV() {

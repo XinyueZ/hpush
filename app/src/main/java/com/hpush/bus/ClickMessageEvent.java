@@ -19,7 +19,7 @@ public final class ClickMessageEvent {
 	 * @param message
 	 * 		The message to click.
 	 */
-	public ClickMessageEvent(Message message) {
+	public ClickMessageEvent( Message message ) {
 		mMessage = message;
 	}
 

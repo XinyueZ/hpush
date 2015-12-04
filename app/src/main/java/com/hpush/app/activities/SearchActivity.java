@@ -15,32 +15,34 @@ import com.hpush.app.fragments.SearchFragment;
 public final class SearchActivity extends DailiesActivity {
 
 
-
 	/**
 	 * Handle search intent.
-	 * @param intent Contains query keyword.
+	 *
+	 * @param intent
+	 * 		Contains query keyword.
 	 */
-	private void handleIntent(Intent intent) {
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			getSupportFragmentManager().beginTransaction().replace(R.id.search_result_container,
-					SearchFragment.newInstance(getApplication(), query)).commit();
-			getSupportActionBar().setTitle(query);
-			setTitle(query);
+	private void handleIntent( Intent intent ) {
+		if( Intent.ACTION_SEARCH.equals( intent.getAction() ) ) {
+			String query = intent.getStringExtra( SearchManager.QUERY );
+			getSupportFragmentManager().beginTransaction().replace( R.id.search_result_container,
+																	SearchFragment.newInstance( getApplication(), query )
+			).commit();
+			getSupportActionBar().setTitle( query );
+			setTitle( query );
 		}
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		handleIntent(getIntent());
+	protected void onCreate( Bundle savedInstanceState ) {
+		super.onCreate( savedInstanceState );
+		handleIntent( getIntent() );
 	}
 
 	@Override
-	protected void onNewIntent(Intent intent) {
-		super.onNewIntent(intent);
-		setIntent(intent);
-		handleIntent(intent);
+	protected void onNewIntent( Intent intent ) {
+		super.onNewIntent( intent );
+		setIntent( intent );
+		handleIntent( intent );
 	}
 
 	@Override

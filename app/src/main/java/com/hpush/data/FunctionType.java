@@ -6,7 +6,7 @@ package com.hpush.data;
  * @author Xinyue Zhao
  */
 public enum FunctionType {
-	Edit("edit"), Insert("insert"), Delete("delete");
+	Edit( "edit" ), Insert( "insert" ), Delete( "delete" );
 
 	/**
 	 * Name of function.
@@ -15,30 +15,31 @@ public enum FunctionType {
 
 	/**
 	 * Constructor of {@link com.hpush.data.FunctionType}.
-	 * @param name Name of function.
+	 *
+	 * @param name
+	 * 		Name of function.
 	 */
-	FunctionType(String name) {
+	FunctionType( String name ) {
 		mName = name;
 	}
 
 	/**
-	 *
 	 * @return Name of function.
 	 */
 	public String getName() {
 		return mName;
 	}
 
-	public static FunctionType fromName(String name) {
-		switch (name) {
-		case "edit":
-			return Edit;
-		case "insert":
-			return Insert;
-		case "delete":
-			return Delete;
-		default:
-			return null;
+	public static FunctionType fromName( String name ) {
+		switch( name ) {
+			case "edit":
+				return Edit;
+			case "insert":
+				return Insert;
+			case "delete":
+				return Delete;
+			default:
+				return null;
 		}
 	}
 }
