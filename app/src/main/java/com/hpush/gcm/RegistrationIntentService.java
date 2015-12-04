@@ -35,14 +35,19 @@ public class RegistrationIntentService extends IntentService {
 		try {
 			synchronized( TAG ) {
 				InstanceID instanceID = InstanceID.getInstance( this );
-				String token = instanceID.getToken( prefs.getPushSenderId() + "", GoogleCloudMessaging.INSTANCE_ID_SCOPE, null );
+				String     token      = instanceID.getToken(
+						prefs.getPushSenderId() + "",
+						GoogleCloudMessaging.INSTANCE_ID_SCOPE,
+						null
+				);
 				prefs.setPushRegId( token );
 			}
 		} catch( Exception e ) {
 			prefs.setPushRegId( null );
 		}
 		Intent registrationComplete = new Intent( REGISTRATION_COMPLETE );
-		LocalBroadcastManager.getInstance( this ).sendBroadcast( registrationComplete );
+		LocalBroadcastManager.getInstance( this )
+							 .sendBroadcast( registrationComplete );
 	}
 
 }

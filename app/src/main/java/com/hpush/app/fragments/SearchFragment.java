@@ -30,8 +30,15 @@ public final class SearchFragment extends DailiesLstFragment {
 	 */
 	public static SearchFragment newInstance( Context context, String keyword ) {
 		Bundle args = new Bundle();
-		args.putString( EXTRAS_KEYWORD, keyword );
-		return (SearchFragment) DailiesLstFragment.instantiate( context, SearchFragment.class.getName(), args );
+		args.putString(
+				EXTRAS_KEYWORD,
+				keyword
+		);
+		return (SearchFragment) DailiesLstFragment.instantiate(
+				context,
+				SearchFragment.class.getName(),
+				args
+		);
 	}
 
 	/**

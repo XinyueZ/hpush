@@ -23,7 +23,12 @@ public abstract class OnViewAnimatedClickedListener2 implements OnClickListener 
 	public final void onClick( final View v ) {
 		v.setEnabled( false );
 		AnimatorSet animatorSet = new AnimatorSet();
-		animatorSet.playTogether( ObjectAnimator.ofFloat( v, "rotationY", 0, 360f ) );
+		animatorSet.playTogether( ObjectAnimator.ofFloat(
+				v,
+				"rotationY",
+				0,
+				360f
+		) );
 		animatorSet.addListener( new AnimatorListenerAdapter() {
 			@Override
 			public void onAnimationEnd( Animator animation ) {

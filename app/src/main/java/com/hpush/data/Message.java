@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName;
 import cn.bmob.v3.BmobObject;
 
 public class Message extends BmobObject implements Serializable {
-	private long mDbId;
+	private long   mDbId;
 	@SerializedName("By")
 	private String mBy;
 	@SerializedName("Id")
-	private long mId;
+	private long   mId;
 	@SerializedName("Score")
-	private long mScore;
+	private long   mScore;
 	@SerializedName("Kids")
-	private long mCommentsCount;
+	private long   mCommentsCount;
 	@SerializedName("Text")
 	private String mText;
 	@SerializedName("Time")
-	private long mTime;
+	private long   mTime;
 	@SerializedName("Title")
 	private String mTitle;
 	@SerializedName("Url")
 	private String mUrl;
 	@SerializedName("Pushed_Time")
-	private long mPushedTime;
+	private long   mPushedTime;
 
 	protected Message() {
 	}
@@ -84,24 +84,31 @@ public class Message extends BmobObject implements Serializable {
 	public String getUrl() {
 		return mUrl;
 	}
+
 	public void setUrl( String url ) {
 		mUrl = url;
 	}
+
 	public long getDbId() {
 		return mDbId;
 	}
+
 	public void setDbId( long dbId ) {
 		mDbId = dbId;
 	}
+
 	public long getPushedTime() {
 		return mPushedTime;
 	}
+
 	public void setPushedTime( long pushedTime ) {
 		mPushedTime = pushedTime;
 	}
+
 	public long getCommentsCount() {
 		return mCommentsCount;
 	}
+
 	public void setCommentsCount( long commentsCount ) {
 		mCommentsCount = commentsCount;
 	}

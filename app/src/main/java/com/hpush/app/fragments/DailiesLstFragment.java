@@ -46,7 +46,7 @@ public class DailiesLstFragment extends BaseFragment {
 	/**
 	 * Database.
 	 */
-	private DB                                     mDB;
+	private DB mDB;
 	/**
 	 * View shows all data.
 	 */
@@ -54,11 +54,11 @@ public class DailiesLstFragment extends BaseFragment {
 	/**
 	 * {@link android.support.v7.widget.RecyclerView.Adapter} for the {@link #mRv}.
 	 */
-	private DailiesListAdapter                     mAdp;
+	private DailiesListAdapter mAdp;
 	/**
 	 * {@true} if the view can take all data to show.
 	 */
-	private boolean                                mDataCanBeShown;
+	private boolean mDataCanBeShown;
 	//------------------------------------------------
 	//Subscribes, event-handlers
 	//------------------------------------------------
@@ -77,9 +77,11 @@ public class DailiesLstFragment extends BaseFragment {
 			//Bookmark from a webview shows details.
 			List<RecentListItem> list = mAdp.getMessages();
 			for( RecentListItem item : list ) {
-				if( item.getId() == e.getMessageListItem().getId() ) {
+				if( item.getId() == e.getMessageListItem()
+									 .getId() ) {
 					bookmarkOneItem( item );
-					EventBus.getDefault().removeAllStickyEvents();
+					EventBus.getDefault()
+							.removeAllStickyEvents();
 					break;
 				}
 			}
@@ -97,7 +99,8 @@ public class DailiesLstFragment extends BaseFragment {
 			@Override
 			protected Object doInBackground( Object... params ) {
 				if( mAdp != null ) {
-					mAdp.getMessages().clear();
+					mAdp.getMessages()
+						.clear();
 				}
 				mDB.clearDailies();
 				return null;
@@ -119,20 +122,30 @@ public class DailiesLstFragment extends BaseFragment {
 
 	@Override
 	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		return inflater.inflate( LAYOUT, container, false );
+		return inflater.inflate(
+				LAYOUT,
+				container,
+				false
+		);
 	}
 
 
 	@Override
 	public void onViewCreated( View view, Bundle savedInstanceState ) {
-		super.onViewCreated( view, savedInstanceState );
+		super.onViewCreated(
+				view,
+				savedInstanceState
+		);
 		setErrorHandlerAvailable( false );
 		mDataCanBeShown = true;
 
 		mDB = DB.getInstance( getActivity().getApplication() );
 		mRv = (android.support.v7.widget.RecyclerView) view.findViewById( R.id.daily_rv );
 		if( getResources().getBoolean( R.bool.landscape ) ) {
-			mRv.setLayoutManager( new StaggeredGridLayoutManager( 4, StaggeredGridLayoutManager.VERTICAL ) );
+			mRv.setLayoutManager( new StaggeredGridLayoutManager(
+					4,
+					StaggeredGridLayoutManager.VERTICAL
+			) );
 		} else {
 			mRv.setLayoutManager( new LinearLayoutManager( getActivity() ) );
 		}
@@ -142,9 +155,11 @@ public class DailiesLstFragment extends BaseFragment {
 			public void onScrolled( RecyclerView recyclerView, int dx, int dy ) {
 				float y = ViewCompat.getY( recyclerView );
 				if( y < dy ) {
-					EventBus.getDefault().post( new FloatActionButtonEvent( true ) );
+					EventBus.getDefault()
+							.post( new FloatActionButtonEvent( true ) );
 				} else {
-					EventBus.getDefault().post( new FloatActionButtonEvent( false ) );
+					EventBus.getDefault()
+							.post( new FloatActionButtonEvent( false ) );
 				}
 			}
 		} );
@@ -181,7 +196,8 @@ public class DailiesLstFragment extends BaseFragment {
 						mAdp.notifyDataSetChanged();
 					}
 				}
-				EventBus.getDefault().post( new LoadedAllDailiesEvent( items.size() ) );
+				EventBus.getDefault()
+						.post( new LoadedAllDailiesEvent( items.size() ) );
 			}
 		} );
 	}
@@ -200,27 +216,31 @@ public class DailiesLstFragment extends BaseFragment {
 	 * 		The item to bookmark.
 	 */
 	private void bookmarkOneItem( final RecentListItem itemToBookmark ) {
-		AsyncTaskCompat.executeParallel( new AsyncTask<List<RecentListItem>, Void, Void>() {
-			@Override
-			protected Void doInBackground( List<RecentListItem>... params ) {
-				List<RecentListItem> data = params[ 0 ];
-				for( RecentListItem obj : data ) {
-					if( obj.getId() == itemToBookmark.getId() ) {
-						mDB.removeMessage( obj == null ? null : obj.getMessage() );
-						mDB.addBookmark( obj.getMessage() );
+		AsyncTaskCompat.executeParallel(
+				new AsyncTask<List<RecentListItem>, Void, Void>() {
+					@Override
+					protected Void doInBackground( List<RecentListItem>... params ) {
+						List<RecentListItem> data = params[ 0 ];
+						for( RecentListItem obj : data ) {
+							if( obj.getId() == itemToBookmark.getId() ) {
+								mDB.removeMessage( obj == null ? null : obj.getMessage() );
+								mDB.addBookmark( obj.getMessage() );
+							}
+						}
+						itemToBookmark.setBookmarked( true );
+						return null;
 					}
-				}
-				itemToBookmark.setBookmarked( true );
-				return null;
-			}
 
-			@Override
-			protected void onPostExecute( Void aVoid ) {
-				super.onPostExecute( aVoid );
-				mAdp.notifyDataSetChanged();
-				EventBus.getDefault().post( new BookmarkedEvent() );
-			}
-		}, mAdp.getMessages() );
+					@Override
+					protected void onPostExecute( Void aVoid ) {
+						super.onPostExecute( aVoid );
+						mAdp.notifyDataSetChanged();
+						EventBus.getDefault()
+								.post( new BookmarkedEvent() );
+					}
+				},
+				mAdp.getMessages()
+		);
 	}
 
 

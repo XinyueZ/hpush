@@ -67,7 +67,10 @@ public class DailiesActivity extends BasicActivity {
 		if( e.getCount() > 0 ) {
 			toggleUI();
 		} else {
-			Utils.showLongToast( getApplication(), R.string.msg_no_data );
+			Utils.showLongToast(
+					getApplication(),
+					R.string.msg_no_data
+			);
 		}
 		mPbV.setVisibility( View.GONE );
 	}
@@ -82,7 +85,10 @@ public class DailiesActivity extends BasicActivity {
 	 * 		{@link android.content.Context}.
 	 */
 	public static void showInstance( Context cxt ) {
-		Intent intent = new Intent( cxt, DailiesActivity.class );
+		Intent intent = new Intent(
+				cxt,
+				DailiesActivity.class
+		);
 		intent.setFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP );
 		cxt.startActivity( intent );
 	}
@@ -97,7 +103,8 @@ public class DailiesActivity extends BasicActivity {
 			mRmAllBtn.setOnClickListener( new OnClickListener() {
 				@Override
 				public void onClick( View v ) {
-					EventBus.getDefault().post( new DeleteAllDailiesEvent() );
+					EventBus.getDefault()
+							.post( new DeleteAllDailiesEvent() );
 				}
 			} );
 		}

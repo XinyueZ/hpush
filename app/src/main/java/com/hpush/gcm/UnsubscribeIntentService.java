@@ -41,18 +41,37 @@ public class UnsubscribeIntentService extends IntentService {
 		String token               = prefs.getPushRegId();
 		String topic               = intent.getStringExtra( TOPIC );
 		String storage             = intent.getStringExtra( STORAGE_NAME );
-		unsubscribeComplete.putExtra( UNSUBSCRIBE_NAME, intent.getStringExtra( UNSUBSCRIBE_NAME ) );
+		unsubscribeComplete.putExtra(
+				UNSUBSCRIBE_NAME,
+				intent.getStringExtra( UNSUBSCRIBE_NAME )
+		);
 		try {
 			synchronized( TAG ) {
-				unsubscribeTopics( token, topic );
-				prefs.setPush( storage, false );
-				unsubscribeComplete.putExtra( UNSUBSCRIBE_RESULT, true );
+				unsubscribeTopics(
+						token,
+						topic
+				);
+				prefs.setPush(
+						storage,
+						false
+				);
+				unsubscribeComplete.putExtra(
+						UNSUBSCRIBE_RESULT,
+						true
+				);
 			}
 		} catch( Exception e ) {
-			prefs.setPush( storage, true );
-			unsubscribeComplete.putExtra( UNSUBSCRIBE_RESULT, false );
+			prefs.setPush(
+					storage,
+					true
+			);
+			unsubscribeComplete.putExtra(
+					UNSUBSCRIBE_RESULT,
+					false
+			);
 		}
-		LocalBroadcastManager.getInstance( this ).sendBroadcast( unsubscribeComplete );
+		LocalBroadcastManager.getInstance( this )
+							 .sendBroadcast( unsubscribeComplete );
 	}
 
 
@@ -70,6 +89,9 @@ public class UnsubscribeIntentService extends IntentService {
 	// [START subscribe_topics]
 	private void unsubscribeTopics( String token, String topic ) throws IOException {
 		GcmPubSub pubSub = GcmPubSub.getInstance( this );
-		pubSub.unsubscribe( token, "/topics/" + topic );
+		pubSub.unsubscribe(
+				token,
+				"/topics/" + topic
+		);
 	}
 }

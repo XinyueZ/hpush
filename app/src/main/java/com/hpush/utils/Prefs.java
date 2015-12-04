@@ -99,7 +99,10 @@ public final class Prefs extends BasicPrefs {
 	 * @return {@code true} if EULA has been shown and agreed.
 	 */
 	public boolean isEULAOnceConfirmed() {
-		return getBoolean( KEY_EULA_SHOWN, false );
+		return getBoolean(
+				KEY_EULA_SHOWN,
+				false
+		);
 	}
 
 	/**
@@ -110,55 +113,101 @@ public final class Prefs extends BasicPrefs {
 	 * 		{@code true} if EULA has been shown and agreed.
 	 */
 	public void setEULAOnceConfirmed( boolean isConfirmed ) {
-		setBoolean( KEY_EULA_SHOWN, isConfirmed );
+		setBoolean(
+				KEY_EULA_SHOWN,
+				isConfirmed
+		);
 	}
+
 	public String getPushRegId() {
-		return getString( KEY_PUSH_REG_ID, null );
+		return getString(
+				KEY_PUSH_REG_ID,
+				null
+		);
 	}
+
 	public void setPushRegId( String regId ) {
-		setString( KEY_PUSH_REG_ID, regId );
+		setString(
+				KEY_PUSH_REG_ID,
+				regId
+		);
 	}
+
 	private String getPushHost() {
-		return getString( PUSH_HOST, null );
+		return getString(
+				PUSH_HOST,
+				null
+		);
 	}
 
 	public long getPushSenderId() {
-		return getLong( PUSH_SENDER_ID, -1 );
+		return getLong(
+				PUSH_SENDER_ID,
+				-1
+		);
 	}
 
 
 	public String getPushBackendSyncUrl() {
-		return getPushHost() + getString( PUSH_URL_INFO_BACKEND_SYNC, null );
+		return getPushHost() + getString(
+				PUSH_URL_INFO_BACKEND_SYNC,
+				null
+		);
 	}
 
 	public String getHackerNewsHomeUrl() {
-		return getString( HACKER_NEWS_HOME_URL, null );
+		return getString(
+				HACKER_NEWS_HOME_URL,
+				null
+		);
 	}
 
 	public String getHackerNewsCommentsUrl() {
-		return getString( HACKER_NEWS_COMMENTS_URL, null );
+		return getString(
+				HACKER_NEWS_COMMENTS_URL,
+				null
+		);
 	}
 
 	public String getHackerNewsBlogUrl() {
-		return getString( HACKER_NEWS_BLOG_URL, null );
+		return getString(
+				HACKER_NEWS_BLOG_URL,
+				null
+		);
 	}
 
 
 	public int getShownDetailsAdsTimes() {
-		return getInt( KEY_SHOWN_DETAILS_ADS_TIMES, 5 );
+		return getInt(
+				KEY_SHOWN_DETAILS_ADS_TIMES,
+				5
+		);
 	}
+
 	public long getLastPushedTime() {
-		return getLong( KEY_LAST_PUSHED_TIME, -1 );
+		return getLong(
+				KEY_LAST_PUSHED_TIME,
+				-1
+		);
 	}
+
 	public void setLastPushedTime( long pushedTime ) {
-		setLong( KEY_LAST_PUSHED_TIME, pushedTime );
+		setLong(
+				KEY_LAST_PUSHED_TIME,
+				pushedTime
+		);
 	}
+
 	/**
 	 * @return Get logined account.
 	 */
 	public String getGoogleAccount() {
-		return getString( KEY_G_ACCOUNT, null );
+		return getString(
+				KEY_G_ACCOUNT,
+				null
+		);
 	}
+
 	/**
 	 * Set logined account.
 	 *
@@ -166,20 +215,30 @@ public final class Prefs extends BasicPrefs {
 	 * 		logined account.
 	 */
 	public void setGoogleAccount( String account ) {
-		setString( KEY_G_ACCOUNT, account );
+		setString(
+				KEY_G_ACCOUNT,
+				account
+		);
 	}
+
 	/**
 	 * @return Timeout for retry to sync data on backend.
 	 */
 	public int getSyncRetry() {
-		return getInt( SYNC_RETRY, 60 );
+		return getInt(
+				SYNC_RETRY,
+				60
+		);
 	}
 
 	/**
 	 * @return Sort type, by score or time of push, "0-4".
 	 */
 	public String getSortTypeValue() {
-		return getString( KEY_SORT_TYPE, getDefaultSortValue() + "" );
+		return getString(
+				KEY_SORT_TYPE,
+				getDefaultSortValue() + ""
+		);
 	}
 
 	/**
@@ -189,7 +248,10 @@ public final class Prefs extends BasicPrefs {
 	 * 		"0-4".
 	 */
 	public void setSortTypeValue( String sortTypeValue ) {
-		setString( KEY_SORT_TYPE, sortTypeValue );
+		setString(
+				KEY_SORT_TYPE,
+				sortTypeValue
+		);
 	}
 
 
@@ -197,11 +259,17 @@ public final class Prefs extends BasicPrefs {
 	 * @return sound type, "0-2".
 	 */
 	public String getSoundTypeValue() {
-		return getString( KEY_SOUND_TYPE, "0" );
+		return getString(
+				KEY_SOUND_TYPE,
+				"0"
+		);
 	}
 
 	private int getDefaultSortValue() {
-		return getInt( DEFAULT_SORT_VALUE, 2 );
+		return getInt(
+				DEFAULT_SORT_VALUE,
+				2
+		);
 	}
 
 	/**
@@ -210,19 +278,22 @@ public final class Prefs extends BasicPrefs {
 	 * @param keyName
 	 * 		See.
 	 * 		<pre>
-	 * 														<code>
-	 * 				public static final String KEY_PUSH_TOPSTORIES = "key.push.topstories";
-	 * 				public static final String KEY_PUSH_NEWSTORIES = "key.push.newstories";
-	 * 				public static final String KEY_PUSH_ASKSTORIES = "key.push.askstories";
-	 * 				public static final String KEY_PUSH_SHOWSTORIES = "key.push.showstories";
-	 * 				public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
-	 * 														</code>
-	 * 												</pre>
+	 * 																<code>
+	 * 						public static final String KEY_PUSH_TOPSTORIES = "key.push.topstories";
+	 * 						public static final String KEY_PUSH_NEWSTORIES = "key.push.newstories";
+	 * 						public static final String KEY_PUSH_ASKSTORIES = "key.push.askstories";
+	 * 						public static final String KEY_PUSH_SHOWSTORIES = "key.push.showstories";
+	 * 						public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
+	 * 																</code>
+	 * 														</pre>
 	 *
 	 * @return {@code true} if the push named by {@code keyName}  is subscribed.
 	 */
 	public boolean getPush( String keyName ) {
-		return getBoolean( keyName, false );
+		return getBoolean(
+				keyName,
+				false
+		);
 	}
 
 
@@ -232,50 +303,74 @@ public final class Prefs extends BasicPrefs {
 	 * @param keyName
 	 * 		See.
 	 * 		<pre>
-	 * 														<code>
-	 * 				public static final String KEY_PUSH_TOPSTORIES = "key.push.topstories";
-	 * 				public static final String KEY_PUSH_NEWSTORIES = "key.push.newstories";
-	 * 				public static final String KEY_PUSH_ASKSTORIES = "key.push.askstories";
-	 * 				public static final String KEY_PUSH_SHOWSTORIES = "key.push.showstories";
-	 * 				public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
-	 * 														</code>
-	 * 												</pre>
+	 * 																<code>
+	 * 						public static final String KEY_PUSH_TOPSTORIES = "key.push.topstories";
+	 * 						public static final String KEY_PUSH_NEWSTORIES = "key.push.newstories";
+	 * 						public static final String KEY_PUSH_ASKSTORIES = "key.push.askstories";
+	 * 						public static final String KEY_PUSH_SHOWSTORIES = "key.push.showstories";
+	 * 						public static final String KEY_PUSH_JOBSTORIES = "key.push.jobstories";
+	 * 																</code>
+	 * 														</pre>
 	 */
 	public void setPush( String keyName, boolean value ) {
-		setBoolean( keyName, value );
+		setBoolean(
+				keyName,
+				value
+		);
 	}
+
 	/**
 	 * The display-name of Google's user.
 	 */
 	public String getGoogleDisplyName() {
-		return getString( KEY_GOOGLE_DISPLAY_NAME, null );
+		return getString(
+				KEY_GOOGLE_DISPLAY_NAME,
+				null
+		);
 	}
+
 	/**
 	 * The display-name of Google's user.
 	 */
 	public void setGoogleDisplyName( String displayName ) {
-		setString( KEY_GOOGLE_DISPLAY_NAME, displayName );
+		setString(
+				KEY_GOOGLE_DISPLAY_NAME,
+				displayName
+		);
 	}
+
 	/**
 	 * Url to user's profile-image.
 	 */
 	public String getGoogleThumbUrl() {
-		return getString( KEY_GOOGLE_THUMB_URL, null );
+		return getString(
+				KEY_GOOGLE_THUMB_URL,
+				null
+		);
 	}
+
 	/**
 	 * The display-name of Google's user.
 	 */
 	public void setGoogleThumbUrl( String thumbUrl ) {
-		setString( KEY_GOOGLE_THUMB_URL, thumbUrl );
+		setString(
+				KEY_GOOGLE_THUMB_URL,
+				thumbUrl
+		);
 	}
+
 	/**
 	 * Flag for updated version 2.0
 	 *
 	 * @return {@true} if upgrade was done.
 	 */
 	public boolean isUpdatedV2() {
-		return getBoolean( KEY_UPDATED_V2, false );
+		return getBoolean(
+				KEY_UPDATED_V2,
+				false
+		);
 	}
+
 	/**
 	 * Flag for updated version 2.0
 	 *
@@ -283,6 +378,9 @@ public final class Prefs extends BasicPrefs {
 	 * 		{@true} if upgrade was done.
 	 */
 	public void setUpdatedV2( boolean updatedV2 ) {
-		setBoolean( KEY_UPDATED_V2, updatedV2 );
+		setBoolean(
+				KEY_UPDATED_V2,
+				updatedV2
+		);
 	}
 }

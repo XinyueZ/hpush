@@ -42,18 +42,21 @@ public final class SubscribeTopicsActivity extends AppCompatActivity {
 	 * 		{@link Context}.
 	 */
 	public static void showInstance( Context cxt ) {
-		Intent intent = new Intent( cxt, SubscribeTopicsActivity.class );
+		Intent intent = new Intent(
+				cxt,
+				SubscribeTopicsActivity.class
+		);
 		intent.setFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP );
 		cxt.startActivity( intent );
 	}
 
 	private volatile int mTotal = 6;
-	private Intent            mSumIntent;
-	private Intent            mJobIntent;
-	private Intent            mShowIntent;
-	private Intent            mAskIntent;
-	private Intent            mTopIntent;
-	private Intent            mNewIntent;
+	private Intent mSumIntent;
+	private Intent mJobIntent;
+	private Intent mShowIntent;
+	private Intent mAskIntent;
+	private Intent mTopIntent;
+	private Intent mNewIntent;
 	private BroadcastReceiver mTopsRegRecv;
 	private BroadcastReceiver mNewRegRecv;
 	private BroadcastReceiver mAskRegRecv;
@@ -64,7 +67,10 @@ public final class SubscribeTopicsActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		mBinding = DataBindingUtil.setContentView( this, LAYOUT );
+		mBinding = DataBindingUtil.setContentView(
+				this,
+				LAYOUT
+		);
 
 		mBinding.closeBtn.setOnClickListener( new OnClickListener() {
 			@Override
@@ -140,138 +146,252 @@ public final class SubscribeTopicsActivity extends AppCompatActivity {
 
 	private void subscribeSummary() {
 		if( mSumIntent == null ) {
-			LocalBroadcastManager.getInstance( this ).registerReceiver( mSumRegRecv = new BroadcastReceiver() {
-				@Override
-				public void onReceive( Context context, Intent intent ) {
-					mBinding.summaryStatusTv.setVisibility( View.VISIBLE );
-					if( intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false ) ) {
-						mBinding.summaryStatusTv.setText( R.string.lbl_finished );
-						updateSubscribing();
-					} else {
-						mBinding.summaryStatusTv.setText( R.string.lbl_failed );
-						mBinding.summaryRetryBtn.setVisibility( View.VISIBLE );
-					}
-				}
-			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
-			mSumIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
-			mSumIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_SUMMARY );
-			mSumIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_SUMMARY );
-			mSumIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_SUMMARY );
+			LocalBroadcastManager.getInstance( this )
+								 .registerReceiver(
+										 mSumRegRecv = new BroadcastReceiver() {
+											 @Override
+											 public void onReceive( Context context, Intent intent ) {
+												 mBinding.summaryStatusTv.setVisibility( View.VISIBLE );
+												 if( intent.getBooleanExtra(
+														 SubscribeIntentService.SUBSCRIBE_RESULT,
+														 false
+												 ) ) {
+													 mBinding.summaryStatusTv.setText( R.string.lbl_finished );
+													 updateSubscribing();
+												 } else {
+													 mBinding.summaryStatusTv.setText( R.string.lbl_failed );
+													 mBinding.summaryRetryBtn.setVisibility( View.VISIBLE );
+												 }
+											 }
+										 },
+										 new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE )
+								 );
+			mSumIntent = new Intent(
+					getApplicationContext(),
+					SubscribeIntentService.class
+			);
+			mSumIntent.putExtra(
+					SubscribeIntentService.TOPIC,
+					Topics.GET_SUMMARY
+			);
+			mSumIntent.putExtra(
+					SubscribeIntentService.STORAGE_NAME,
+					Prefs.KEY_PUSH_SUMMARY
+			);
+			mSumIntent.putExtra(
+					SubscribeIntentService.SUBSCRIBE_NAME,
+					Topics.GET_SUMMARY
+			);
 		}
 		startService( mSumIntent );
 	}
 
 	private void subscribeJobStories() {
 		if( mJobIntent == null ) {
-			LocalBroadcastManager.getInstance( this ).registerReceiver( mJobsRegRecv = new BroadcastReceiver() {
-				@Override
-				public void onReceive( Context context, Intent intent ) {
-					mBinding.jobstoriesStatusTv.setVisibility( View.VISIBLE );
-					if( intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false ) ) {
-						mBinding.jobstoriesStatusTv.setText( R.string.lbl_finished );
-						updateSubscribing();
-					} else {
-						mBinding.jobstoriesStatusTv.setText( R.string.lbl_failed );
-						mBinding.jobstoriesRetryBtn.setVisibility( View.VISIBLE );
-					}
-				}
-			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
-			mJobIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
-			mJobIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_JOB_STORIES );
-			mJobIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_JOBSTORIES );
-			mJobIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_JOB_STORIES );
+			LocalBroadcastManager.getInstance( this )
+								 .registerReceiver(
+										 mJobsRegRecv = new BroadcastReceiver() {
+											 @Override
+											 public void onReceive( Context context, Intent intent ) {
+												 mBinding.jobstoriesStatusTv.setVisibility( View.VISIBLE );
+												 if( intent.getBooleanExtra(
+														 SubscribeIntentService.SUBSCRIBE_RESULT,
+														 false
+												 ) ) {
+													 mBinding.jobstoriesStatusTv.setText( R.string.lbl_finished );
+													 updateSubscribing();
+												 } else {
+													 mBinding.jobstoriesStatusTv.setText( R.string.lbl_failed );
+													 mBinding.jobstoriesRetryBtn.setVisibility( View.VISIBLE );
+												 }
+											 }
+										 },
+										 new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE )
+								 );
+			mJobIntent = new Intent(
+					getApplicationContext(),
+					SubscribeIntentService.class
+			);
+			mJobIntent.putExtra(
+					SubscribeIntentService.TOPIC,
+					Topics.GET_JOB_STORIES
+			);
+			mJobIntent.putExtra(
+					SubscribeIntentService.STORAGE_NAME,
+					Prefs.KEY_PUSH_JOBSTORIES
+			);
+			mJobIntent.putExtra(
+					SubscribeIntentService.SUBSCRIBE_NAME,
+					Topics.GET_JOB_STORIES
+			);
 		}
 		startService( mJobIntent );
 	}
 
 	private void subscribeShowStories() {
 		if( mShowIntent == null ) {
-			LocalBroadcastManager.getInstance( this ).registerReceiver( mShowRegRecv = new BroadcastReceiver() {
-				@Override
-				public void onReceive( Context context, Intent intent ) {
-					mBinding.showstoriesStatusTv.setVisibility( View.VISIBLE );
-					if( intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false ) ) {
-						mBinding.showstoriesStatusTv.setText( R.string.lbl_finished );
-						updateSubscribing();
-					} else {
-						mBinding.showstoriesStatusTv.setText( R.string.lbl_failed );
-						mBinding.showstoriesRetryBtn.setVisibility( View.VISIBLE );
-					}
-				}
-			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
-			mShowIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
-			mShowIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_SHOW_STORIES );
-			mShowIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_SHOWSTORIES );
-			mShowIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_SHOW_STORIES );
+			LocalBroadcastManager.getInstance( this )
+								 .registerReceiver(
+										 mShowRegRecv = new BroadcastReceiver() {
+											 @Override
+											 public void onReceive( Context context, Intent intent ) {
+												 mBinding.showstoriesStatusTv.setVisibility( View.VISIBLE );
+												 if( intent.getBooleanExtra(
+														 SubscribeIntentService.SUBSCRIBE_RESULT,
+														 false
+												 ) ) {
+													 mBinding.showstoriesStatusTv.setText( R.string.lbl_finished );
+													 updateSubscribing();
+												 } else {
+													 mBinding.showstoriesStatusTv.setText( R.string.lbl_failed );
+													 mBinding.showstoriesRetryBtn.setVisibility( View.VISIBLE );
+												 }
+											 }
+										 },
+										 new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE )
+								 );
+			mShowIntent = new Intent(
+					getApplicationContext(),
+					SubscribeIntentService.class
+			);
+			mShowIntent.putExtra(
+					SubscribeIntentService.TOPIC,
+					Topics.GET_SHOW_STORIES
+			);
+			mShowIntent.putExtra(
+					SubscribeIntentService.STORAGE_NAME,
+					Prefs.KEY_PUSH_SHOWSTORIES
+			);
+			mShowIntent.putExtra(
+					SubscribeIntentService.SUBSCRIBE_NAME,
+					Topics.GET_SHOW_STORIES
+			);
 		}
 		startService( mShowIntent );
 	}
 
 	private void subscribeAskStories() {
 		if( mAskIntent == null ) {
-			LocalBroadcastManager.getInstance( this ).registerReceiver( mAskRegRecv = new BroadcastReceiver() {
-				@Override
-				public void onReceive( Context context, Intent intent ) {
-					mBinding.askstoriesStatusTv.setVisibility( View.VISIBLE );
-					if( intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false ) ) {
-						mBinding.askstoriesStatusTv.setText( R.string.lbl_finished );
-						updateSubscribing();
-					} else {
-						mBinding.askstoriesStatusTv.setText( R.string.lbl_failed );
-						mBinding.askstoriesRetryBtn.setVisibility( View.VISIBLE );
-					}
-				}
-			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
-			mAskIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
-			mAskIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_ASK_STORIES );
-			mAskIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_ASKSTORIES );
-			mAskIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_ASK_STORIES );
+			LocalBroadcastManager.getInstance( this )
+								 .registerReceiver(
+										 mAskRegRecv = new BroadcastReceiver() {
+											 @Override
+											 public void onReceive( Context context, Intent intent ) {
+												 mBinding.askstoriesStatusTv.setVisibility( View.VISIBLE );
+												 if( intent.getBooleanExtra(
+														 SubscribeIntentService.SUBSCRIBE_RESULT,
+														 false
+												 ) ) {
+													 mBinding.askstoriesStatusTv.setText( R.string.lbl_finished );
+													 updateSubscribing();
+												 } else {
+													 mBinding.askstoriesStatusTv.setText( R.string.lbl_failed );
+													 mBinding.askstoriesRetryBtn.setVisibility( View.VISIBLE );
+												 }
+											 }
+										 },
+										 new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE )
+								 );
+			mAskIntent = new Intent(
+					getApplicationContext(),
+					SubscribeIntentService.class
+			);
+			mAskIntent.putExtra(
+					SubscribeIntentService.TOPIC,
+					Topics.GET_ASK_STORIES
+			);
+			mAskIntent.putExtra(
+					SubscribeIntentService.STORAGE_NAME,
+					Prefs.KEY_PUSH_ASKSTORIES
+			);
+			mAskIntent.putExtra(
+					SubscribeIntentService.SUBSCRIBE_NAME,
+					Topics.GET_ASK_STORIES
+			);
 		}
 		startService( mAskIntent );
 	}
 
 	private void subscribeNewStories() {
 		if( mNewIntent == null ) {
-			LocalBroadcastManager.getInstance( this ).registerReceiver( mNewRegRecv = new BroadcastReceiver() {
-				@Override
-				public void onReceive( Context context, Intent intent ) {
-					mBinding.newstoriesStatusTv.setVisibility( View.VISIBLE );
-					if( intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false ) ) {
-						mBinding.newstoriesStatusTv.setText( R.string.lbl_finished );
-						updateSubscribing();
-					} else {
-						mBinding.newstoriesStatusTv.setText( R.string.lbl_failed );
-						mBinding.newstoriesRetryBtn.setVisibility( View.VISIBLE );
-					}
-				}
-			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
-			mNewIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
-			mNewIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_NEW_STORIES );
-			mNewIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_NEWSTORIES );
-			mNewIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_NEW_STORIES );
+			LocalBroadcastManager.getInstance( this )
+								 .registerReceiver(
+										 mNewRegRecv = new BroadcastReceiver() {
+											 @Override
+											 public void onReceive( Context context, Intent intent ) {
+												 mBinding.newstoriesStatusTv.setVisibility( View.VISIBLE );
+												 if( intent.getBooleanExtra(
+														 SubscribeIntentService.SUBSCRIBE_RESULT,
+														 false
+												 ) ) {
+													 mBinding.newstoriesStatusTv.setText( R.string.lbl_finished );
+													 updateSubscribing();
+												 } else {
+													 mBinding.newstoriesStatusTv.setText( R.string.lbl_failed );
+													 mBinding.newstoriesRetryBtn.setVisibility( View.VISIBLE );
+												 }
+											 }
+										 },
+										 new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE )
+								 );
+			mNewIntent = new Intent(
+					getApplicationContext(),
+					SubscribeIntentService.class
+			);
+			mNewIntent.putExtra(
+					SubscribeIntentService.TOPIC,
+					Topics.GET_NEW_STORIES
+			);
+			mNewIntent.putExtra(
+					SubscribeIntentService.STORAGE_NAME,
+					Prefs.KEY_PUSH_NEWSTORIES
+			);
+			mNewIntent.putExtra(
+					SubscribeIntentService.SUBSCRIBE_NAME,
+					Topics.GET_NEW_STORIES
+			);
 		}
 		startService( mNewIntent );
 	}
 
 	private void subscribeTopStories() {
 		if( mTopIntent == null ) {
-			LocalBroadcastManager.getInstance( this ).registerReceiver( mTopsRegRecv = new BroadcastReceiver() {
-				@Override
-				public void onReceive( Context context, Intent intent ) {
-					mBinding.topstoriesStatusTv.setVisibility( View.VISIBLE );
-					if( intent.getBooleanExtra( SubscribeIntentService.SUBSCRIBE_RESULT, false ) ) {
-						mBinding.topstoriesStatusTv.setText( R.string.lbl_finished );
-						updateSubscribing();
-					} else {
-						mBinding.topstoriesStatusTv.setText( R.string.lbl_failed );
-						mBinding.topstoriesRetryBtn.setVisibility( View.VISIBLE );
-					}
-				}
-			}, new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE ) );
-			mTopIntent = new Intent( getApplicationContext(), SubscribeIntentService.class );
-			mTopIntent.putExtra( SubscribeIntentService.TOPIC, Topics.GET_TOP_STORIES );
-			mTopIntent.putExtra( SubscribeIntentService.STORAGE_NAME, Prefs.KEY_PUSH_TOPSTORIES );
-			mTopIntent.putExtra( SubscribeIntentService.SUBSCRIBE_NAME, Topics.GET_TOP_STORIES );
+			LocalBroadcastManager.getInstance( this )
+								 .registerReceiver(
+										 mTopsRegRecv = new BroadcastReceiver() {
+											 @Override
+											 public void onReceive( Context context, Intent intent ) {
+												 mBinding.topstoriesStatusTv.setVisibility( View.VISIBLE );
+												 if( intent.getBooleanExtra(
+														 SubscribeIntentService.SUBSCRIBE_RESULT,
+														 false
+												 ) ) {
+													 mBinding.topstoriesStatusTv.setText( R.string.lbl_finished );
+													 updateSubscribing();
+												 } else {
+													 mBinding.topstoriesStatusTv.setText( R.string.lbl_failed );
+													 mBinding.topstoriesRetryBtn.setVisibility( View.VISIBLE );
+												 }
+											 }
+										 },
+										 new IntentFilter( SubscribeIntentService.SUBSCRIBE_COMPLETE )
+								 );
+			mTopIntent = new Intent(
+					getApplicationContext(),
+					SubscribeIntentService.class
+			);
+			mTopIntent.putExtra(
+					SubscribeIntentService.TOPIC,
+					Topics.GET_TOP_STORIES
+			);
+			mTopIntent.putExtra(
+					SubscribeIntentService.STORAGE_NAME,
+					Prefs.KEY_PUSH_TOPSTORIES
+			);
+			mTopIntent.putExtra(
+					SubscribeIntentService.SUBSCRIBE_NAME,
+					Topics.GET_TOP_STORIES
+			);
 		}
 		startService( mTopIntent );
 	}
@@ -279,12 +399,18 @@ public final class SubscribeTopicsActivity extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mTopsRegRecv );
-		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mNewRegRecv );
-		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mAskRegRecv );
-		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mShowRegRecv );
-		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mJobsRegRecv );
-		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mSumRegRecv );
+		LocalBroadcastManager.getInstance( this )
+							 .unregisterReceiver( mTopsRegRecv );
+		LocalBroadcastManager.getInstance( this )
+							 .unregisterReceiver( mNewRegRecv );
+		LocalBroadcastManager.getInstance( this )
+							 .unregisterReceiver( mAskRegRecv );
+		LocalBroadcastManager.getInstance( this )
+							 .unregisterReceiver( mShowRegRecv );
+		LocalBroadcastManager.getInstance( this )
+							 .unregisterReceiver( mJobsRegRecv );
+		LocalBroadcastManager.getInstance( this )
+							 .unregisterReceiver( mSumRegRecv );
 		super.onDestroy();
 	}
 

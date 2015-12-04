@@ -126,7 +126,10 @@ public class MessagesListFragment extends BaseFragment {
 					List<Message> msgs     = syncList.getSyncList();
 					DB            db       = DB.getInstance( activity.getApplication() );
 					for( Message msg : msgs ) {
-						syncDB( db, msg );
+						syncDB(
+								db,
+								msg
+						);
 					}
 				}
 				return null;
@@ -145,7 +148,10 @@ public class MessagesListFragment extends BaseFragment {
 				mInProgress = false;
 			}
 		};
-		AsyncTaskCompat.executeParallel( task, e );
+		AsyncTaskCompat.executeParallel(
+				task,
+				e
+		);
 	}
 
 
@@ -166,7 +172,8 @@ public class MessagesListFragment extends BaseFragment {
 	 * 		Event {@link RemoveAllEvent}.
 	 */
 	public void onEvent( RemoveAllEvent e ) {
-		if( mAdp == null || mAdp.getMessages() == null || mAdp.getMessages().size() == 0 ) {
+		if( mAdp == null || mAdp.getMessages() == null || mAdp.getMessages()
+															  .size() == 0 ) {
 			return;
 		}
 		if( getWhichPage() != e.getWhichPage() ) {
@@ -187,13 +194,26 @@ public class MessagesListFragment extends BaseFragment {
 		} else {
 			Activity activity = getActivity();
 			if( activity != null ) {
-				new android.support.v7.app.AlertDialog.Builder( activity ).setTitle( R.string.application_name ).setMessage( R.string.msg_remove_all )
-						.setCancelable( false ).setPositiveButton( R.string.lbl_yes, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick( DialogInterface dialog, int which ) {
-						removeAllItems();
-					}
-				} ).setNegativeButton( R.string.lbl_no, null ).create().show();
+				new android.support.v7.app.AlertDialog.Builder( activity ).setTitle( R.string.application_name )
+																		  .setMessage( R.string.msg_remove_all )
+																		  .setCancelable( false )
+																		  .setPositiveButton(
+																				  R.string.lbl_yes,
+																				  new DialogInterface.OnClickListener() {
+																					  @Override
+																					  public void onClick( DialogInterface dialog,
+																										   int which
+																					  ) {
+																						  removeAllItems();
+																					  }
+																				  }
+																		  )
+																		  .setNegativeButton(
+																				  R.string.lbl_no,
+																				  null
+																		  )
+																		  .create()
+																		  .show();
 			}
 		}
 	}
@@ -205,7 +225,8 @@ public class MessagesListFragment extends BaseFragment {
 	 * 		Event {@link BookmarkAllEvent}.
 	 */
 	public void onEvent( BookmarkAllEvent e ) {
-		if( mAdp == null || mAdp.getMessages() == null || mAdp.getMessages().size() == 0 ) {
+		if( mAdp == null || mAdp.getMessages() == null || mAdp.getMessages()
+															  .size() == 0 ) {
 			return;
 		}
 		bookmarkSelectedItems();
@@ -218,12 +239,14 @@ public class MessagesListFragment extends BaseFragment {
 	 * 		Event {@link BookmarkMessageEvent}.
 	 */
 	public void onEvent( BookmarkMessageEvent e ) {
-		if( mAdp == null || mAdp.getMessages() == null || mAdp.getMessages().size() == 0 ) {
+		if( mAdp == null || mAdp.getMessages() == null || mAdp.getMessages()
+															  .size() == 0 ) {
 			return;
 		}
 		final MessageListItem itemToBookmark = e.getMessageListItem();
 		bookmarkOneItem( itemToBookmark );
-		EventBus.getDefault().removeAllStickyEvents();
+		EventBus.getDefault()
+				.removeAllStickyEvents();
 	}
 
 	/**
@@ -241,46 +264,65 @@ public class MessagesListFragment extends BaseFragment {
 
 	//------------------------------------------------
 	public static MessagesListFragment newInstance( Context context ) {
-		return (MessagesListFragment) MessagesListFragment.instantiate( context, MessagesListFragment.class.getName() );
+		return (MessagesListFragment) MessagesListFragment.instantiate(
+				context,
+				MessagesListFragment.class.getName()
+		);
 	}
 
 	@Override
 	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		return inflater.inflate( getLayoutResId(), container, false );
+		return inflater.inflate(
+				getLayoutResId(),
+				container,
+				false
+		);
 	}
 
 	@Override
 	public void onViewCreated( View view, Bundle savedInstanceState ) {
-		super.onViewCreated( view, savedInstanceState );
+		super.onViewCreated(
+				view,
+				savedInstanceState
+		);
 		mDataCanBeShown = true;
 		mEmptyV = view.findViewById( R.id.empty_ll );
 		mEmpty2V = view.findViewById( R.id.empty_ll_2 );
 		if( getWhichPage() == WhichPage.Messages ) {
-			mEmpty2V.findViewById( R.id.open_setting_btn ).setOnClickListener( new OnClickListener() {
-				@Override
-				public void onClick( View v ) {
-					SettingActivity.showInstance( getActivity(), v );
-				}
-			} );
-			mEmpty2V.findViewById( R.id.sync_ii_btn ).setOnClickListener( new OnClickListener() {
-				@Override
-				public void onClick( View v ) {
-					mSwipeRefreshLayout.setRefreshing( true );
-					sync( false );
-				}
-			} );
-			mEmptyV.findViewById( R.id.sync_i_btn ).setOnClickListener( new OnClickListener() {
-				@Override
-				public void onClick( View v ) {
-					mSwipeRefreshLayout.setRefreshing( true );
-					sync( false );
-				}
-			} );
+			mEmpty2V.findViewById( R.id.open_setting_btn )
+					.setOnClickListener( new OnClickListener() {
+						@Override
+						public void onClick( View v ) {
+							SettingActivity.showInstance(
+									getActivity(),
+									v
+							);
+						}
+					} );
+			mEmpty2V.findViewById( R.id.sync_ii_btn )
+					.setOnClickListener( new OnClickListener() {
+						@Override
+						public void onClick( View v ) {
+							mSwipeRefreshLayout.setRefreshing( true );
+							sync( false );
+						}
+					} );
+			mEmptyV.findViewById( R.id.sync_i_btn )
+				   .setOnClickListener( new OnClickListener() {
+					   @Override
+					   public void onClick( View v ) {
+						   mSwipeRefreshLayout.setRefreshing( true );
+						   sync( false );
+					   }
+				   } );
 		}
 		mDB = DB.getInstance( getActivity().getApplication() );
 		mRv = (RecyclerView) view.findViewById( R.id.msg_rv );
 		if( getResources().getBoolean( R.bool.landscape ) ) {
-			mRv.setLayoutManager( new StaggeredGridLayoutManager( 4, StaggeredGridLayoutManager.VERTICAL ) );
+			mRv.setLayoutManager( new StaggeredGridLayoutManager(
+					4,
+					StaggeredGridLayoutManager.VERTICAL
+			) );
 		} else {
 			mRv.setLayoutManager( new LinearLayoutManager( getActivity() ) );
 		}
@@ -290,15 +332,19 @@ public class MessagesListFragment extends BaseFragment {
 			public void onScrolled( RecyclerView recyclerView, int dx, int dy ) {
 				float y = ViewCompat.getY( recyclerView );
 				if( y < dy ) {
-					EventBus.getDefault().post( new FloatActionButtonEvent( true ) );
+					EventBus.getDefault()
+							.post( new FloatActionButtonEvent( true ) );
 				} else {
-					EventBus.getDefault().post( new FloatActionButtonEvent( false ) );
+					EventBus.getDefault()
+							.post( new FloatActionButtonEvent( false ) );
 				}
 			}
 		} );
 		if( getWhichPage() == WhichPage.Messages ) {
 			mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById( R.id.content_srl );
-			mSwipeRefreshLayout.setColorSchemeResources( R.color.hacker_orange, R.color.hacker_orange_mid_deep, R.color.hacker_orange_deep,
+			mSwipeRefreshLayout.setColorSchemeResources( R.color.hacker_orange,
+														 R.color.hacker_orange_mid_deep,
+														 R.color.hacker_orange_deep,
 														 R.color.hacker_orange
 			);
 
@@ -339,7 +385,8 @@ public class MessagesListFragment extends BaseFragment {
 			mEmpty2V.setVisibility( View.GONE );
 			Activity activity = getActivity();
 			if( activity != null ) {
-				if( !TextUtils.isEmpty( Prefs.getInstance( activity.getApplication() ).getPushRegId() ) ) {
+				if( !TextUtils.isEmpty( Prefs.getInstance( activity.getApplication() )
+											 .getPushRegId() ) ) {
 					mEmptyV.setVisibility( mAdp == null || mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE );
 				} else {
 					mEmpty2V.setVisibility( mAdp == null || mAdp.getItemCount() == 0 ? View.VISIBLE : View.GONE );
@@ -363,7 +410,10 @@ public class MessagesListFragment extends BaseFragment {
 				super.onPostExecute( data );
 				if( mDataCanBeShown ) {
 					if( mAdp == null ) {
-						mAdp = new MessagesListAdapter( data, getToolbarMenuId() );
+						mAdp = new MessagesListAdapter(
+								data,
+								getToolbarMenuId()
+						);
 						mRv.setAdapter( mAdp );
 					} else {
 						mAdp.setMessages( data );
@@ -406,7 +456,10 @@ public class MessagesListFragment extends BaseFragment {
 				testEmpty();
 			}
 		};
-		AsyncTaskCompat.executeParallel( task, mAdp.getMessages() );
+		AsyncTaskCompat.executeParallel(
+				task,
+				mAdp.getMessages()
+		);
 	}
 
 
@@ -465,10 +518,14 @@ public class MessagesListFragment extends BaseFragment {
 					mDB.addBookmark( obj.getMessage() );
 				}
 
-				EventBus.getDefault().post( new BookmarkedEvent() );
+				EventBus.getDefault()
+						.post( new BookmarkedEvent() );
 			}
 		};
-		AsyncTaskCompat.executeParallel( task, mAdp.getMessages() );
+		AsyncTaskCompat.executeParallel(
+				task,
+				mAdp.getMessages()
+		);
 	}
 
 	/**
@@ -505,10 +562,14 @@ public class MessagesListFragment extends BaseFragment {
 					mDB.addBookmark( obj.getMessage() );
 				}
 
-				EventBus.getDefault().post( new BookmarkedEvent() );
+				EventBus.getDefault()
+						.post( new BookmarkedEvent() );
 			}
 		};
-		AsyncTaskCompat.executeParallel( task, mAdp.getMessages() );
+		AsyncTaskCompat.executeParallel(
+				task,
+				mAdp.getMessages()
+		);
 	}
 
 	/**
@@ -596,14 +657,17 @@ public class MessagesListFragment extends BaseFragment {
 			SyncTask.sync( activity.getApplication() );
 			if( handlingDelayIndicator ) {
 				Prefs prefs = (Prefs) getPrefs();
-				mHandler.postDelayed( new Runnable() {
-					@Override
-					public void run() {
-						if( mSwipeRefreshLayout != null ) {
-							mSwipeRefreshLayout.setRefreshing( false );
-						}
-					}
-				}, prefs.getSyncRetry() * 1000 );
+				mHandler.postDelayed(
+						new Runnable() {
+							@Override
+							public void run() {
+								if( mSwipeRefreshLayout != null ) {
+									mSwipeRefreshLayout.setRefreshing( false );
+								}
+							}
+						},
+						prefs.getSyncRetry() * 1000
+				);
 			}
 		}
 

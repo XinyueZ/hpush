@@ -19,11 +19,20 @@ public final class AppGuardService extends GcmTaskService {
 	public int onRunTask( TaskParams taskParams ) {
 		Calendar calendar = Calendar.getInstance();
 		int      day      = calendar.get( Calendar.DAY_OF_WEEK );
-		startService( initService( this, false ) );
+		startService( initService(
+				this,
+				false
+		) );
 		if( day == Calendar.SUNDAY ) {
-			startService( initService( this, true ) );
+			startService( initService(
+					this,
+					true
+			) );
 		}
-		App.startAppGuardService( getApplication(), 1 );
+		App.startAppGuardService(
+				getApplication(),
+				1
+		);
 		return GcmNetworkManager.RESULT_SUCCESS;
 	}
 
@@ -31,8 +40,14 @@ public final class AppGuardService extends GcmTaskService {
 	@NonNull
 	private Intent initService( Context context, boolean allToRemove ) {
 		Intent service;
-		service = new Intent( context, DeleteDataService.class );
-		service.putExtra( DeleteDataService.EXTRAS_RMV_ALL, allToRemove );
+		service = new Intent(
+				context,
+				DeleteDataService.class
+		);
+		service.putExtra(
+				DeleteDataService.EXTRAS_RMV_ALL,
+				allToRemove
+		);
 		return service;
 	}
 }

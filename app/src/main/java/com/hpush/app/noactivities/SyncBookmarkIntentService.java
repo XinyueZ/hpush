@@ -22,8 +22,8 @@ import cn.bmob.v3.listener.FindListener;
  * @author Xinyue Zhao
  */
 public final class SyncBookmarkIntentService extends IntentService {
-	public static final  String SYNC_COMPLETE = "syncComplete";
-	public static final  String SYNC_RESULT   = "result";
+	public static final String  SYNC_COMPLETE = "syncComplete";
+	public static final String  SYNC_RESULT   = "result";
 	private static final String TAG           = "SyncBookmarkIntentService";
 
 	public SyncBookmarkIntentService() {
@@ -36,34 +36,55 @@ public final class SyncBookmarkIntentService extends IntentService {
 		try {
 			synchronized( TAG ) {
 				BmobQuery<Bookmark> query = new BmobQuery<>();
-				query.addWhereEqualTo( "mUID", prefs.getGoogleAccount() );
-				query.findObjects( SyncBookmarkIntentService.this, new FindListener<Bookmark>() {
-					@Override
-					public void onSuccess( List<Bookmark> list ) {
-						syncPull( list );
-						syncPush();
-						Intent syncComplete = new Intent( SYNC_COMPLETE );
-						syncComplete.putExtra( SYNC_RESULT, true );
-						LocalBroadcastManager.getInstance( SyncBookmarkIntentService.this ).sendBroadcast( syncComplete );
-					}
+				query.addWhereEqualTo(
+						"mUID",
+						prefs.getGoogleAccount()
+				);
+				query.findObjects(
+						SyncBookmarkIntentService.this,
+						new FindListener<Bookmark>() {
+							@Override
+							public void onSuccess( List<Bookmark> list ) {
+								syncPull( list );
+								syncPush();
+								Intent syncComplete = new Intent( SYNC_COMPLETE );
+								syncComplete.putExtra(
+										SYNC_RESULT,
+										true
+								);
+								LocalBroadcastManager.getInstance( SyncBookmarkIntentService.this )
+													 .sendBroadcast( syncComplete );
+							}
 
-					@Override
-					public void onError( int i, String s ) {
-						Intent syncComplete = new Intent( SYNC_COMPLETE );
-						if( i == 101 ) {//object not found
-							syncComplete.putExtra( SYNC_RESULT, true );
-							syncPush();
-						} else {
-							syncComplete.putExtra( SYNC_RESULT, false );
+							@Override
+							public void onError( int i, String s ) {
+								Intent syncComplete = new Intent( SYNC_COMPLETE );
+								if( i == 101 ) {//object not found
+									syncComplete.putExtra(
+											SYNC_RESULT,
+											true
+									);
+									syncPush();
+								} else {
+									syncComplete.putExtra(
+											SYNC_RESULT,
+											false
+									);
+								}
+								LocalBroadcastManager.getInstance( SyncBookmarkIntentService.this )
+													 .sendBroadcast( syncComplete );
+							}
 						}
-						LocalBroadcastManager.getInstance( SyncBookmarkIntentService.this ).sendBroadcast( syncComplete );
-					}
-				} );
+				);
 			}
 		} catch( Exception e ) {
 			Intent syncComplete = new Intent( SYNC_COMPLETE );
-			syncComplete.putExtra( SYNC_RESULT, false );
-			LocalBroadcastManager.getInstance( SyncBookmarkIntentService.this ).sendBroadcast( syncComplete );
+			syncComplete.putExtra(
+					SYNC_RESULT,
+					false
+			);
+			LocalBroadcastManager.getInstance( SyncBookmarkIntentService.this )
+								 .sendBroadcast( syncComplete );
 		}
 	}
 
@@ -71,10 +92,14 @@ public final class SyncBookmarkIntentService extends IntentService {
 	 * Push local bookmarks to backend.
 	 */
 	private void syncPush() {
-		final List<MessageListItem> messagesInBookmarkLocal = DB.getInstance( App.Instance ).getBookmarks( Sort.DESC );
-		Prefs prefs = Prefs.getInstance( getApplicationContext() );
+		final List<MessageListItem> messagesInBookmarkLocal = DB.getInstance( App.Instance )
+																.getBookmarks( Sort.DESC );
+		Prefs                       prefs                   = Prefs.getInstance( getApplicationContext() );
 		for( MessageListItem item : messagesInBookmarkLocal ) {
-			Bookmark newBookmark = new Bookmark( prefs.getGoogleAccount(), item.getMessage() );
+			Bookmark newBookmark = new Bookmark(
+					prefs.getGoogleAccount(),
+					item.getMessage()
+			);
 			newBookmark.save( SyncBookmarkIntentService.this );
 		}
 	}

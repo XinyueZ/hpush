@@ -22,8 +22,12 @@ public final class ActionProviderTinyUrl4JListener implements TinyUrl4JListener 
 	private Message                                       msg;
 	private String                                        mOriginalUrl;
 
-	public ActionProviderTinyUrl4JListener( Context cxt, android.support.v7.widget.ShareActionProvider provider, int titleResId, int contentResId,
-											Message msg, String originalUrl
+	public ActionProviderTinyUrl4JListener( Context cxt,
+											android.support.v7.widget.ShareActionProvider provider,
+											int titleResId,
+											int contentResId,
+											Message msg,
+											String originalUrl
 	) {
 		mContextWeakReference = new WeakReference<>( cxt );
 		mProvider = provider;
@@ -45,8 +49,16 @@ public final class ActionProviderTinyUrl4JListener implements TinyUrl4JListener 
 			} else {
 				sharedUrl = mOriginalUrl;
 			}
-			text = cxt.getString( mContentResId, msg.getTitle(), sharedUrl );
-			mProvider.setShareIntent( Utils.getDefaultShareIntent( mProvider, subject, text ) );
+			text = cxt.getString(
+					mContentResId,
+					msg.getTitle(),
+					sharedUrl
+			);
+			mProvider.setShareIntent( Utils.getDefaultShareIntent(
+					mProvider,
+					subject,
+					text
+			) );
 		}
 	}
 }

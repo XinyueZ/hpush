@@ -97,9 +97,18 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 	 * 		The message that contains the information that the {@link #mWebView} uses. It might be null.
 	 */
 	public static void showInstance( Activity cxt, String url, View openWevViewV, Message msg ) {
-		Intent intent = new Intent( cxt, WebViewActivity.class );
-		intent.putExtra( EXTRAS_URL, url );
-		intent.putExtra( EXTRAS_MSG, msg );
+		Intent intent = new Intent(
+				cxt,
+				WebViewActivity.class
+		);
+		intent.putExtra(
+				EXTRAS_URL,
+				url
+		);
+		intent.putExtra(
+				EXTRAS_MSG,
+				msg
+		);
 		intent.setFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP );
 		//		if (openWevViewV != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 		//			ActivityOptionsCompat transitionActivityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(cxt,
@@ -122,7 +131,9 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		calcActionBarHeight();
 		//Progress-indicator.
 		mRefreshLayout = (SwipeRefreshLayout) findViewById( R.id.content_srl );
-		mRefreshLayout.setColorSchemeResources( R.color.hacker_orange, R.color.hacker_orange_mid_deep, R.color.hacker_orange_deep,
+		mRefreshLayout.setColorSchemeResources( R.color.hacker_orange,
+												R.color.hacker_orange_mid_deep,
+												R.color.hacker_orange_deep,
 												R.color.hacker_orange
 		);
 
@@ -187,17 +198,23 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 		if( !TextUtils.isEmpty( url ) ) {
 			mWebView.loadUrl( url );
 		} else {
-			mWebView.loadUrl( Prefs.getInstance( getApplication() ).getHackerNewsHomeUrl() );
+			mWebView.loadUrl( Prefs.getInstance( getApplication() )
+								   .getHackerNewsHomeUrl() );
 		}
 
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu( final Menu menu ) {
-		getMenuInflater().inflate( MENU, menu );
+		getMenuInflater().inflate(
+				MENU,
+				menu
+		);
 		if( msg == null ) {
-			menu.findItem( R.id.action_item_comment ).setVisible( false );
-			menu.findItem( R.id.action_item_bookmark ).setVisible( false );
+			menu.findItem( R.id.action_item_comment )
+				.setVisible( false );
+			menu.findItem( R.id.action_item_bookmark )
+				.setVisible( false );
 		}
 
 		if( msg != null ) {
@@ -213,7 +230,8 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 				protected void onPostExecute( Boolean found ) {
 					super.onPostExecute( found );
 					if( found ) {
-						menu.findItem( R.id.action_item_bookmark ).setVisible( false );
+						menu.findItem( R.id.action_item_bookmark )
+							.setVisible( false );
 					}
 				}
 			} );
@@ -224,23 +242,37 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 	@Override
 	public boolean onPrepareOptionsMenu( Menu menu ) {
 		MenuItem menuShare = menu.findItem( R.id.action_item_share );
-		android.support.v7.widget.ShareActionProvider provider = (android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(
-				menuShare );
+		android.support.v7.widget.ShareActionProvider provider
+				= (android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider( menuShare );
 		if( msg != null ) {
 			//Setting a share intent.
 			String url = msg.getUrl();
 			if( TextUtils.isEmpty( url ) ) {
-				url = Prefs.getInstance( getApplication() ).getHackerNewsCommentsUrl() + msg.getId();
+				url = Prefs.getInstance( getApplication() )
+						   .getHackerNewsCommentsUrl() + msg.getId();
 			}
 			Api.call(
 					url,
-					new ActionProviderTinyUrl4JListener( this, provider, R.string.lbl_share_item_title, R.string.lbl_share_item_content, msg, url )
+					new ActionProviderTinyUrl4JListener( this,
+														 provider,
+														 R.string.lbl_share_item_title,
+														 R.string.lbl_share_item_content,
+														 msg,
+														 url
+					)
 			);
 		} else {
 			//Setting a share intent.
-			String subject = getString( R.string.lbl_share_app_title, getString( R.string.application_name ) );
+			String subject = getString(
+					R.string.lbl_share_app_title,
+					getString( R.string.application_name )
+			);
 			String text    = getString( R.string.lbl_share_app_content );
-			provider.setShareIntent( Utils.getDefaultShareIntent( provider, subject, text ) );
+			provider.setShareIntent( Utils.getDefaultShareIntent(
+					provider,
+					subject,
+					text
+			) );
 		}
 		return super.onPrepareOptionsMenu( menu );
 	}
@@ -266,23 +298,45 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 				}
 				break;
 			case R.id.action_item_comment:
-				showInstance( this, Prefs.getInstance( getApplication() ).getHackerNewsCommentsUrl() + msg.getId(), null, msg );
+				showInstance(
+						this,
+						Prefs.getInstance( getApplication() )
+							 .getHackerNewsCommentsUrl() + msg.getId(),
+						null,
+						msg
+				);
 				break;
 			case R.id.action_item_bookmark:
-				EventBus.getDefault().postSticky( new BookmarkMessageEvent( new MessageListItem( msg ) ) );
-				Snackbar.make( mRefreshLayout, R.string.lbl_has_been_bookmarked, Snackbar.LENGTH_LONG ).show();
+				EventBus.getDefault()
+						.postSticky( new BookmarkMessageEvent( new MessageListItem( msg ) ) );
+				Snackbar.make(
+						mRefreshLayout,
+						R.string.lbl_has_been_bookmarked,
+						Snackbar.LENGTH_LONG
+				)
+						.show();
 				item.setVisible( false );
 				break;
 			case R.id.action_facebook:
 				if( msg == null ) {
 					name = getString( R.string.lbl_share_item_title );
-					caption = String.format( getString( R.string.lbl_share_app_title ), getString( R.string.lbl_share_item_title ) );
+					caption = String.format(
+							getString( R.string.lbl_share_app_title ),
+							getString( R.string.lbl_share_item_title )
+					);
 					desc = getString( R.string.lbl_share_app_content );
 					link = getString( R.string.lbl_app_link );
 
 					Bundle postParams = new Bundle();
-					final WebDialog fbDlg = new WebDialog.FeedDialogBuilder( this, getString( R.string.applicationId ), postParams ).setCaption(
-							caption ).setName( name ).setDescription( desc ).setLink( link ).build();
+					final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(
+							this,
+							getString( R.string.applicationId ),
+							postParams
+					).setCaption( caption )
+					 .setName( name )
+					 .setDescription( desc )
+					 .setLink( link )
+					 .build();
 					fbDlg.setOnCompleteListener( new OnCompleteListener() {
 						@Override
 						public void onComplete( Bundle bundle, FacebookException e ) {
@@ -292,9 +346,14 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 					fbDlg.show();
 				} else {
 					if( TextUtils.isEmpty( msg.getUrl() ) ) {
-						msg.setUrl( Prefs.getInstance( getApplication() ).getHackerNewsCommentsUrl() + msg.getId() );
+						msg.setUrl( Prefs.getInstance( getApplication() )
+										 .getHackerNewsCommentsUrl() + msg.getId() );
 					}
-					EventBus.getDefault().post( new ShareMessageEvent( new MessageListItem( msg ), Type.Facebook ) );
+					EventBus.getDefault()
+							.post( new ShareMessageEvent(
+									new MessageListItem( msg ),
+									Type.Facebook
+							) );
 				}
 				break;
 			case R.id.action_tweet:
@@ -306,7 +365,10 @@ public final class WebViewActivity extends BasicActivity implements DownloadList
 	@Override
 	public void onDownloadStart( String url, String userAgent, String contentDisposition, String mimetype, long contentLength ) {
 		Uri    uri    = Uri.parse( url );
-		Intent intent = new Intent( Intent.ACTION_VIEW, uri );
+		Intent intent = new Intent(
+				Intent.ACTION_VIEW,
+				uri
+		);
 		startActivity( intent );
 	}
 

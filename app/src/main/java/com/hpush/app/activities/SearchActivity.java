@@ -24,9 +24,15 @@ public final class SearchActivity extends DailiesActivity {
 	private void handleIntent( Intent intent ) {
 		if( Intent.ACTION_SEARCH.equals( intent.getAction() ) ) {
 			String query = intent.getStringExtra( SearchManager.QUERY );
-			getSupportFragmentManager().beginTransaction().replace( R.id.search_result_container,
-																	SearchFragment.newInstance( getApplication(), query )
-			).commit();
+			getSupportFragmentManager().beginTransaction()
+									   .replace(
+											   R.id.search_result_container,
+											   SearchFragment.newInstance(
+													   getApplication(),
+													   query
+											   )
+									   )
+									   .commit();
 			getSupportActionBar().setTitle( query );
 			setTitle( query );
 		}

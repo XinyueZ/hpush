@@ -23,7 +23,11 @@ public final class AdFragment extends Fragment {
 	private AdView mAdView;
 
 	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		return inflater.inflate( LAYOUT, container, false );
+		return inflater.inflate(
+				LAYOUT,
+				container,
+				false
+		);
 	}
 
 	@Override

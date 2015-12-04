@@ -53,7 +53,10 @@ public final class AboutDialogFragment extends DialogFragment {
 	 * @return An instance of {@link AboutDialogFragment}.
 	 */
 	public static DialogFragment newInstance( Context context ) {
-		return (DialogFragment) Fragment.instantiate( context, AboutDialogFragment.class.getName() );
+		return (DialogFragment) Fragment.instantiate(
+				context,
+				AboutDialogFragment.class.getName()
+		);
 	}
 
 	@Override
@@ -69,7 +72,10 @@ public final class AboutDialogFragment extends DialogFragment {
 		String         packageName = getActivity().getPackageName();
 		String         versionName;
 		try {
-			PackageInfo info = pm.getPackageInfo( packageName, 0 );
+			PackageInfo info = pm.getPackageInfo(
+					packageName,
+					0
+			);
 			versionName = info.versionName;
 		} catch( PackageManager.NameNotFoundException e ) {
 			versionName = VERSION_UNAVAILABLE;
@@ -77,43 +83,65 @@ public final class AboutDialogFragment extends DialogFragment {
 
 		// About.
 		SpannableStringBuilder aboutBody = new SpannableStringBuilder();
-		aboutBody.append( Html.fromHtml( getString( R.string.about_body, getString( R.string.application_name ), versionName ) ) );
+		aboutBody.append( Html.fromHtml( getString(
+				R.string.about_body,
+				getString( R.string.application_name ),
+				versionName
+		) ) );
 
 		// Licenses.
 		SpannableString licensesLink = new SpannableString( getString( R.string.about_licenses ) );
-		licensesLink.setSpan( new ClickableSpan() {
-			@Override
-			public void onClick( View view ) {
-				showOpenSourceLicenses( getActivity() );
-			}
-		}, 0, licensesLink.length(), 0 );
+		licensesLink.setSpan(
+				new ClickableSpan() {
+					@Override
+					public void onClick( View view ) {
+						showOpenSourceLicenses( getActivity() );
+					}
+				},
+				0,
+				licensesLink.length(),
+				0
+		);
 		aboutBody.append( "\n\n" );
 		aboutBody.append( licensesLink );
 
 		// End User License Agreement.
 		SpannableString eulaLink = new SpannableString( getString( R.string.about_eula ) );
-		eulaLink.setSpan( new ClickableSpan() {
-			@Override
-			public void onClick( View view ) {
-				showEula( getActivity() );
-			}
-		}, 0, eulaLink.length(), 0 );
+		eulaLink.setSpan(
+				new ClickableSpan() {
+					@Override
+					public void onClick( View view ) {
+						showEula( getActivity() );
+					}
+				},
+				0,
+				eulaLink.length(),
+				0
+		);
 		aboutBody.append( "\n\n" );
 		aboutBody.append( eulaLink );
 
 
 		// Show "About" dialog.
 		LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		TextView aboutBodyView = (TextView) layoutInflater.inflate( R.layout.fragment_dialog_about, null );
+		TextView       aboutBodyView  = (TextView) layoutInflater.inflate(
+				R.layout.fragment_dialog_about,
+				null
+		);
 		aboutBodyView.setText( aboutBody );
 		aboutBodyView.setMovementMethod( new LinkMovementMethod() );
 
-		return new AlertDialog.Builder( getActivity() ).setTitle( R.string.lbl_about ).setView( aboutBodyView ).setPositiveButton(
-				R.string.btn_ok, new DialogInterface.OnClickListener() {
-					public void onClick( DialogInterface dialog, int whichButton ) {
-						dialog.dismiss();
-					}
-				} ).create();
+		return new AlertDialog.Builder( getActivity() ).setTitle( R.string.lbl_about )
+													   .setView( aboutBodyView )
+													   .setPositiveButton(
+															   R.string.btn_ok,
+															   new DialogInterface.OnClickListener() {
+																   public void onClick( DialogInterface dialog, int whichButton ) {
+																	   dialog.dismiss();
+																   }
+															   }
+													   )
+													   .create();
 	}
 
 	/**
@@ -130,7 +158,10 @@ public final class AboutDialogFragment extends DialogFragment {
 			ft.remove( prev );
 		}
 		ft.addToBackStack( null );
-		new OpenSourceLicensesDialog().show( ft, "dialog_licenses" );
+		new OpenSourceLicensesDialog().show(
+				ft,
+				"dialog_licenses"
+		);
 	}
 
 	/**
@@ -151,12 +182,17 @@ public final class AboutDialogFragment extends DialogFragment {
 			WebView webView = new WebView( getActivity() );
 			webView.loadUrl( "file:///android_asset/licenses.html" );
 
-			return new AlertDialog.Builder( getActivity() ).setTitle( R.string.about_licenses ).setView( webView ).setPositiveButton(
-					R.string.btn_confirm, new DialogInterface.OnClickListener() {
-						public void onClick( DialogInterface dialog, int whichButton ) {
-							dialog.dismiss();
-						}
-					} ).create();
+			return new AlertDialog.Builder( getActivity() ).setTitle( R.string.about_licenses )
+														   .setView( webView )
+														   .setPositiveButton(
+																   R.string.btn_confirm,
+																   new DialogInterface.OnClickListener() {
+																	   public void onClick( DialogInterface dialog, int whichButton ) {
+																		   dialog.dismiss();
+																	   }
+																   }
+														   )
+														   .create();
 		}
 	}
 
@@ -174,7 +210,10 @@ public final class AboutDialogFragment extends DialogFragment {
 		}
 		ft.addToBackStack( null );
 
-		new EulaDialog().show( ft, "dialog_eula" );
+		new EulaDialog().show(
+				ft,
+				"dialog_eula"
+		);
 	}
 
 	/**
@@ -190,13 +229,23 @@ public final class AboutDialogFragment extends DialogFragment {
 			TextView eulaTextView = new TextView( getActivity() );
 			eulaTextView.setText( Html.fromHtml( getString( R.string.about_eula_legal_text ) ) );
 			eulaTextView.setMovementMethod( LinkMovementMethod.getInstance() );
-			eulaTextView.setPadding( padding, padding, padding, padding );
-			return new AlertDialog.Builder( getActivity() ).setTitle( R.string.about_eula ).setView( eulaTextView ).setPositiveButton(
-					R.string.btn_ok, new DialogInterface.OnClickListener() {
-						public void onClick( DialogInterface dialog, int whichButton ) {
-							dialog.dismiss();
-						}
-					} ).create();
+			eulaTextView.setPadding(
+					padding,
+					padding,
+					padding,
+					padding
+			);
+			return new AlertDialog.Builder( getActivity() ).setTitle( R.string.about_eula )
+														   .setView( eulaTextView )
+														   .setPositiveButton(
+																   R.string.btn_ok,
+																   new DialogInterface.OnClickListener() {
+																	   public void onClick( DialogInterface dialog, int whichButton ) {
+																		   dialog.dismiss();
+																	   }
+																   }
+														   )
+														   .create();
 		}
 	}
 
@@ -225,21 +274,39 @@ public final class AboutDialogFragment extends DialogFragment {
 			eulaTextView.setBackgroundColor( getResources().getColor( R.color.common_white ) );
 			eulaTextView.setTextColor( getResources().getColor( R.color.common_black ) );
 			eulaTextView.setMovementMethod( LinkMovementMethod.getInstance() );
-			eulaTextView.setPadding( padding, padding, padding, padding );
-			return new AlertDialog.Builder( getActivity() ).setTitle( R.string.about_eula ).setView( eulaTextView ).setPositiveButton(
-					R.string.btn_agree, new DialogInterface.OnClickListener() {
-						public void onClick( DialogInterface dialog, int whichButton ) {
-							Prefs.getInstance( getActivity().getApplication() ).setEULAOnceConfirmed( true );
-							dismiss();
-							EventBus.getDefault().post( new EULAConfirmedEvent() );
-						}
-					} ).setNegativeButton( R.string.btn_not_agree, new DialogInterface.OnClickListener() {
-				public void onClick( DialogInterface dialog, int whichButton ) {
-					Prefs.getInstance( getActivity().getApplication() ).setEULAOnceConfirmed( false );
-					dismiss();
-					EventBus.getDefault().post( new EULARejectEvent() );
-				}
-			} ).create();
+			eulaTextView.setPadding(
+					padding,
+					padding,
+					padding,
+					padding
+			);
+			return new AlertDialog.Builder( getActivity() ).setTitle( R.string.about_eula )
+														   .setView( eulaTextView )
+														   .setPositiveButton(
+																   R.string.btn_agree,
+																   new DialogInterface.OnClickListener() {
+																	   public void onClick( DialogInterface dialog, int whichButton ) {
+																		   Prefs.getInstance( getActivity().getApplication() )
+																				.setEULAOnceConfirmed( true );
+																		   dismiss();
+																		   EventBus.getDefault()
+																				   .post( new EULAConfirmedEvent() );
+																	   }
+																   }
+														   )
+														   .setNegativeButton(
+																   R.string.btn_not_agree,
+																   new DialogInterface.OnClickListener() {
+																	   public void onClick( DialogInterface dialog, int whichButton ) {
+																		   Prefs.getInstance( getActivity().getApplication() )
+																				.setEULAOnceConfirmed( false );
+																		   dismiss();
+																		   EventBus.getDefault()
+																				   .post( new EULARejectEvent() );
+																	   }
+																   }
+														   )
+														   .create();
 		}
 	}
 

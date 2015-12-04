@@ -164,7 +164,8 @@ public final class MainActivity extends BasicActivity {
 	 * 		Event {@link  EULAConfirmedEvent}.
 	 */
 	public void onEvent( EULAConfirmedEvent e ) {
-		Prefs.getInstance( App.Instance ).setUpdatedV2( true );
+		Prefs.getInstance( App.Instance )
+			 .setUpdatedV2( true );
 		ConnectGoogleActivity.showInstance( this );
 	}
 
@@ -199,7 +200,10 @@ public final class MainActivity extends BasicActivity {
 	 * 		{@link android.content.Context}.
 	 */
 	public static void showInstance( Context cxt ) {
-		Intent intent = new Intent( cxt, MainActivity.class );
+		Intent intent = new Intent(
+				cxt,
+				MainActivity.class
+		);
 		intent.setFlags( Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP );
 		cxt.startActivity( intent );
 	}
@@ -218,33 +222,57 @@ public final class MainActivity extends BasicActivity {
 					ActivityCompat.finishAffinity( this );
 				}
 		}
-		super.onActivityResult( requestCode, resultCode, data );
+		super.onActivityResult(
+				requestCode,
+				resultCode,
+				data
+		);
 	}
 
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		Fabric.with( this, new Crashlytics() );
+		Fabric.with(
+				this,
+				new Crashlytics()
+		);
 		setContentView( LAYOUT );
 
 		mRegistrationBroadcastReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive( Context context, Intent intent ) {
-				if( !TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() ).getPushRegId() ) ) {
+				if( !TextUtils.isEmpty( Prefs.getInstance( getApplicationContext() )
+											 .getPushRegId() ) ) {
 					dismissProgressDialog();
 					SubscribeTopicsActivity.showInstance( MainActivity.this );
 				} else {
 					View view = findViewById( R.id.coordinator_layout );
 					dismissProgressDialog();
-					Snackbar.make( view, R.string.meta_load_error, Snackbar.LENGTH_LONG ).setAction( R.string.btn_retry, new OnClickListener() {
-						@Override
-						public void onClick( View v ) {
-							mProgressDialog = ProgressDialog.show( MainActivity.this, null, getString( R.string.msg_push_registering ) );
-							Intent intent = new Intent( MainActivity.this, RegistrationIntentService.class );
-							startService( intent );
-						}
-					} ).show();
+					Snackbar.make(
+							view,
+							R.string.meta_load_error,
+							Snackbar.LENGTH_LONG
+					)
+							.setAction(
+									R.string.btn_retry,
+									new OnClickListener() {
+										@Override
+										public void onClick( View v ) {
+											mProgressDialog = ProgressDialog.show(
+													MainActivity.this,
+													null,
+													getString( R.string.msg_push_registering )
+											);
+											Intent intent = new Intent(
+													MainActivity.this,
+													RegistrationIntentService.class
+											);
+											startService( intent );
+										}
+									}
+							)
+							.show();
 				}
 			}
 		};
@@ -256,12 +284,18 @@ public final class MainActivity extends BasicActivity {
 
 
 		mHeaderView = findViewById( R.id.error_content );
-		ViewCompat.setElevation( mHeaderView, getResources().getDimension( R.dimen.toolbar_elevation ) );
+		ViewCompat.setElevation(
+				mHeaderView,
+				getResources().getDimension( R.dimen.toolbar_elevation )
+		);
 		mToolbar = (Toolbar) findViewById( R.id.toolbar );
 		setSupportActionBar( mToolbar );
 		initDrawer();
 		mViewPager = (ViewPager) findViewById( R.id.vp );
-		mPagerAdapter = new MainViewPagerAdapter( this, getSupportFragmentManager() );
+		mPagerAdapter = new MainViewPagerAdapter(
+				this,
+				getSupportFragmentManager()
+		);
 		mViewPager.setAdapter( mPagerAdapter );
 		calcActionBarHeight();
 		// Bind the tabs to the ViewPager
@@ -288,7 +322,8 @@ public final class MainActivity extends BasicActivity {
 			@Override
 			public void onClick( View v ) {
 				hideFABs();
-				EventBus.getDefault().post( new RemoveAllEvent( mViewPager.getCurrentItem() == 0 ? WhichPage.Messages : WhichPage.Bookmarks ) );
+				EventBus.getDefault()
+						.post( new RemoveAllEvent( mViewPager.getCurrentItem() == 0 ? WhichPage.Messages : WhichPage.Bookmarks ) );
 			}
 		} );
 		mBookmarkAllBtn = (ActionButton) findViewById( R.id.bookmark_all_btn );
@@ -296,13 +331,17 @@ public final class MainActivity extends BasicActivity {
 			@Override
 			public void onClick( View v ) {
 				hideFABs();
-				EventBus.getDefault().post( new BookmarkAllEvent() );
+				EventBus.getDefault()
+						.post( new BookmarkAllEvent() );
 			}
 		} );
 		mOpenBtn = (ActionButton) findViewById( R.id.float_main_btn );
 		mOpenBtn.setOnClickListener( mOpenListener );
 		mSearchBtn = (ActionButton) findViewById( R.id.float_search_btn );
-		ViewCompat.setTranslationX( mSearchBtn, ViewCompat.getTranslationX( mOpenBtn ) );
+		ViewCompat.setTranslationX(
+				mSearchBtn,
+				ViewCompat.getTranslationX( mOpenBtn )
+		);
 		mSearchBtn.setOnClickListener( mSearchListener );
 
 		//User that have used this application, should go back to login-page for upgrade version 2.0
@@ -310,12 +349,18 @@ public final class MainActivity extends BasicActivity {
 		if( prefs.isEULAOnceConfirmed() && !prefs.isUpdatedV2() ) {
 			prefs.setUpdatedV2( true );
 			Utils.logout();
-			com.chopping.utils.Utils.showLongToast( App.Instance, R.string.msg_welcome );
+			com.chopping.utils.Utils.showLongToast(
+					App.Instance,
+					R.string.msg_welcome
+			);
 			ConnectGoogleActivity.showInstance( this );
 		} else {
 			//User that have used this application and done clear(logout), should go back to login-page.
 			if( prefs.isEULAOnceConfirmed() && TextUtils.isEmpty( prefs.getGoogleAccount() ) ) {
-				com.chopping.utils.Utils.showLongToast( App.Instance, R.string.msg_welcome_return );
+				com.chopping.utils.Utils.showLongToast(
+						App.Instance,
+						R.string.msg_welcome_return
+				);
 				ConnectGoogleActivity.showInstance( this );
 			} else if( prefs.isEULAOnceConfirmed() && !TextUtils.isEmpty( prefs.getGoogleAccount() ) ) {
 				//Should do something.....
@@ -374,19 +419,26 @@ public final class MainActivity extends BasicActivity {
 			mDrawerToggle.syncState();
 		}
 		checkPlayService();
-		LocalBroadcastManager.getInstance( this ).registerReceiver(
-				mRegistrationBroadcastReceiver, new IntentFilter( RegistrationIntentService.REGISTRATION_COMPLETE ) );
+		LocalBroadcastManager.getInstance( this )
+							 .registerReceiver(
+									 mRegistrationBroadcastReceiver,
+									 new IntentFilter( RegistrationIntentService.REGISTRATION_COMPLETE )
+							 );
 	}
 
 	@Override
 	protected void onPause() {
-		LocalBroadcastManager.getInstance( this ).unregisterReceiver( mRegistrationBroadcastReceiver );
+		LocalBroadcastManager.getInstance( this )
+							 .unregisterReceiver( mRegistrationBroadcastReceiver );
 		super.onPause();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
-		getMenuInflater().inflate( R.menu.main, menu );
+		getMenuInflater().inflate(
+				R.menu.main,
+				menu
+		);
 		return true;
 	}
 
@@ -395,12 +447,19 @@ public final class MainActivity extends BasicActivity {
 
 		MenuItem menuShare = menu.findItem( R.id.action_share_app );
 		//Getting the actionprovider associated with the menu item whose id is share.
-		android.support.v7.widget.ShareActionProvider provider = (android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider(
-				menuShare );
+		android.support.v7.widget.ShareActionProvider provider
+				= (android.support.v7.widget.ShareActionProvider) MenuItemCompat.getActionProvider( menuShare );
 		//Setting a share intent.
-		String subject = getString( R.string.lbl_share_app_title, getString( R.string.application_name ) );
+		String subject = getString(
+				R.string.lbl_share_app_title,
+				getString( R.string.application_name )
+		);
 		String text    = getString( R.string.lbl_share_app_content );
-		provider.setShareIntent( Utils.getDefaultShareIntent( provider, subject, text ) );
+		provider.setShareIntent( Utils.getDefaultShareIntent(
+				provider,
+				subject,
+				text
+		) );
 
 		return super.onPrepareOptionsMenu( menu );
 	}
@@ -417,17 +476,31 @@ public final class MainActivity extends BasicActivity {
 				onSearchRequested();
 				break;
 			case R.id.action_about:
-				showDialogFragment( AboutDialogFragment.newInstance( this ), null );
+				showDialogFragment(
+						AboutDialogFragment.newInstance( this ),
+						null
+				);
 				break;
 			case R.id.action_setting:
-				SettingActivity.showInstance( this, null );
+				SettingActivity.showInstance(
+						this,
+						null
+				);
 				break;
 			case R.id.action_facebook:
 				Bundle postParams = new Bundle();
-				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder( this, getString( R.string.applicationId ), postParams ).setCaption(
-						String.format( getString( R.string.lbl_share_app_title ), getString( R.string.lbl_share_item_title ) ) ).setName(
-						getString( R.string.lbl_share_item_title ) ).setDescription( getString( R.string.lbl_share_app_content ) ).setLink(
-						getString( R.string.lbl_app_link ) ).build();
+				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(
+						this,
+						getString( R.string.applicationId ),
+						postParams
+				).setCaption( String.format(
+						getString( R.string.lbl_share_app_title ),
+						getString( R.string.lbl_share_item_title )
+				) )
+				 .setName( getString( R.string.lbl_share_item_title ) )
+				 .setDescription( getString( R.string.lbl_share_app_content ) )
+				 .setLink( getString( R.string.lbl_app_link ) )
+				 .build();
 				fbDlg.setOnCompleteListener( new OnCompleteListener() {
 					@Override
 					public void onComplete( Bundle bundle, FacebookException e ) {
@@ -461,21 +534,40 @@ public final class MainActivity extends BasicActivity {
 	 * To ask whether open push-option.
 	 */
 	private void checkPushSetting() {
-		if( TextUtils.isEmpty( Prefs.getInstance( getApplication() ).getPushRegId() ) ) {
-			new android.support.v7.app.AlertDialog.Builder( this ).setTitle( R.string.application_name ).setMessage( R.string.lbl_turn_on_push_info )
-					.setCancelable( false ).setPositiveButton( R.string.lbl_yes, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick( DialogInterface dialog, int which ) {
-					mProgressDialog = ProgressDialog.show( MainActivity.this, null, getString( R.string.msg_push_registering ) );
-					Intent intent = new Intent( MainActivity.this, RegistrationIntentService.class );
-					startService( intent );
-				}
-			} ).setNegativeButton( R.string.lbl_no, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick( DialogInterface dialog, int which ) {
+		if( TextUtils.isEmpty( Prefs.getInstance( getApplication() )
+									.getPushRegId() ) ) {
+			new android.support.v7.app.AlertDialog.Builder( this ).setTitle( R.string.application_name )
+																  .setMessage( R.string.lbl_turn_on_push_info )
+																  .setCancelable( false )
+																  .setPositiveButton(
+																		  R.string.lbl_yes,
+																		  new DialogInterface.OnClickListener() {
+																			  @Override
+																			  public void onClick( DialogInterface dialog, int which ) {
+																				  mProgressDialog = ProgressDialog.show(
+																						  MainActivity.this,
+																						  null,
+																						  getString( R.string.msg_push_registering )
+																				  );
+																				  Intent intent = new Intent(
+																						  MainActivity.this,
+																						  RegistrationIntentService.class
+																				  );
+																				  startService( intent );
+																			  }
+																		  }
+																  )
+																  .setNegativeButton(
+																		  R.string.lbl_no,
+																		  new DialogInterface.OnClickListener() {
+																			  @Override
+																			  public void onClick( DialogInterface dialog, int which ) {
 
-				}
-			} ).create().show();
+																			  }
+																		  }
+																  )
+																  .create()
+																  .show();
 		}
 	}
 
@@ -483,7 +575,12 @@ public final class MainActivity extends BasicActivity {
 	 * Show all external applications links.
 	 */
 	private void showAppList() {
-		getSupportFragmentManager().beginTransaction().replace( R.id.app_list_fl, AppListImpFragment.newInstance( this ) ).commit();
+		getSupportFragmentManager().beginTransaction()
+								   .replace(
+										   R.id.app_list_fl,
+										   AppListImpFragment.newInstance( this )
+								   )
+								   .commit();
 	}
 
 
@@ -496,7 +593,12 @@ public final class MainActivity extends BasicActivity {
 			actionBar.setHomeButtonEnabled( true );
 			actionBar.setDisplayHomeAsUpEnabled( true );
 			mDrawerLayout = (DrawerLayout) findViewById( R.id.drawer_layout );
-			mDrawerToggle = new ActionBarDrawerToggle( this, mDrawerLayout, R.string.application_name, R.string.app_name );
+			mDrawerToggle = new ActionBarDrawerToggle(
+					this,
+					mDrawerLayout,
+					R.string.application_name,
+					R.string.app_name
+			);
 
 
 			mDrawerLayout.setDrawerListener( mDrawerToggle );
@@ -516,10 +618,21 @@ public final class MainActivity extends BasicActivity {
 
 				switch( menuItem.getItemId() ) {
 					case R.id.action_home:
-						WebViewActivity.showInstance( MainActivity.this, null, null, null );
+						WebViewActivity.showInstance(
+								MainActivity.this,
+								null,
+								null,
+								null
+						);
 						break;
 					case R.id.action_blog:
-						WebViewActivity.showInstance( MainActivity.this, Prefs.getInstance( App.Instance ).getHackerNewsBlogUrl(), null, null );
+						WebViewActivity.showInstance(
+								MainActivity.this,
+								Prefs.getInstance( App.Instance )
+									 .getHackerNewsBlogUrl(),
+								null,
+								null
+						);
 						break;
 					case R.id.action_recent:
 						DailiesActivity.showInstance( MainActivity.this );
@@ -528,7 +641,10 @@ public final class MainActivity extends BasicActivity {
 						mDrawerLayout.openDrawer( Gravity.RIGHT );
 						break;
 					case R.id.action_settings:
-						SettingActivity.showInstance( MainActivity.this, null );
+						SettingActivity.showInstance(
+								MainActivity.this,
+								null
+						);
 						break;
 				}
 				return true;
@@ -547,21 +663,9 @@ public final class MainActivity extends BasicActivity {
 		}
 	};
 	/**
-	 * Listener for closing all float buttons.
-	 */
-	private OnClickListener mCloseListener = new OnClickListener() {
-		@Override
-		public void onClick( View v ) {
-			mBookmarkAllBtn.hide();
-			mRemoveAllBtn.hide();
-			mSearchBtn.hide();
-			mOpenBtn.setOnClickListener( mOpenListener );
-		}
-	};
-	/**
 	 * Listener for opening all float buttons.
 	 */
-	private OnClickListener mOpenListener = new OnClickListener() {
+	private OnClickListener mOpenListener   = new OnClickListener() {
 		@Override
 		public void onClick( View v ) {
 			if( mViewPager.getCurrentItem() == 0 ) {
@@ -573,11 +677,25 @@ public final class MainActivity extends BasicActivity {
 		}
 	};
 	/**
+	 * Listener for closing all float buttons.
+	 */
+	private OnClickListener mCloseListener  = new OnClickListener() {
+		@Override
+		public void onClick( View v ) {
+			mBookmarkAllBtn.hide();
+			mRemoveAllBtn.hide();
+			mSearchBtn.hide();
+			mOpenBtn.setOnClickListener( mOpenListener );
+		}
+	};
+
+	/**
 	 * Make an Admob.
 	 */
 	private void makeAds() {
 		int curTime  = App.Instance.getAdsShownTimes();
-		int adsTimes = Prefs.getInstance( App.Instance ).getShownDetailsAdsTimes();
+		int adsTimes = Prefs.getInstance( App.Instance )
+							.getShownDetailsAdsTimes();
 		if( curTime % adsTimes == 0 ) {
 			// Create an ad.
 			mInterstitialAd = new InterstitialAd( this );
@@ -615,30 +733,43 @@ public final class MainActivity extends BasicActivity {
 		final int isFound = GooglePlayServicesUtil.isGooglePlayServicesAvailable( this );
 		if( isFound == ConnectionResult.SUCCESS ) {//Ignore update.
 			//The "End User License Agreement" must be confirmed before you use this application.
-			if( !Prefs.getInstance( getApplication() ).isEULAOnceConfirmed() ) {
-				showDialogFragment( new EulaConfirmationDialog(), null );
+			if( !Prefs.getInstance( getApplication() )
+					  .isEULAOnceConfirmed() ) {
+				showDialogFragment(
+						new EulaConfirmationDialog(),
+						null
+				);
 			}
 		} else {
-			new android.support.v7.app.AlertDialog.Builder( this ).setTitle( R.string.application_name ).setMessage( R.string.lbl_play_service )
-					.setCancelable( false ).setPositiveButton( R.string.btn_ok, new DialogInterface.OnClickListener() {
-				public void onClick( DialogInterface dialog, int whichButton ) {
-					dialog.dismiss();
-					Intent intent = new Intent( Intent.ACTION_VIEW );
-					intent.setData( Uri.parse( getString( R.string.play_service_url ) ) );
-					try {
-						startActivity( intent );
-					} catch( ActivityNotFoundException e0 ) {
-						intent.setData( Uri.parse( getString( R.string.play_service_web ) ) );
-						try {
-							startActivity( intent );
-						} catch( Exception e1 ) {
-							//Ignore now.
-						}
-					} finally {
-						finish();
-					}
-				}
-			} ).create().show();
+			new android.support.v7.app.AlertDialog.Builder( this ).setTitle( R.string.application_name )
+																  .setMessage( R.string.lbl_play_service )
+																  .setCancelable( false )
+																  .setPositiveButton(
+																		  R.string.btn_ok,
+																		  new DialogInterface.OnClickListener() {
+																			  public void onClick( DialogInterface dialog,
+																								   int whichButton
+																			  ) {
+																				  dialog.dismiss();
+																				  Intent intent = new Intent( Intent.ACTION_VIEW );
+																				  intent.setData( Uri.parse( getString( R.string.play_service_url ) ) );
+																				  try {
+																					  startActivity( intent );
+																				  } catch( ActivityNotFoundException e0 ) {
+																					  intent.setData( Uri.parse( getString( R.string.play_service_web ) ) );
+																					  try {
+																						  startActivity( intent );
+																					  } catch( Exception e1 ) {
+																						  //Ignore now.
+																					  }
+																				  } finally {
+																					  finish();
+																				  }
+																			  }
+																		  }
+																  )
+																  .create()
+																  .show();
 		}
 	}
 
@@ -663,9 +794,15 @@ public final class MainActivity extends BasicActivity {
 				}
 				try {
 					if( TextUtils.isEmpty( _tagName ) ) {
-						dialogFragment.show( ft, "dlg" );
+						dialogFragment.show(
+								ft,
+								"dlg"
+						);
 					} else {
-						dialogFragment.show( ft, _tagName );
+						dialogFragment.show(
+								ft,
+								_tagName
+						);
 					}
 				} catch( Exception _e ) {
 				}
@@ -689,7 +826,10 @@ public final class MainActivity extends BasicActivity {
 		if( mDrawerLayout.isDrawerOpen( Gravity.LEFT ) || mDrawerLayout.isDrawerOpen( Gravity.RIGHT ) ) {
 			mDrawerLayout.closeDrawers();
 		} else {
-			Intent intent = new Intent( this, SyncBookmarkIntentService.class );
+			Intent intent = new Intent(
+					this,
+					SyncBookmarkIntentService.class
+			);
 			startService( intent );
 			super.onBackPressed();
 		}

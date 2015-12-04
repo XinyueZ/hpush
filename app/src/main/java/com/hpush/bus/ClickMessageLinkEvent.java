@@ -18,6 +18,7 @@ public final class ClickMessageLinkEvent {
 	 * The sender {@link android.view.View}.
 	 */
 	private View    mSenderV;
+
 	/**
 	 * Constructor of {@link com.hpush.bus.ClickMessageLinkEvent}.
 	 *

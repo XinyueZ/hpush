@@ -14,6 +14,7 @@ public class MessageListItem {
 	 * Is the item checked or not.
 	 */
 	private boolean mChecked;
+
 	/**
 	 * Constructor of {@link com.hpush.data.MessageListItem}.
 	 *
@@ -40,27 +41,35 @@ public class MessageListItem {
 	public long getScore() {
 		return message.getScore();
 	}
+
 	public String getText() {
 		return message.getText();
 	}
+
 	public String getTitle() {
 		return message.getTitle();
 	}
+
 	public long getPushedTime() {
 		return message.getPushedTime();
 	}
+
 	public void setPushedTime( long pushedTime ) {
 		message.setPushedTime( pushedTime );
 	}
+
 	public String getUrl() {
 		return message.getUrl();
 	}
+
 	public long getDbId() {
 		return message.getDbId();
 	}
+
 	public void setDbId( long dbId ) {
 		message.setDbId( dbId );
 	}
+
 	public boolean isChecked() {
 		return mChecked;
 	}
@@ -72,6 +81,7 @@ public class MessageListItem {
 	public long getCommentCounts() {
 		return message.getCommentsCount();
 	}
+
 	public Message getMessage() {
 		return message;
 	}

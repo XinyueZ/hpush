@@ -52,7 +52,10 @@ public class DynamicShareActionProvider extends ActionProvider {
 		}
 		shareIntent = new Intent( Intent.ACTION_SEND );
 		shareIntent.setType( type );
-		list = pm.queryIntentActivities( shareIntent, 0 );
+		list = pm.queryIntentActivities(
+				shareIntent,
+				0
+		);
 	}
 
 
@@ -91,21 +94,31 @@ public class DynamicShareActionProvider extends ActionProvider {
 				ResolveInfo                         resolveInfo  = list.get( i );
 				OnMenuItemClickUpdateIntentListener itemListener = new OnMenuItemClickUpdateIntentListener();
 				itemListener.setPosition( i );
-				MenuItem item = subMenu.add( resolveInfo.loadLabel( pm ) ).setIcon( resolveInfo.loadIcon( pm ) ).setOnMenuItemClickListener(
-						itemListener );
+				MenuItem item = subMenu.add( resolveInfo.loadLabel( pm ) )
+									   .setIcon( resolveInfo.loadIcon( pm ) )
+									   .setOnMenuItemClickListener( itemListener );
 			}
 		} else {
 			String msg;
-			if( shareIntent == null || shareIntent.getType() == null || shareIntent.getType().equals( "" ) ) {
+			if( shareIntent == null || shareIntent.getType() == null || shareIntent.getType()
+																				   .equals( "" ) ) {
 				msg = context.getString( R.string.no_share_type );
 			} else if( list == null || list.size() <= 0 ) {
 				String formatMsg = context.getString( R.string.no_app_to_share );
-				msg = String.format( formatMsg, shareIntent.getType() );
+				msg = String.format(
+						formatMsg,
+						shareIntent.getType()
+				);
 			} else {
 				msg = context.getString( R.string.error_occurred );
 			}
 
-			Toast.makeText( context, msg, Toast.LENGTH_LONG ).show();
+			Toast.makeText(
+					context,
+					msg,
+					Toast.LENGTH_LONG
+			)
+				 .show();
 		}
 	}
 
@@ -118,8 +131,11 @@ public class DynamicShareActionProvider extends ActionProvider {
 			if( listener == null ) {
 				return false;
 			} else {
-				ActivityInfo activity = list.get( position ).activityInfo;
-				ComponentName name = new ComponentName( activity.applicationInfo.packageName, activity.name );
+				ActivityInfo  activity = list.get( position ).activityInfo;
+				ComponentName name     = new ComponentName(
+						activity.applicationInfo.packageName,
+						activity.name
+				);
 				shareIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED );
 				shareIntent.setComponent( name );
 
@@ -151,6 +167,7 @@ public class DynamicShareActionProvider extends ActionProvider {
 
 		/**
 		 * This will be called when an app for sharing has been selected. Generate the data here.
+		 *
 		 * @return The data which should be shared as you would pass it to the Intent using {@link Intent#putExtras(Bundle)}.
 		 */
 		public Bundle onShareIntentExtrasUpdate();
@@ -161,7 +178,9 @@ public class DynamicShareActionProvider extends ActionProvider {
 
 		/**
 		 * This will be called when an app for sharing has been selected. Implement your custom sharing implementation here.
-		 * @param shareIntent The {@link Intent} containing the necessary information about the receiver and the data type
+		 *
+		 * @param shareIntent
+		 * 		The {@link Intent} containing the necessary information about the receiver and the data type
 		 */
 		public void onShareClick( Intent shareIntent );
 

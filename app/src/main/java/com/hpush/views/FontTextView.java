@@ -21,20 +21,39 @@ public class FontTextView extends TextView {
 	}
 
 	public FontTextView( Context context, AttributeSet attrs ) {
-		super( context, attrs );
-		initialize( context, attrs );
+		super(
+				context,
+				attrs
+		);
+		initialize(
+				context,
+				attrs
+		);
 	}
 
 	public FontTextView( Context context, AttributeSet attrs, int defStyle ) {
-		super( context, attrs, defStyle );
-		initialize( context, attrs );
+		super(
+				context,
+				attrs,
+				defStyle
+		);
+		initialize(
+				context,
+				attrs
+		);
 	}
 
 	private void initialize( Context context, AttributeSet attrs ) {
 		String font;
 
-		TypedArray a = context.obtainStyledAttributes( attrs, R.styleable.FontTextView );
-		int fontIndex = a.getInt( R.styleable.FontTextView_font, -1 );
+		TypedArray a         = context.obtainStyledAttributes(
+				attrs,
+				R.styleable.FontTextView
+		);
+		int        fontIndex = a.getInt(
+				R.styleable.FontTextView_font,
+				-1
+		);
 
 		// defined in attrs.xml
 		switch( fontIndex ) {
@@ -64,7 +83,10 @@ public class FontTextView extends TextView {
 
 	public void setFont( String font ) {
 		if( !isInEditMode() ) {
-			Typeface tf = Fonts.getFont( getContext(), font );
+			Typeface tf = Fonts.getFont(
+					getContext(),
+					font
+			);
 			setTypeface( tf );
 		}
 	}
@@ -85,8 +107,14 @@ public class FontTextView extends TextView {
 		public static Typeface getFont( Context context, String assetPath ) {
 			Typeface font = sTypefaces.get( assetPath );
 			if( font == null ) {
-				font = Typeface.createFromAsset( context.getAssets(), "fonts/" + assetPath );
-				sTypefaces.put( assetPath, font );
+				font = Typeface.createFromAsset(
+						context.getAssets(),
+						"fonts/" + assetPath
+				);
+				sTypefaces.put(
+						assetPath,
+						font
+				);
 			}
 			return font;
 		}

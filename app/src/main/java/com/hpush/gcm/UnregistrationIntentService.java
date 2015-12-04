@@ -42,6 +42,7 @@ public class UnregistrationIntentService extends IntentService {
 		}
 		Topics.clear();
 		Intent unregistrationComplete = new Intent( UNREGISTRATION_COMPLETE );
-		LocalBroadcastManager.getInstance( this ).sendBroadcast( unregistrationComplete );
+		LocalBroadcastManager.getInstance( this )
+							 .sendBroadcast( unregistrationComplete );
 	}
 }

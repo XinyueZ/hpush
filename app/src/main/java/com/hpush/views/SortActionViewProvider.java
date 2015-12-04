@@ -45,7 +45,12 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 
 	public SortActionViewProvider( Context context ) {
 		super( context );
-		mProviderV = LayoutInflater.from( context ).inflate( LAYOUT, null, false );
+		mProviderV = LayoutInflater.from( context )
+								   .inflate(
+										   LAYOUT,
+										   null,
+										   false
+								   );
 		mProviderV.setOnClickListener( new OnViewAnimatedClickedListener() {
 			@Override
 			public void onClick() {
@@ -58,7 +63,10 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 				}
 			}
 		} );
-		mPopupMenu = new PopupMenu( context, mProviderV );
+		mPopupMenu = new PopupMenu(
+				context,
+				mProviderV
+		);
 		mPopupMenu.inflate( MENU_RES );
 		mPopupMenu.setOnDismissListener( this );
 		mPopupMenu.setOnMenuItemClickListener( this );
@@ -83,17 +91,22 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 	 * 		The host of all menu-items.
 	 */
 	private void updateMenuItems( Menu menu ) {
-		menu.findItem( R.id.action_sort_scores ).setChecked( 0 == selectedSortTypeValue() );
-		menu.findItem( R.id.action_sort_arrival ).setChecked( 1 == selectedSortTypeValue() );
-		menu.findItem( R.id.action_sort_creation ).setChecked( 2 == selectedSortTypeValue() );
-		menu.findItem( R.id.action_sort_comments ).setChecked( 3 == selectedSortTypeValue() );
+		menu.findItem( R.id.action_sort_scores )
+			.setChecked( 0 == selectedSortTypeValue() );
+		menu.findItem( R.id.action_sort_arrival )
+			.setChecked( 1 == selectedSortTypeValue() );
+		menu.findItem( R.id.action_sort_creation )
+			.setChecked( 2 == selectedSortTypeValue() );
+		menu.findItem( R.id.action_sort_comments )
+			.setChecked( 3 == selectedSortTypeValue() );
 	}
 
 	/**
 	 * @return Get current selected sort-type {@code int}
 	 */
 	private int selectedSortTypeValue() {
-		String sortTypeValue = Prefs.getInstance( getContext().getApplicationContext() ).getSortTypeValue();
+		String sortTypeValue = Prefs.getInstance( getContext().getApplicationContext() )
+									.getSortTypeValue();
 		return Integer.valueOf( sortTypeValue );
 	}
 
@@ -115,7 +128,8 @@ public final class SortActionViewProvider extends ActionProvider implements OnDi
 				break;
 		}
 		updateMenuItems( mPopupMenu.getMenu() );
-		EventBus.getDefault().post( new SortAllEvent() );
+		EventBus.getDefault()
+				.post( new SortAllEvent() );
 		return true;
 	}
 }

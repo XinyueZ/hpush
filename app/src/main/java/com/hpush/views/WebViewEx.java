@@ -20,11 +20,18 @@ public final class WebViewEx extends WebView {
 	}
 
 	public WebViewEx( Context context, AttributeSet attrs ) {
-		super( context, attrs );
+		super(
+				context,
+				attrs
+		);
 	}
 
 	public WebViewEx( Context context, AttributeSet attrs, int defStyle ) {
-		super( context, attrs, defStyle );
+		super(
+				context,
+				attrs,
+				defStyle
+		);
 	}
 
 	@Override
@@ -40,7 +47,12 @@ public final class WebViewEx extends WebView {
 				}
 			}
 		}
-		super.onScrollChanged( l, t, oldl, oldt );
+		super.onScrollChanged(
+				l,
+				t,
+				oldl,
+				oldt
+		);
 	}
 
 	/**
@@ -67,6 +79,7 @@ public final class WebViewEx extends WebView {
 		 * 		True if user scrolled up, false then down.
 		 */
 		void onScrollChanged( boolean isUp );
+
 		/**
 		 * Event fired when user scrolled the WebView onto TOP.
 		 */

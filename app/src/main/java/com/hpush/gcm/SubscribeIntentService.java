@@ -41,31 +41,58 @@ public class SubscribeIntentService extends IntentService {
 		String token             = prefs.getPushRegId();
 		String topic             = intent.getStringExtra( TOPIC );
 		String storage           = intent.getStringExtra( STORAGE_NAME );
-		subscribeComplete.putExtra( SUBSCRIBE_NAME, intent.getStringExtra( SUBSCRIBE_NAME ) );
+		subscribeComplete.putExtra(
+				SUBSCRIBE_NAME,
+				intent.getStringExtra( SUBSCRIBE_NAME )
+		);
 		try {
 			synchronized( TAG ) {
-				subscribeTopics( token, topic );
-				prefs.setPush( storage, true );
-				subscribeComplete.putExtra( SUBSCRIBE_RESULT, true );
+				subscribeTopics(
+						token,
+						topic
+				);
+				prefs.setPush(
+						storage,
+						true
+				);
+				subscribeComplete.putExtra(
+						SUBSCRIBE_RESULT,
+						true
+				);
 			}
 		} catch( Exception e ) {
-			prefs.setPush( storage, false );
-			subscribeComplete.putExtra( SUBSCRIBE_RESULT, false );
+			prefs.setPush(
+					storage,
+					false
+			);
+			subscribeComplete.putExtra(
+					SUBSCRIBE_RESULT,
+					false
+			);
 		}
-		LocalBroadcastManager.getInstance( this ).sendBroadcast( subscribeComplete );
+		LocalBroadcastManager.getInstance( this )
+							 .sendBroadcast( subscribeComplete );
 	}
 
 
 	/**
 	 * Subscribe to any GCM topics of interest, as defined by the TOPICS constant.
 	 *
-	 * @param token GCM token
-	 *              @param topic  The topic-name.
-	 * @throws IOException if unable to reach the GCM PubSub service
+	 * @param token
+	 * 		GCM token
+	 * @param topic
+	 * 		The topic-name.
+	 *
+	 * @throws IOException
+	 * 		if unable to reach the GCM PubSub service
 	 */
 	// [START subscribe_topics]
 	private void subscribeTopics( String token, String topic ) throws IOException {
 		GcmPubSub pubSub = GcmPubSub.getInstance( this );
-		pubSub.subscribe( token, "/topics/" + topic, null );
+		pubSub.subscribe(
+				token,
+				"/topics/" + topic,
+				null
+		);
 	}
 }

@@ -44,17 +44,22 @@ public class MyGcmListenerService extends GcmListenerService {
 	private static final String TAG = "MyGcmListenerService";
 
 	private Bitmap mLargeIcon;
+
 	/**
 	 * Called when message is received.
 	 *
-	 * @param from SenderID of the sender.
-	 * @param data Data bundle containing message data as key/value pairs.
-	 *             For Set of keys use data.keySet().
+	 * @param from
+	 * 		SenderID of the sender.
+	 * @param data
+	 * 		Data bundle containing message data as key/value pairs. For Set of keys use data.keySet().
 	 */
 	// [START receive_message]
 	@Override
 	public void onMessageReceived( String from, final Bundle data ) {
-		mLargeIcon = BitmapFactory.decodeResource( getResources(), R.drawable.ic_launcher );
+		mLargeIcon = BitmapFactory.decodeResource(
+				getResources(),
+				R.drawable.ic_launcher
+		);
 		new Thread( new Runnable() {
 			@Override
 			public void run() {
@@ -66,10 +71,10 @@ public class MyGcmListenerService extends GcmListenerService {
 
 
 	/**
-	 * Put the message into a notification and post it. This is just one simple example of what you might choose to do
-	 * with a GCM message.
+	 * Put the message into a notification and post it. This is just one simple example of what you might choose to do with a GCM message.
 	 *
-	 * @param msg  Data of messages.
+	 * @param msg
+	 * 		Data of messages.
 	 */
 	private void sendNotification( final Bundle msg ) {
 		DB    db    = DB.getInstance( getApplication() );
@@ -90,24 +95,41 @@ public class MyGcmListenerService extends GcmListenerService {
 						for( String line : lines ) {
 							style.addLine( line );
 						}
-						final String summaryTitle = getString( R.string.lbl_update_from_hacker_news, count );
+						final String summaryTitle = getString(
+								R.string.lbl_update_from_hacker_news,
+								count
+						);
 						mNotificationManager = (NotificationManager) this.getSystemService( Context.NOTIFICATION_SERVICE );
-						Intent intent = new Intent( this, DailiesActivity.class );
+						Intent intent = new Intent(
+								this,
+								DailiesActivity.class
+						);
 						intent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP );
-						final PendingIntent contentIntent = PendingIntent.getActivity( this, (int) System.currentTimeMillis(), intent,
+						final PendingIntent contentIntent = PendingIntent.getActivity( this,
+																					   (int) System.currentTimeMillis(),
+																					   intent,
 																					   PendingIntent.FLAG_ONE_SHOT
 						);
 						mNotifyBuilder = new NotificationCompat.Builder( MyGcmListenerService.this ).setWhen( System.currentTimeMillis() )
-								.setSmallIcon( R.drawable.ic_stat_yp ).setTicker( summaryTitle ).setContentTitle( summaryTitle ).setContentText(
-										lines[ 0 ] ).setStyle( style.setBigContentTitle( summaryTitle ).setSummaryText( "+" + count + "..." ) )
-								.setAutoCancel( true ).setLargeIcon( mLargeIcon );
+																									.setSmallIcon( R.drawable.ic_stat_yp )
+																									.setTicker( summaryTitle )
+																									.setContentTitle( summaryTitle )
+																									.setContentText( lines[ 0 ] )
+																									.setStyle( style.setBigContentTitle( summaryTitle )
+																													.setSummaryText(
+																															"+" + count + "..." ) )
+																									.setAutoCancel( true )
+																									.setLargeIcon( mLargeIcon );
 						mNotifyBuilder.setContentIntent( contentIntent );
 
 
 						AudioManager audioManager = (AudioManager) getSystemService( Context.AUDIO_SERVICE );
 						if( audioManager.getRingerMode() != RINGER_MODE_SILENT ) {
 							String soundType = prefs.getSoundTypeValue();
-							if( !TextUtils.equals( soundType, "0" ) ) {
+							if( !TextUtils.equals(
+									soundType,
+									"0"
+							) ) {
 								mNotifyBuilder.setVibrate( new long[] { 1000 , 1000 , 1000 , 1000 } );
 								int rawResId = R.raw.horn;
 								switch( soundType ) {
@@ -121,13 +143,25 @@ public class MyGcmListenerService extends GcmListenerService {
 										rawResId = R.raw.sos;
 										break;
 								}
-								mNotifyBuilder.setSound( Uri.parse( String.format( "android.resource://%s/%s", getPackageName(), rawResId ) ) );
+								mNotifyBuilder.setSound( Uri.parse( String.format(
+										"android.resource://%s/%s",
+										getPackageName(),
+										rawResId
+								) ) );
 							}
 						}
-						mNotifyBuilder.setLights( getResources().getColor( R.color.primary_color ), 1000, 1000 );
-						mNotificationManager.notify( 0x98, mNotifyBuilder.build() );
+						mNotifyBuilder.setLights(
+								getResources().getColor( R.color.primary_color ),
+								1000,
+								1000
+						);
+						mNotificationManager.notify(
+								0x98,
+								mNotifyBuilder.build()
+						);
 						//Load all data on UI if possible, but I don't this is correct, because the "summary" might be earlier than others.
-						EventBus.getDefault().post( new LoadAllEvent() );
+						EventBus.getDefault()
+								.post( new LoadAllEvent() );
 					}
 
 
@@ -162,7 +196,17 @@ public class MyGcmListenerService extends GcmListenerService {
 				final long   pushedtime    = Long.valueOf( pushedTime );
 				prefs.setLastPushedTime( pushedtime );
 
-				Message message       = new Message( by, id, score, commentsCount, text, time, title, url, pushedtime );
+				Message message       = new Message(
+						by,
+						id,
+						score,
+						commentsCount,
+						text,
+						time,
+						title,
+						url,
+						pushedtime
+				);
 				boolean foundMsg      = db.findMessage( message );
 				boolean foundBookmark = db.findBookmark( message );
 				if( !foundMsg && !foundBookmark ) {//To test whether in our local database or not.

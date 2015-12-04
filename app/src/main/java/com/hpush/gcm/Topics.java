@@ -17,11 +17,29 @@ public final class Topics {
 	 */
 	public static void clear() {
 		Prefs prefs = Prefs.getInstance( App.Instance );
-		prefs.setPush( Prefs.KEY_PUSH_SUMMARY, false );
-		prefs.setPush( Prefs.KEY_PUSH_TOPSTORIES, false );
-		prefs.setPush( Prefs.KEY_PUSH_NEWSTORIES, false );
-		prefs.setPush( Prefs.KEY_PUSH_ASKSTORIES, false );
-		prefs.setPush( Prefs.KEY_PUSH_SHOWSTORIES, false );
-		prefs.setPush( Prefs.KEY_PUSH_JOBSTORIES, false );
+		prefs.setPush(
+				Prefs.KEY_PUSH_SUMMARY,
+				false
+		);
+		prefs.setPush(
+				Prefs.KEY_PUSH_TOPSTORIES,
+				false
+		);
+		prefs.setPush(
+				Prefs.KEY_PUSH_NEWSTORIES,
+				false
+		);
+		prefs.setPush(
+				Prefs.KEY_PUSH_ASKSTORIES,
+				false
+		);
+		prefs.setPush(
+				Prefs.KEY_PUSH_SHOWSTORIES,
+				false
+		);
+		prefs.setPush(
+				Prefs.KEY_PUSH_JOBSTORIES,
+				false
+		);
 	}
 }

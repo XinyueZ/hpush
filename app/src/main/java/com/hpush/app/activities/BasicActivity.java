@@ -40,10 +40,17 @@ public abstract class BasicActivity extends BaseActivity {
 	 * 		Event {@link com.hpush.bus.ClickMessageCommentsEvent}.
 	 */
 	public void onEvent( ClickMessageCommentsEvent e ) {
-		long   cId    = e.getMessage().getId();
-		String url    = Prefs.getInstance( getApplication() ).getHackerNewsCommentsUrl();
+		long   cId    = e.getMessage()
+						 .getId();
+		String url    = Prefs.getInstance( getApplication() )
+							 .getHackerNewsCommentsUrl();
 		String target = url + cId;
-		WebViewActivity.showInstance( this, target, e.getSenderV(), e.getMessage() );
+		WebViewActivity.showInstance(
+				this,
+				target,
+				e.getSenderV(),
+				e.getMessage()
+		);
 	}
 
 	/**
@@ -57,8 +64,14 @@ public abstract class BasicActivity extends BaseActivity {
 		switch( e.getType() ) {
 			case Facebook:
 				Bundle postParams = new Bundle();
-				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder( this, getString( R.string.applicationId ), postParams ).setName(
-						msg.getTitle() ).setDescription( msg.getText() ).setLink( msg.getUrl() ).build();
+				final WebDialog fbDlg = new WebDialog.FeedDialogBuilder(
+						this,
+						getString( R.string.applicationId ),
+						postParams
+				).setName( msg.getTitle() )
+				 .setDescription( msg.getText() )
+				 .setLink( msg.getUrl() )
+				 .build();
 				fbDlg.setOnCompleteListener( new OnCompleteListener() {
 					@Override
 					public void onComplete( Bundle bundle, FacebookException e ) {
@@ -90,7 +103,13 @@ public abstract class BasicActivity extends BaseActivity {
 	 * 		Event {@link com.hpush.bus.ClickMessageLinkEvent}.
 	 */
 	public void onEvent( ClickMessageLinkEvent e ) {
-		WebViewActivity.showInstance( this, e.getMessage().getUrl(), e.getSenderV(), e.getMessage() );
+		WebViewActivity.showInstance(
+				this,
+				e.getMessage()
+				 .getUrl(),
+				e.getSenderV(),
+				e.getMessage()
+		);
 	}
 
 	//------------------------------------------------
@@ -106,7 +125,10 @@ public abstract class BasicActivity extends BaseActivity {
 			abSzAttr = new int[] { R.attr.actionBarSize };
 		}
 		TypedArray a = obtainStyledAttributes( abSzAttr );
-		mActionBarHeight = a.getDimensionPixelSize( 0, -1 );
+		mActionBarHeight = a.getDimensionPixelSize(
+				0,
+				-1
+		);
 	}
 
 

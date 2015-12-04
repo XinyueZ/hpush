@@ -76,10 +76,13 @@ public final class App extends MultiDexApplication {
 
 		boolean isDev = getResources().getBoolean( R.bool.dev );
 		if( isDev ) {
-			Stetho.initialize( Stetho.newInitializerBuilder( this ).enableDumpapp( Stetho.defaultDumperPluginsProvider( this ) )
-									   .enableWebKitInspector( Stetho.defaultInspectorModulesProvider( this ) ).build() );
+			Stetho.initialize( Stetho.newInitializerBuilder( this )
+									 .enableDumpapp( Stetho.defaultDumperPluginsProvider( this ) )
+									 .enableWebKitInspector( Stetho.defaultInspectorModulesProvider( this ) )
+									 .build() );
 			OkHttpClient client = new OkHttpClient();
-			client.networkInterceptors().add( new StethoInterceptor() );
+			client.networkInterceptors()
+				  .add( new StethoInterceptor() );
 		}
 
 		Properties  prop  = new Properties();
@@ -90,7 +93,10 @@ public final class App extends MultiDexApplication {
 			if( input != null ) {
 				// load a properties file
 				prop.load( input );
-				Bmob.initialize( this, prop.getProperty( "bmobkey" ) );
+				Bmob.initialize(
+						this,
+						prop.getProperty( "bmobkey" )
+				);
 			}
 		} catch( IOException ex ) {
 		} finally {
@@ -102,24 +108,47 @@ public final class App extends MultiDexApplication {
 				}
 			}
 		}
-		startAppGuardService( this, 0 );
+		startAppGuardService(
+				this,
+				0
+		);
 	}
 
 
 	public static void startAppGuardService( Context cxt, int plusDay ) {
 		long     currentTime = System.currentTimeMillis();
 		Calendar notifyTime  = Calendar.getInstance();
-		notifyTime.set( Calendar.HOUR_OF_DAY, 23 );
-		notifyTime.set( Calendar.MINUTE, 0 );
-		notifyTime.set( Calendar.SECOND, 0 );
-		notifyTime.add( Calendar.DAY_OF_YEAR, plusDay );
+		notifyTime.set(
+				Calendar.HOUR_OF_DAY,
+				23
+		);
+		notifyTime.set(
+				Calendar.MINUTE,
+				0
+		);
+		notifyTime.set(
+				Calendar.SECOND,
+				0
+		);
+		notifyTime.add(
+				Calendar.DAY_OF_YEAR,
+				plusDay
+		);
 		long   nextFireWindow = notifyTime.getTimeInMillis() - currentTime;
 		long   flexSecs       = 600L; // the task can run as early as 10 minutes from the scheduled time
 		String tag            = System.currentTimeMillis() + "";
-		OneoffTask onceTask = new OneoffTask.Builder().setService( AppGuardService.class ).setExecutionWindow(
-				nextFireWindow + flexSecs, nextFireWindow + flexSecs * 2 ).setTag( tag ).setPersisted( true ).setRequiredNetwork(
-				com.google.android.gms.gcm.Task.NETWORK_STATE_ANY ).setRequiresCharging( false ).build();
-		GcmNetworkManager.getInstance( cxt ).schedule( onceTask );
+		OneoffTask onceTask = new OneoffTask.Builder().setService( AppGuardService.class )
+													  .setExecutionWindow(
+															  nextFireWindow + flexSecs,
+															  nextFireWindow + flexSecs * 2
+													  )
+													  .setTag( tag )
+													  .setPersisted( true )
+													  .setRequiredNetwork( com.google.android.gms.gcm.Task.NETWORK_STATE_ANY )
+													  .setRequiresCharging( false )
+													  .build();
+		GcmNetworkManager.getInstance( cxt )
+						 .schedule( onceTask );
 	}
 
 	/**

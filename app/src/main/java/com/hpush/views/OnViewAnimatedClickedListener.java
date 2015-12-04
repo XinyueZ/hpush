@@ -23,12 +23,25 @@ public abstract class OnViewAnimatedClickedListener implements OnClickListener {
 	@Override
 	public final void onClick( final View v ) {
 		v.setEnabled( false );
-		final float initX       = ViewHelper.getScaleX( v );
-		final float initY       = ViewHelper.getScaleY( v );
+		final float initX = ViewHelper.getScaleX( v );
+		final float initY = ViewHelper.getScaleY( v );
 		AnimatorSet animatorSet = new AnimatorSet();
 		animatorSet.playTogether(
-				ObjectAnimator.ofFloat( v, "scaleX", initX, 0.5f, initX ).setDuration( 100 ),
-				ObjectAnimator.ofFloat( v, "scaleY", initY, 0.5f, initY ).setDuration( 100 )
+				ObjectAnimator.ofFloat(
+						v,
+						"scaleX",
+						initX,
+						0.5f,
+						initX
+				)
+							  .setDuration( 100 ),
+				ObjectAnimator.ofFloat( v,
+										"scaleY",
+										initY,
+										0.5f,
+										initY
+				)
+							  .setDuration( 100 )
 		);
 		animatorSet.addListener( new AnimatorListenerAdapter() {
 			@Override

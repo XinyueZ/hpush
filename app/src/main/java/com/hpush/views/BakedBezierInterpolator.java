@@ -42,7 +42,10 @@ class BakedBezierInterpolator implements Interpolator {
 			return 0f;
 		}
 
-		int position = Math.min( (int) ( input * ( VALUES.length - 1 ) ), VALUES.length - 2 );
+		int position = Math.min(
+				(int) ( input * ( VALUES.length - 1 ) ),
+				VALUES.length - 2
+		);
 
 		float quantized = position * STEP_SIZE;
 		float difference = input - quantized;

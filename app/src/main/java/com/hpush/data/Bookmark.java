@@ -9,15 +9,31 @@ public final class Bookmark extends Message {
 	}
 
 	public Bookmark( String uid, Message msg ) {
-		super( msg.getDbId(), msg.getBy(), msg.getId(), msg.getScore(), msg.getCommentsCount(), msg.getText(), msg.getTime(), msg.getTitle(),
-			   msg.getUrl(), msg.getPushedTime()
+		super( msg.getDbId(),
+			   msg.getBy(),
+			   msg.getId(),
+			   msg.getScore(),
+			   msg.getCommentsCount(),
+			   msg.getText(),
+			   msg.getTime(),
+			   msg.getTitle(),
+			   msg.getUrl(),
+			   msg.getPushedTime()
 		);
 		mUID = uid;
 	}
 
 	public Bookmark( Message msg ) {
-		super( msg.getDbId(), msg.getBy(), msg.getId(), msg.getScore(), msg.getCommentsCount(), msg.getText(), msg.getTime(), msg.getTitle(),
-			   msg.getUrl(), msg.getPushedTime()
+		super( msg.getDbId(),
+			   msg.getBy(),
+			   msg.getId(),
+			   msg.getScore(),
+			   msg.getCommentsCount(),
+			   msg.getText(),
+			   msg.getTime(),
+			   msg.getTitle(),
+			   msg.getUrl(),
+			   msg.getPushedTime()
 		);
 
 	}

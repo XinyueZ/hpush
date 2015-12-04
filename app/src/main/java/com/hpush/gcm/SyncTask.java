@@ -28,7 +28,12 @@ public final class SyncTask {
 	 */
 	public static void sync( Context cxt ) {
 		final Prefs prefs = Prefs.getInstance( cxt );
-		GsonRequestTask<SyncList> task = new GsonRequestTask<SyncList>( cxt, Method.POST, prefs.getPushBackendSyncUrl(), SyncList.class ) {
+		GsonRequestTask<SyncList> task = new GsonRequestTask<SyncList>(
+				cxt,
+				Method.POST,
+				prefs.getPushBackendSyncUrl(),
+				SyncList.class
+		) {
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
 				Map<String, String> headers = super.getHeaders();
@@ -39,7 +44,8 @@ public final class SyncTask {
 				return headers;
 			}
 		};
-		task.setRetryPolicy( new DefaultRetryPolicy( prefs.getSyncRetry() * 1000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+		task.setRetryPolicy( new DefaultRetryPolicy( prefs.getSyncRetry() * 1000,
+													 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
 													 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
 		) );
 		task.execute();

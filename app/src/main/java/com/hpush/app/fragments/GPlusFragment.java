@@ -58,25 +58,36 @@ public final class GPlusFragment extends BaseFragment {
 	 * @return An instance of {@link com.hpush.app.fragments.GPlusFragment}.
 	 */
 	public static Fragment newInstance( Context context ) {
-		return GPlusFragment.instantiate( context, GPlusFragment.class.getName() );
+		return GPlusFragment.instantiate(
+				context,
+				GPlusFragment.class.getName()
+		);
 	}
 
 
 	@Override
 	public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-		return inflater.inflate( LAYOUT, container, false );
+		return inflater.inflate(
+				LAYOUT,
+				container,
+				false
+		);
 	}
 
 	@Override
 	public void onViewCreated( View view, Bundle savedInstanceState ) {
-		super.onViewCreated( view, savedInstanceState );
+		super.onViewCreated(
+				view,
+				savedInstanceState
+		);
 		mPhotoIv = (ImageView) view.findViewById( R.id.people_photo_iv );
 		mNameTv = (TextView) view.findViewById( R.id.people_name_tv );
 		mLogoutV = view.findViewById( R.id.logout_btn );
 		mLogoutV.setOnClickListener( new OnClickListener() {
 			@Override
 			public void onClick( View v ) {
-				EventBus.getDefault().post( new CloseDrawerEvent() );
+				EventBus.getDefault()
+						.post( new CloseDrawerEvent() );
 
 				//Logout and delete all userdata.
 				com.hpush.utils.Utils.logout();
@@ -95,9 +106,14 @@ public final class GPlusFragment extends BaseFragment {
 		Prefs   prefs   = Prefs.getInstance( App.Instance );
 		Picasso picasso = Picasso.with( App.Instance );
 		if( !TextUtils.isEmpty( prefs.getGoogleThumbUrl() ) ) {
-			picasso.load( Utils.uriStr2URI( prefs.getGoogleThumbUrl() ).toASCIIString() ).into( mPhotoIv );
+			picasso.load( Utils.uriStr2URI( prefs.getGoogleThumbUrl() )
+							   .toASCIIString() )
+				   .into( mPhotoIv );
 		}
-		mNameTv.setText( getString( R.string.lbl_hello, prefs.getGoogleDisplyName() ) );
+		mNameTv.setText( getString(
+				R.string.lbl_hello,
+				prefs.getGoogleDisplyName()
+		) );
 		super.onResume();
 	}
 

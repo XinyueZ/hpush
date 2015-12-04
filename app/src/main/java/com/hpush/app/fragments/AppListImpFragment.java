@@ -23,8 +23,12 @@ public final class AppListImpFragment extends AppListFragment {
 	 * @return An instance of {@link AppListImpFragment}.
 	 */
 	public static Fragment newInstance( Context context ) {
-		return AppListImpFragment.instantiate( context, AppListImpFragment.class.getName() );
+		return AppListImpFragment.instantiate(
+				context,
+				AppListImpFragment.class.getName()
+		);
 	}
+
 	/**
 	 * App that use this Chopping should know the preference-storage.
 	 *
