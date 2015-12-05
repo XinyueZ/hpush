@@ -45,6 +45,7 @@ android {
             versionNameSuffix buildNumber
         }
         release {
+            shrinkResources true
         }
     }
 

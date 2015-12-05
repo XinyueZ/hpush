@@ -116,8 +116,7 @@ public final class App extends MultiDexApplication {
 
 
 	public static void startAppGuardService( Context cxt, int plusDay ) {
-		long     currentTime = System.currentTimeMillis();
-		Calendar notifyTime  = Calendar.getInstance();
+		Calendar notifyTime = Calendar.getInstance();
 		notifyTime.set(
 				Calendar.HOUR_OF_DAY,
 				23
@@ -131,11 +130,12 @@ public final class App extends MultiDexApplication {
 				0
 		);
 		notifyTime.add(
-				Calendar.DAY_OF_YEAR,
+				Calendar.DAY_OF_MONTH,
 				plusDay
 		);
-		long   nextFireWindow = notifyTime.getTimeInMillis() - currentTime;
-		long   flexSecs       = 600L; // the task can run as early as 10 minutes from the scheduled time
+		long   currentTime    = System.currentTimeMillis();
+		long   nextFireWindow = ( notifyTime.getTimeInMillis() - currentTime ) / 1000;
+		long   flexSecs       = 60L; // the task can run as early as 10 minutes from the scheduled time
 		String tag            = System.currentTimeMillis() + "";
 		OneoffTask onceTask = new OneoffTask.Builder().setService( AppGuardService.class )
 													  .setExecutionWindow(
